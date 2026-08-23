@@ -8,7 +8,7 @@ require __DIR__ . '/inc/bootstrap.php';
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>CRTSHT / 128</title>
 <meta name="description" content="CRTSHT — 128 unique physical works generated, printed and minted on Ethereum in 2021. Reassembled in 2026.">
-<link rel="stylesheet" href="/site.css?v=5">
+<link rel="stylesheet" href="/site.css?v=6">
 </head>
 <body><main class="wrap">
 <header>
@@ -17,7 +17,7 @@ require __DIR__ . '/inc/bootstrap.php';
 </header>
 <section class="intro">
 <h1>KEEP YOUR SHIT TOGETHER</h1>
-<p>Together once before we disperse.</p>
+<p>Once, before we disperse.</p>
 <p class="quiet">128 physical originals · 20 × 20 cm · generated, printed and minted on Ethereum in 2021.</p>
 </section>
 <section class="grid">
