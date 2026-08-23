@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'The Oracle needs four words.';
     } else {
         $matches = crt_oracle_matches($words);
-        if (!$matches) $error = 'Nothing answered.';
+        if (!$matches) $error = 'Shit, something went wrong.';
     }
 }
 $revealed = count($matches) > 0;
@@ -38,7 +38,7 @@ $revealed = count($matches) > 0;
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>The Oracle / CRTSHT</title>
 <meta name="description" content="Four words open one CRTSHT mooncake.">
-<link rel="stylesheet" href="/site.css?v=5">
+<link rel="stylesheet" href="/site.css?v=6">
 </head>
 <body><main class="wrap oracle<?= $revealed ? ' oracle-revealed' : '' ?>">
 <header>
