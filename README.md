@@ -1,25 +1,26 @@
 # CRTSHT
 
-Recovered archive and presentation layer for **CRTSHT**, a series of 128 unique physical works created and recorded on Ethereum in 2021.
+Recovered archive and presentation layer for **CRTSHT**, a series of 128 unique 20 × 20 cm physical works created, printed and recorded on Ethereum in 2021.
 
-Each 25 × 25 cm print is tied to a cryptographic record. The original NFT metadata contains the print's SHA-256 fingerprint and an `ipfs://` image URI. The physical work carries its own public address and sealed private material; four recovery words form the interaction key.
+The original NFT metadata contains each print's SHA-256 fingerprint and an `ipfs://` image URI. Each physical work carries its own public address, a mooncake record and sealed private material; four visible recovery words act as an interaction key while the remaining words stay sealed.
 
-## 2026 archive
+## Public structure
 
-The current site deliberately separates three layers:
+- `/` — the complete visual archive, kept intentionally quiet.
+- `/lore` — the mythology, creatures, original exhibition plan, mooncakes, hashes and draw.
+- `/oracle` — collection-wide four-word lookup and fortune.
+- `/crtsht/1` … `/crtsht/128` — forensic object / Ethereum / network records.
 
-1. **Physical** — the unique print and its sealed key material.
-2. **Record** — original 2021 JSON metadata, hashes and IPFS CIDs, kept unchanged.
-3. **Presentation** — the replaceable web layer at `crtsht.info`, including resilient IPFS gateway resolution and local archival image fallback.
+## Layers
 
-The web layer may change. The historical metadata should not be rewritten merely to accommodate a gateway or API change.
+1. **Physical** — the unique print, mooncake and sealed key material.
+2. **Record** — original 2021 JSON metadata, hashes, wallets and IPFS CIDs.
+3. **Presentation** — the replaceable web layer at `crtsht.info`.
+
+The historical JSON remains unchanged. The presentation layer can evolve around it.
 
 ## Security
 
-No database passwords, API keys, private keys, seed phrases or deployment credentials belong in this repository. Use host-level environment variables or a non-public local configuration outside the web root for future server-side integrations.
+No database passwords, API keys, private keys, seed phrases or deployment credentials belong in this repository. Server credentials live in `private/config.php`, which is ignored by Git and blocked from HTTP access.
 
-The legacy database credential files were removed from the current branch in August 2026. Credentials that appeared in Git history must be considered compromised and rotated; deleting a file does not remove it from Git history.
-
-## Next restoration layer
-
-The archive currently works without a database or third-party API key. A future server-side blockchain adapter can add live Ethereum ownership/transaction information once the canonical contract/token mapping is verified and any API credentials are supplied securely through the host environment.
+Credentials that previously appeared in Git history must be considered compromised even after their files are removed and should remain rotated.
