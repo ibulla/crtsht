@@ -19,8 +19,11 @@ RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 
-# Canonical work URLs.
-RewriteRule ^crtsht/[0-9]{1,3}/?$ index.php [L,QSA]
-RewriteRule ^[0-9]{1,3}/?$ index.php [L,QSA]
+# Public structure.
+RewriteRule ^$ archive.php [L]
+RewriteRule ^lore/?$ lore.php [L,QSA]
+RewriteRule ^oracle/?$ oracle.php [L,QSA]
+RewriteRule ^crtsht/[0-9]{1,3}/?$ record.php [L,QSA]
+RewriteRule ^[0-9]{1,3}/?$ record.php [L,QSA]
 
-FallbackResource /index.php
+FallbackResource /archive.php
