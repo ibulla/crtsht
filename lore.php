@@ -14,14 +14,15 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 .lore-opening{margin:0 0 calc(var(--pad)*1.4)}
 .lore-opening .eyebrow{margin-bottom:12px}
 .lore-opening img{display:block;width:min(100%,760px);margin:0 0 18px}
-.lore-opening .fortune{font-size:clamp(28px,5vw,64px);line-height:.95;letter-spacing:-.055em;margin:0 0 18px;max-width:12ch}
+.lore-opening .fortune{font-size:clamp(28px,5vw,64px);line-height:.95;letter-spacing:-.055em;margin:0 0 18px;max-width:none}
+.lore-opening .fortune span{display:block;white-space:normal}
 .lore-opening .origin{font-size:clamp(14px,1.25vw,18px);line-height:1.55;max-width:62ch;margin:0}
 .founder{display:grid;grid-template-columns:minmax(220px,.8fr) minmax(0,1.2fr);gap:var(--pad);align-items:start}
 .founder img{display:block;width:100%;max-width:520px}
 .founder-copy{max-width:620px}
 .founder-copy .name{font-size:clamp(34px,5vw,72px);line-height:.9;letter-spacing:-.06em;margin:0 0 20px}
 .founder-copy p{font-size:clamp(14px,1.25vw,18px);line-height:1.55;margin:0 0 1em}
-@media(max-width:700px){.founder{grid-template-columns:1fr}.lore-opening .fortune{max-width:14ch}}
+@media(max-width:700px){.founder{grid-template-columns:1fr}}
 </style>
 </head>
 <body><main class="wrap lore">
@@ -33,7 +34,7 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 <section class="lore-opening">
 <div class="eyebrow">THE LORE</div>
 <img src="/img/cryptoshit_question.jpg" alt="CRTSHT question mark pile" fetchpriority="high">
-<p class="fortune">The internet may forget.<br>The blockchain can't. By design.</p>
+<p class="fortune"><span>The internet may forget.</span><span>The blockchain can't. By design.</span></p>
 <p class="origin">CRTSHT started in 2021, when images became assets, wallets became identities and permanence became a promise. One hundred and twenty-eight physical works, their mooncakes and their cryptographic traces survived the hype. In 2026 they meet again.</p>
 </section>
 
@@ -105,7 +106,7 @@ POO → short internal hash
 </section>
 
 <section class="chapter">
-<h2>The founder</h2>
+<h2>The shit</h2>
 <div class="founder">
 <img src="/img/About_crtsht.jpg" alt="Marco Spitzbarth holding a physical CRTSHT print" loading="lazy" decoding="async">
 <div class="founder-copy">
