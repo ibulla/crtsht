@@ -8,6 +8,9 @@ RewriteRule ^inc(?:/|$) - [F,L,NC]
 RewriteRule (^|/)\. - [F,L]
 RewriteRule ^(?:config\.local\.php|\.env(?:\..*)?)$ - [F,L,NC]
 
+# Keep the old all-in-one page archived but out of the public structure.
+RewriteRule ^index\.php$ / [R=302,L]
+
 # Historical PHP generators are archived source, not public endpoints.
 RewriteRule ^coin/.*\.php$ - [F,L,NC]
 RewriteRule ^bullshiter\.php$ - [F,L,NC]
