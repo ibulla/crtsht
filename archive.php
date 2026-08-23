@@ -16,8 +16,8 @@ require __DIR__ . '/inc/bootstrap.php';
 <nav class="nav"><a href="/" aria-current="page">Archive</a><a href="/lore">The Lore</a><a href="/oracle">The Oracle</a></nav>
 </header>
 <section class="intro">
-<h1>128 works.<br>Still here.</h1>
-<p>Generated, printed and minted on Ethereum in 2021. Reassembled in 2026.</p>
+<h1>Together once before our disperse</h1>
+<p>128 physical originals. Generated, printed and minted on Ethereum in 2021. Reassembled in 2026.</p>
 <p class="quiet">20 × 20 cm · one physical original each · look first, the rest is lore.</p>
 </section>
 <section class="grid">
