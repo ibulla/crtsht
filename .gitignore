@@ -4,4 +4,5 @@
 !.env.example
 inc/verbindung*.php
 config.local.php
+private/config.php
 *.log
