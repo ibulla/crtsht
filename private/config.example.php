@@ -15,6 +15,6 @@ return [
 
     'ETHERSCAN_API_KEY' => 'your_etherscan_api_key',
 
-    // Optional. Leave empty to use the public RPC fallbacks in index.php.
+    // Optional. Leave empty to use the public Ethereum RPC fallbacks.
     'ETH_RPC_URL' => '',
 ];
