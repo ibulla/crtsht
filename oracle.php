@@ -2,6 +2,15 @@
 declare(strict_types=1);
 require __DIR__ . '/inc/bootstrap.php';
 
+$fortuneFile = __DIR__ . '/inc/fortunes.php';
+$fortuneMap = is_file($fortuneFile) ? require $fortuneFile : [];
+if (!is_array($fortuneMap)) $fortuneMap = [];
+
+function crt_oracle_fortune(int $id, string $key, array $fortuneMap): string {
+    $custom = trim((string)($fortuneMap[$id] ?? ''));
+    return $custom !== '' ? $custom : crt_fortune($key, $id);
+}
+
 $words = ['', '', '', ''];
 $matches = [];
 $searched = false;
@@ -58,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <div>
 <div class="eyebrow">THE COLLECTION ANSWERS</div>
 <h2 style="font-size:clamp(30px,5vw,64px);letter-spacing:-.055em;margin:6px 0 14px"><?= crt_e((string)$match['title']) ?></h2>
-<p class="fortune">“<?= crt_e(crt_fortune((string)$match['key'],$id)) ?>”</p>
+<p class="fortune">“<?= crt_e(crt_oracle_fortune($id, (string)$match['key'], $fortuneMap)) ?>”</p>
 <p><a href="/crtsht/<?= $id ?>">Open the record →</a></p>
 </div>
 </section>
