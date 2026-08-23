@@ -1,0 +1,102 @@
+<?php
+declare(strict_types=1);
+require __DIR__ . '/inc/bootstrap.php';
+
+$path = trim((string)(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? ''), '/');
+$id = 0;
+if (preg_match('~^(?:crtsht/)?(\d{1,3})$~', $path, $m)) $id = (int)$m[1];
+if ($id < 1 || $id > CRTSHT_TOTAL) { http_response_code(404); exit('404'); }
+
+$meta = crt_metadata($id);
+if (!$meta) { http_response_code(404); exit('404'); }
+
+$title = crt_title($id,$meta);
+$attrs = crt_attrs($meta);
+$art = crt_artwork($id);
+$cake = crt_cake($id);
+$cid = crt_cid($meta);
+$dbrow = crt_db_record($id);
+$wallet = trim((string)($dbrow['ETH_Adr'] ?? ''));
+$mint = $wallet !== '' ? crt_mint_record($wallet) : null;
+$contract = $mint ? (string)($mint['contractAddress'] ?? '') : '';
+$tokenId = $mint ? (string)($mint['tokenID'] ?? '') : '';
+$currentOwner = ($contract !== '' && $tokenId !== '') ? crt_owner_of($contract,$tokenId) : null;
+$ownerState = $currentOwner ? (strtolower($currentOwner) === strtolower($wallet) ? 'ORIGINAL WALLET' : 'TRANSFERRED') : 'UNKNOWN';
+$birthday = (int)($attrs['birthday'] ?? 0);
+$coinCid = trim((string)($dbrow['IPFS_COIN'] ?? ''));
+$jsonCid = trim((string)($dbrow['IPFS_JSON'] ?? ''));
+?><!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title><?= crt_e($title) ?> / CRTSHT</title>
+<meta name="description" content="<?= crt_e($title) ?> — CRTSHT <?= $id ?>/128. Physical work, Ethereum record and IPFS metadata.">
+<link rel="stylesheet" href="/site.css?v=1">
+</head>
+<body><main class="wrap">
+<header>
+<a class="brand" href="/">CRTSHT</a>
+<nav class="nav"><a href="/">Archive</a><a href="/lore">The Lore</a><a href="/oracle">The Oracle</a></nav>
+</header>
+<section class="detail">
+<div class="art">
+<?php if($cid): ?>
+<img class="zoomable" id="ipfs-image" data-cid="<?= crt_e($cid) ?>" data-fallback="<?= crt_e($art ?? '') ?>" src="https://dweb.link/ipfs/<?= crt_e($cid) ?>" alt="<?= crt_e($title) ?>">
+<div id="ipfs-status" class="ipfs-status">RESOLVING IPFS / <?= crt_e($cid) ?></div>
+<?php elseif($art): ?>
+<img class="zoomable" src="<?= crt_e($art) ?>" alt="<?= crt_e($title) ?>">
+<?php endif; ?>
+</div>
+<div>
+<div class="small"><a href="/">← Archive</a></div>
+<div class="record">
+<div class="titleline"><?php if($cake): ?><img class="cake-icon" src="<?= crt_e($cake) ?>" alt="Mooncake <?= $id ?>"><?php endif; ?><h1><?= crt_e($title) ?></h1></div>
+<p class="muted" style="font-size:12px;line-height:1.5;margin:0 0 22px">20 × 20 cm physical original · <?= $id ?>/128 · minted 2021</p>
+
+<div class="section-head">OBJECT</div>
+<div class="row"><span class="label">archive id</span><span><?= $id ?>/128 · /crtsht/<?= $id ?></span></div>
+<div class="row"><span class="label">print hash</span><span class="value copy" data-copy><?= crt_e($attrs['PRINT HASH'] ?? '') ?></span></div>
+<?php if($birthday): ?><div class="row"><span class="label">birthday</span><span><?= crt_e(gmdate('Y-m-d H:i:s',$birthday)) ?> UTC</span></div><?php endif; ?>
+<div class="row"><span class="label">poo</span><span><?= crt_e($attrs['POO'] ?? '') ?></span></div>
+<div class="row"><span class="label">author</span><span><?= crt_e($attrs['AUTHOR'] ?? 'iBulla.com') ?></span></div>
+
+<div class="section-head">ETHEREUM</div>
+<?php if($wallet !== ''): ?><div class="row"><span class="label">original wallet</span><span class="value"><a target="_blank" rel="noopener" href="https://etherscan.io/address/<?= crt_e($wallet) ?>"><?= crt_e($wallet) ?> ↗</a></span></div><?php endif; ?>
+<?php if($mint): $tx=(string)($mint['hash']??''); $ts=(int)($mint['timeStamp']??0); ?>
+<div class="row"><span class="label">network</span><span>Ethereum Mainnet</span></div>
+<div class="row"><span class="label">token</span><span><?= crt_e((string)($mint['tokenName']??'')) ?><?= ($mint['tokenSymbol']??'')!=='' ? ' / '.crt_e((string)$mint['tokenSymbol']) : '' ?></span></div>
+<div class="row"><span class="label">token id</span><span><?= crt_e($tokenId) ?></span></div>
+<div class="row"><span class="label">contract</span><span class="value"><a target="_blank" rel="noopener" href="https://etherscan.io/token/<?= crt_e($contract) ?>?a=<?= crt_e($tokenId) ?>"><?= crt_e($contract) ?> ↗</a></span></div>
+<div class="row"><span class="label">owner now</span><span class="value"><?php if($currentOwner): ?><a target="_blank" rel="noopener" href="https://etherscan.io/address/<?= crt_e($currentOwner) ?>"><?= crt_e($currentOwner) ?> ↗</a> <span class="status"><?= crt_e($ownerState) ?></span><?php else: ?><span class="muted">lookup unavailable</span><?php endif; ?></span></div>
+<div class="row"><span class="label">mint block</span><span><a target="_blank" rel="noopener" href="https://etherscan.io/block/<?= crt_e((string)($mint['blockNumber']??'')) ?>"><?= crt_e((string)($mint['blockNumber']??'')) ?> ↗</a></span></div>
+<?php if($ts): ?><div class="row"><span class="label">mint time</span><span><?= crt_e(gmdate('Y-m-d H:i:s',$ts)) ?> UTC</span></div><?php endif; ?>
+<div class="row"><span class="label">mint tx</span><span class="value"><a target="_blank" rel="noopener" href="https://etherscan.io/tx/<?= crt_e($tx) ?>"><?= crt_e($tx) ?> ↗</a></span></div>
+<div class="row"><span class="label">from</span><span class="value"><?= crt_e((string)($mint['from']??'')) ?></span></div>
+<div class="row"><span class="label">to</span><span class="value"><?= crt_e((string)($mint['to']??'')) ?></span></div>
+<div class="row"><span class="label">confirmations</span><span><?= crt_e((string)($mint['confirmations']??'')) ?></span></div>
+<?php elseif($wallet !== ''): ?>
+<div class="row"><span class="label">chain data</span><span class="muted">wallet recovered · transaction lookup unavailable</span></div>
+<?php endif; ?>
+
+<div class="section-head">NETWORK</div>
+<div class="row"><span class="label">artwork ipfs</span><span class="value copy" data-copy><?= crt_e((string)($meta['image'] ?? '')) ?></span></div>
+<?php if($cid): ?><div class="row"><span class="label">artwork cid</span><span class="value"><a target="_blank" rel="noopener" href="https://ipfs.io/ipfs/<?= crt_e($cid) ?>"><?= crt_e($cid) ?> ↗</a></span></div><?php endif; ?>
+<?php if($coinCid): ?><div class="row"><span class="label">mooncake cid</span><span class="value"><a target="_blank" rel="noopener" href="https://ipfs.io/ipfs/<?= crt_e($coinCid) ?>"><?= crt_e($coinCid) ?> ↗</a></span></div><?php endif; ?>
+<?php if($jsonCid): ?><div class="row"><span class="label">metadata cid</span><span class="value"><a target="_blank" rel="noopener" href="https://ipfs.io/ipfs/<?= crt_e($jsonCid) ?>"><?= crt_e($jsonCid) ?> ↗</a></span></div><?php endif; ?>
+<div class="row"><span class="label">json</span><span><a target="_blank" href="/JSON_1-128/<?= $id ?>.json">original 2021 metadata ↗</a></span></div>
+</div>
+
+<div class="oracle-link">Have the physical original? Four words are visible on the back. <a href="/oracle"><strong>Ask The Oracle →</strong></a></div>
+<details class="raw-meta"><summary>2021 metadata text</summary><p><?= crt_e((string)($meta['description'] ?? '')) ?></p></details>
+</div>
+</section>
+<footer class="footer"><span><?= crt_e($title) ?> / CRTSHT</span><span><?= $id ?>/128</span></footer>
+</main>
+<div class="lightbox" id="lightbox"><button aria-label="Close">×</button><img alt="Full artwork"></div>
+<script>
+document.querySelectorAll('[data-copy]').forEach(el=>el.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(el.textContent.trim());const old=el.textContent;el.textContent='COPIED';setTimeout(()=>el.textContent=old,700)}catch(e){}}));
+const img=document.getElementById('ipfs-image');if(img){const cid=img.dataset.cid,status=document.getElementById('ipfs-status'),fallback=img.dataset.fallback,g=[`https://ipfs.io/ipfs/${cid}`,`https://w3s.link/ipfs/${cid}`];let n=0;img.addEventListener('load',()=>{try{status.textContent='IPFS / '+new URL(img.src).hostname}catch(e){}});img.addEventListener('error',()=>{if(n<g.length)img.src=g[n++];else if(fallback){status.textContent='IPFS / LOCAL ARCHIVAL COPY';img.src=fallback}else status.textContent='IPFS / UNAVAILABLE'})}
+const lb=document.getElementById('lightbox'),lbi=lb.querySelector('img');document.querySelectorAll('.zoomable').forEach(z=>z.addEventListener('click',()=>{lbi.src=z.src;lb.classList.add('open')}));lb.addEventListener('click',()=>lb.classList.remove('open'));document.addEventListener('keydown',e=>{if(e.key==='Escape')lb.classList.remove('open')});
+</script>
+</body></html>
