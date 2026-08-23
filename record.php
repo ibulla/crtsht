@@ -19,7 +19,7 @@ $title = crt_title($id,$meta);
 $attrs = crt_attrs($meta);
 $art = crt_artwork($id);
 $cake = crt_cake($id);
-$cid = crt_cid($meta);
+$cid = crt_cid($meta); // token metadata image = mooncake
 $dbrow = crt_db_record($id);
 $wallet = trim((string)($dbrow['ETH_Adr'] ?? ''));
 $mint = $wallet !== '' ? crt_mint_record($wallet) : null;
@@ -50,10 +50,8 @@ if (!is_string($prettyJson)) $prettyJson = '{}';
 <div class="art">
 <?php if($art): ?>
 <img class="zoomable" id="artwork-image" decoding="async" fetchpriority="high" src="<?= crt_e($art) ?>" alt="<?= crt_e($title) ?>">
-<?php elseif($cid): ?>
-<img class="zoomable" id="artwork-image" decoding="async" fetchpriority="high" src="https://dweb.link/ipfs/<?= crt_e($cid) ?>" alt="<?= crt_e($title) ?>">
 <?php endif; ?>
-<?php if($cid): ?><div id="ipfs-status" class="ipfs-status" data-cid="<?= crt_e($cid) ?>">LOCAL ARCHIVE / CHECKING IPFS</div><?php endif; ?>
+<div class="ipfs-status">PHYSICAL ARTWORK / LOCAL ARCHIVE</div>
 </div>
 <div>
 <div class="small"><a href="/">← Archive</a></div>
@@ -87,7 +85,7 @@ if (!is_string($prettyJson)) $prettyJson = '{}';
 <?php endif; ?>
 
 <div class="section-head">NETWORK</div>
-<?php if($cid): ?><div class="row"><span class="label">artwork / mooncake cid</span><span class="value"><a target="_blank" rel="noopener" href="https://ipfs.io/ipfs/<?= crt_e($cid) ?>"><?= crt_e($cid) ?> ↗</a></span></div><?php endif; ?>
+<?php if($cid): ?><div class="row"><span class="label">mooncake image cid</span><span class="value"><a target="_blank" rel="noopener" href="https://ipfs.io/ipfs/<?= crt_e($cid) ?>"><?= crt_e($cid) ?> ↗</a></span></div><?php endif; ?>
 <?php if($jsonCid): ?><div class="row"><span class="label">metadata cid</span><span class="value"><a target="_blank" rel="noopener" href="https://ipfs.io/ipfs/<?= crt_e($jsonCid) ?>"><?= crt_e($jsonCid) ?> ↗</a></span></div><?php endif; ?>
 <div class="row"><span class="label">json</span><span class="value"><a target="_blank" href="/JSON_1-128/<?= $id ?>.json">original 2021 metadata ↗</a><?php if($description !== ''): ?><span class="metadata-description"><?= crt_e($description) ?></span><?php endif; ?><details class="json-reveal"><summary>Reveal JSON</summary><pre><?= crt_e($prettyJson) ?></pre></details></span></div>
 </div>
@@ -98,7 +96,8 @@ if (!is_string($prettyJson)) $prettyJson = '{}';
 <?php if($cake): ?>
 <section class="mooncake-exit">
 <a href="/oracle" aria-label="Ask The Oracle with the physical key for <?= crt_e($title) ?>">
-<img loading="lazy" decoding="async" src="<?= crt_e($cake) ?>" alt="Mooncake for <?= crt_e($title) ?>">
+<img id="mooncake-image" loading="lazy" decoding="async" src="<?= crt_e($cake) ?>" alt="Mooncake for <?= crt_e($title) ?>">
+<?php if($cid): ?><span id="mooncake-ipfs-status" class="ipfs-status" data-cid="<?= crt_e($cid) ?>">TOKEN IMAGE / CHECKING IPFS</span><?php endif; ?>
 <span class="eyebrow">THE PHYSICAL KEY</span>
 <strong>Have the original?<br>Ask The Oracle →</strong>
 </a>
@@ -110,15 +109,15 @@ if (!is_string($prettyJson)) $prettyJson = '{}';
 <div class="lightbox" id="lightbox"><button aria-label="Close">×</button><img alt="Full artwork"></div>
 <script>
 document.querySelectorAll('[data-copy]').forEach(el=>el.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(el.textContent.trim());const old=el.textContent;el.textContent='COPIED';setTimeout(()=>el.textContent=old,700)}catch(e){}}));
-const ipfsStatus=document.getElementById('ipfs-status');
+const ipfsStatus=document.getElementById('mooncake-ipfs-status');
 if(ipfsStatus){
   const cid=ipfsStatus.dataset.cid;
   const gateways=[`https://dweb.link/ipfs/${cid}`,`https://ipfs.io/ipfs/${cid}`,`https://w3s.link/ipfs/${cid}`];
   let i=0;
   const probe=()=>{
-    if(i>=gateways.length){ipfsStatus.textContent='LOCAL ARCHIVE / IPFS GATEWAYS UNAVAILABLE';return;}
+    if(i>=gateways.length){ipfsStatus.textContent='TOKEN IMAGE / IPFS GATEWAYS UNAVAILABLE';return;}
     const url=gateways[i++], test=new Image();
-    test.onload=()=>{try{ipfsStatus.textContent='LOCAL ARCHIVE / IPFS VERIFIED / '+new URL(url).hostname}catch(e){ipfsStatus.textContent='LOCAL ARCHIVE / IPFS VERIFIED'}};
+    test.onload=()=>{try{ipfsStatus.textContent='TOKEN IMAGE / IPFS VERIFIED / '+new URL(url).hostname}catch(e){ipfsStatus.textContent='TOKEN IMAGE / IPFS VERIFIED'}};
     test.onerror=probe;
     test.src=url;
   };
