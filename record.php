@@ -2,6 +2,11 @@
 declare(strict_types=1);
 require __DIR__ . '/inc/bootstrap.php';
 
+function short_wallet(string $address): string {
+    if (!preg_match('/^0x[a-fA-F0-9]{40}$/', $address)) return $address;
+    return substr($address, 0, 6) . '....' . substr($address, -4);
+}
+
 $path = trim((string)(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? ''), '/');
 $id = 0;
 if (preg_match('~^(?:crtsht/)?(\d{1,3})$~', $path, $m)) $id = (int)$m[1];
@@ -23,8 +28,8 @@ $tokenId = $mint ? (string)($mint['tokenID'] ?? '') : '';
 $currentOwner = ($contract !== '' && $tokenId !== '') ? crt_owner_of($contract,$tokenId) : null;
 $ownerState = $currentOwner ? (strtolower($currentOwner) === strtolower($wallet) ? 'ORIGINAL WALLET' : 'TRANSFERRED') : 'UNKNOWN';
 $birthday = (int)($attrs['birthday'] ?? 0);
-$coinCid = trim((string)($dbrow['IPFS_COIN'] ?? ''));
 $jsonCid = trim((string)($dbrow['IPFS_JSON'] ?? ''));
+$description = trim((string)($meta['description'] ?? ''));
 ?><!doctype html>
 <html lang="en">
 <head>
@@ -62,33 +67,30 @@ $jsonCid = trim((string)($dbrow['IPFS_JSON'] ?? ''));
 <div class="row"><span class="label">author</span><span><?= crt_e($attrs['AUTHOR'] ?? 'iBulla.com') ?></span></div>
 
 <div class="section-head">ETHEREUM</div>
-<?php if($wallet !== ''): ?><div class="row"><span class="label">original wallet</span><span class="value"><a target="_blank" rel="noopener" href="https://etherscan.io/address/<?= crt_e($wallet) ?>"><?= crt_e($wallet) ?> ↗</a></span></div><?php endif; ?>
-<?php if($mint): $tx=(string)($mint['hash']??''); $ts=(int)($mint['timeStamp']??0); ?>
+<?php if($wallet !== ''): ?><div class="row"><span class="label">original wallet</span><span><a target="_blank" rel="noopener" title="<?= crt_e($wallet) ?>" href="https://etherscan.io/address/<?= crt_e($wallet) ?>"><?= crt_e(short_wallet($wallet)) ?> ↗</a></span></div><?php endif; ?>
+<?php if($mint): $tx=(string)($mint['hash']??''); $ts=(int)($mint['timeStamp']??0); $from=(string)($mint['from']??''); $to=(string)($mint['to']??''); ?>
 <div class="row"><span class="label">network</span><span>Ethereum Mainnet</span></div>
-<div class="row"><span class="label">token</span><span><?= crt_e((string)($mint['tokenName']??'')) ?><?= ($mint['tokenSymbol']??'')!=='' ? ' / '.crt_e((string)$mint['tokenSymbol']) : '' ?></span></div>
+<div class="row"><span class="label">token</span><span><?php if($contract): ?><a target="_blank" rel="noopener" href="https://etherscan.io/token/<?= crt_e($contract) ?>"><?= crt_e((string)($mint['tokenName']??'MORE')) ?><?= ($mint['tokenSymbol']??'')!=='' ? ' / '.crt_e((string)$mint['tokenSymbol']) : '' ?> ↗</a><?php else: ?><?= crt_e((string)($mint['tokenName']??'')) ?><?php endif; ?></span></div>
 <div class="row"><span class="label">token id</span><span><?= crt_e($tokenId) ?></span></div>
 <div class="row"><span class="label">contract</span><span class="value"><a target="_blank" rel="noopener" href="https://etherscan.io/token/<?= crt_e($contract) ?>?a=<?= crt_e($tokenId) ?>"><?= crt_e($contract) ?> ↗</a></span></div>
-<div class="row"><span class="label">owner now</span><span class="value"><?php if($currentOwner): ?><a target="_blank" rel="noopener" href="https://etherscan.io/address/<?= crt_e($currentOwner) ?>"><?= crt_e($currentOwner) ?> ↗</a> <span class="status"><?= crt_e($ownerState) ?></span><?php else: ?><span class="muted">lookup unavailable</span><?php endif; ?></span></div>
+<div class="row"><span class="label">owner now</span><span><?php if($currentOwner): ?><a target="_blank" rel="noopener" title="<?= crt_e($currentOwner) ?>" href="https://etherscan.io/address/<?= crt_e($currentOwner) ?>"><?= crt_e(short_wallet($currentOwner)) ?> ↗</a> <span class="status"><?= crt_e($ownerState) ?></span><?php else: ?><span class="muted">lookup unavailable</span><?php endif; ?></span></div>
 <div class="row"><span class="label">mint block</span><span><a target="_blank" rel="noopener" href="https://etherscan.io/block/<?= crt_e((string)($mint['blockNumber']??'')) ?>"><?= crt_e((string)($mint['blockNumber']??'')) ?> ↗</a></span></div>
 <?php if($ts): ?><div class="row"><span class="label">mint time</span><span><?= crt_e(gmdate('Y-m-d H:i:s',$ts)) ?> UTC</span></div><?php endif; ?>
-<div class="row"><span class="label">mint tx</span><span class="value"><a target="_blank" rel="noopener" href="https://etherscan.io/tx/<?= crt_e($tx) ?>"><?= crt_e($tx) ?> ↗</a></span></div>
-<div class="row"><span class="label">from</span><span class="value"><?= crt_e((string)($mint['from']??'')) ?></span></div>
-<div class="row"><span class="label">to</span><span class="value"><?= crt_e((string)($mint['to']??'')) ?></span></div>
+<div class="row"><span class="label">mint tx</span><span class="value"><a target="_blank" rel="noopener" href="https://etherscan.io/tx/<?= crt_e($tx) ?>"><?= crt_e(substr($tx,0,10).'....'.substr($tx,-6)) ?> ↗</a></span></div>
+<div class="row"><span class="label">from</span><span><?php if($from): ?><a target="_blank" rel="noopener" title="<?= crt_e($from) ?>" href="https://etherscan.io/address/<?= crt_e($from) ?>"><?= crt_e(short_wallet($from)) ?> ↗</a><?php endif; ?></span></div>
+<div class="row"><span class="label">to</span><span><?php if($to): ?><a target="_blank" rel="noopener" title="<?= crt_e($to) ?>" href="https://etherscan.io/address/<?= crt_e($to) ?>"><?= crt_e(short_wallet($to)) ?> ↗</a><?php endif; ?></span></div>
 <div class="row"><span class="label">confirmations</span><span><?= crt_e((string)($mint['confirmations']??'')) ?></span></div>
 <?php elseif($wallet !== ''): ?>
 <div class="row"><span class="label">chain data</span><span class="muted">wallet recovered · transaction lookup unavailable</span></div>
 <?php endif; ?>
 
 <div class="section-head">NETWORK</div>
-<div class="row"><span class="label">artwork ipfs</span><span class="value copy" data-copy><?= crt_e((string)($meta['image'] ?? '')) ?></span></div>
-<?php if($cid): ?><div class="row"><span class="label">artwork cid</span><span class="value"><a target="_blank" rel="noopener" href="https://ipfs.io/ipfs/<?= crt_e($cid) ?>"><?= crt_e($cid) ?> ↗</a></span></div><?php endif; ?>
-<?php if($coinCid): ?><div class="row"><span class="label">mooncake cid</span><span class="value"><a target="_blank" rel="noopener" href="https://ipfs.io/ipfs/<?= crt_e($coinCid) ?>"><?= crt_e($coinCid) ?> ↗</a></span></div><?php endif; ?>
+<?php if($cid): ?><div class="row"><span class="label">artwork / mooncake cid</span><span class="value"><a target="_blank" rel="noopener" href="https://ipfs.io/ipfs/<?= crt_e($cid) ?>"><?= crt_e($cid) ?> ↗</a></span></div><?php endif; ?>
 <?php if($jsonCid): ?><div class="row"><span class="label">metadata cid</span><span class="value"><a target="_blank" rel="noopener" href="https://ipfs.io/ipfs/<?= crt_e($jsonCid) ?>"><?= crt_e($jsonCid) ?> ↗</a></span></div><?php endif; ?>
-<div class="row"><span class="label">json</span><span><a target="_blank" href="/JSON_1-128/<?= $id ?>.json">original 2021 metadata ↗</a></span></div>
+<div class="row"><span class="label">json</span><span><a target="_blank" href="/JSON_1-128/<?= $id ?>.json">original 2021 metadata ↗</a><?php if($description !== ''): ?><br><span class="muted" style="display:block;margin-top:8px;line-height:1.5"><?= crt_e($description) ?></span><?php endif; ?></span></div>
 </div>
 
 <div class="oracle-link">Have the physical original? Four words are visible on the back. <a href="/oracle"><strong>Ask The Oracle →</strong></a></div>
-<details class="raw-meta"><summary>2021 metadata text</summary><p><?= crt_e((string)($meta['description'] ?? '')) ?></p></details>
 </div>
 </section>
 <footer class="footer"><span><?= crt_e($title) ?> / CRTSHT</span><span><?= $id ?>/128</span></footer>
