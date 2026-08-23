@@ -9,7 +9,7 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>The Lore / CRTSHT</title>
 <meta name="description" content="The lore behind CRTSHT: 128 creatures, mooncakes, hashes, wallets, a wall and one draw.">
-<link rel="stylesheet" href="/site.css?v=5">
+<link rel="stylesheet" href="/site.css?v=6">
 <style>
 .lore-opening{margin:0 0 calc(var(--pad)*1.4)}
 .lore-opening .eyebrow{margin-bottom:12px}
@@ -33,7 +33,7 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 <section class="lore-opening">
 <div class="eyebrow">THE LORE</div>
 <img src="/img/cryptoshit_question.jpg" alt="CRTSHT question mark pile" fetchpriority="high">
-<p class="fortune">The Internet has forgotten.<br>The blockchain didn't.</p>
+<p class="fortune">The internet may forget.<br>The blockchain can't. By design.</p>
 <p class="origin">CRTSHT started in 2021, when images became assets, wallets became identities and permanence became a promise. One hundred and twenty-eight physical works, their mooncakes and their cryptographic traces survived the hype. In 2026 they meet again.</p>
 </section>
 
@@ -110,7 +110,7 @@ POO → short internal hash
 <img src="/img/About_crtsht.jpg" alt="Marco Spitzbarth holding a physical CRTSHT print" loading="lazy" decoding="async">
 <div class="founder-copy">
 <div class="eyebrow">MARCO SPITZBARTH / iBULLA</div>
-<p class="name">SHIT HAPPENS.</p>
+<p class="name">Shit happens.</p>
 <p>CRTSHT was initiated in Zürich in 2021 by artist Marco Spitzbarth under <a href="https://ibulla.com" target="_blank" rel="noopener">iBulla.com ↗</a>, shaped by curiosity around digital ownership, provenance and the new rituals forming around NFTs.</p>
 <p>The works were made, printed and minted. Wallets, hashes, mooncakes and sealed keys became part of the same system. The project itself remained unfinished — while its blockchain record quietly stayed intact.</p>
 <p>A fortunate chain of circumstances brought CRTSHT back into view. What started in 2021 can now finally come together in real life.</p>
