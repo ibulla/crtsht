@@ -9,7 +9,7 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>The Lore / CRTSHT</title>
 <meta name="description" content="The lore behind CRTSHT: 128 creatures, mooncakes, hashes, wallets, a wall and one draw.">
-<link rel="stylesheet" href="/site.css?v=4">
+<link rel="stylesheet" href="/site.css?v=5">
 <style>
 .lore-opening{margin:0 0 calc(var(--pad)*1.4)}
 .lore-opening .eyebrow{margin-bottom:12px}
@@ -19,7 +19,7 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 .founder{display:grid;grid-template-columns:minmax(220px,.8fr) minmax(0,1.2fr);gap:var(--pad);align-items:start}
 .founder img{display:block;width:100%;max-width:520px}
 .founder-copy{max-width:620px}
-.founder-copy .name{font-size:clamp(26px,4vw,54px);line-height:.95;letter-spacing:-.05em;margin:0 0 16px}
+.founder-copy .name{font-size:clamp(34px,5vw,72px);line-height:.9;letter-spacing:-.06em;margin:0 0 20px}
 .founder-copy p{font-size:clamp(14px,1.25vw,18px);line-height:1.55;margin:0 0 1em}
 @media(max-width:700px){.founder{grid-template-columns:1fr}.lore-opening .fortune{max-width:14ch}}
 </style>
@@ -110,9 +110,10 @@ POO → short internal hash
 <img src="/img/About_crtsht.jpg" alt="Marco Spitzbarth holding a physical CRTSHT print" loading="lazy" decoding="async">
 <div class="founder-copy">
 <div class="eyebrow">MARCO SPITZBARTH / iBULLA</div>
-<p class="name">Made as a joke.<br>Kept as a record.</p>
-<p>CRTSHT was initiated in Zürich in 2021 by artist Marco Spitzbarth under <a href="https://ibulla.com" target="_blank" rel="noopener">iBulla.com ↗</a>. It began as an experiment around NFT culture, physical ownership, provenance and the strange desire to make a digital image permanently rare.</p>
-<p>The 2026 reconstruction does not replace the original system. It brings the physical works, wallets, token records, IPFS files and sealed keys back into one place — long enough for the collection to exist together once before it disperses.</p>
+<p class="name">SHIT HAPPENS.</p>
+<p>CRTSHT was initiated in Zürich in 2021 by artist Marco Spitzbarth under <a href="https://ibulla.com" target="_blank" rel="noopener">iBulla.com ↗</a>, shaped by curiosity around digital ownership, provenance and the new rituals forming around NFTs.</p>
+<p>The works were made, printed and minted. Wallets, hashes, mooncakes and sealed keys became part of the same system. The project itself remained unfinished — while its blockchain record quietly stayed intact.</p>
+<p>A fortunate chain of circumstances brought CRTSHT back into view. What started in 2021 can now finally come together in real life.</p>
 </div>
 </div>
 </section>
