@@ -39,7 +39,7 @@ if (!is_string($prettyJson)) $prettyJson = '{}';
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title><?= crt_e($title) ?> / CRTSHT</title>
 <meta name="description" content="<?= crt_e($title) ?> — CRTSHT <?= $id ?>/128. Physical work, Ethereum record and IPFS metadata.">
-<link rel="stylesheet" href="/site.css?v=2">
+<link rel="stylesheet" href="/site.css?v=3">
 </head>
 <body><main class="wrap">
 <header>
@@ -48,12 +48,12 @@ if (!is_string($prettyJson)) $prettyJson = '{}';
 </header>
 <section class="detail">
 <div class="art">
-<?php if($cid): ?>
-<img class="zoomable" id="ipfs-image" data-cid="<?= crt_e($cid) ?>" data-fallback="<?= crt_e($art ?? '') ?>" src="https://dweb.link/ipfs/<?= crt_e($cid) ?>" alt="<?= crt_e($title) ?>">
-<div id="ipfs-status" class="ipfs-status">RESOLVING IPFS / <?= crt_e($cid) ?></div>
-<?php elseif($art): ?>
-<img class="zoomable" src="<?= crt_e($art) ?>" alt="<?= crt_e($title) ?>">
+<?php if($art): ?>
+<img class="zoomable" id="artwork-image" decoding="async" fetchpriority="high" src="<?= crt_e($art) ?>" alt="<?= crt_e($title) ?>">
+<?php elseif($cid): ?>
+<img class="zoomable" id="artwork-image" decoding="async" fetchpriority="high" src="https://dweb.link/ipfs/<?= crt_e($cid) ?>" alt="<?= crt_e($title) ?>">
 <?php endif; ?>
+<?php if($cid): ?><div id="ipfs-status" class="ipfs-status" data-cid="<?= crt_e($cid) ?>">LOCAL ARCHIVE / CHECKING IPFS</div><?php endif; ?>
 </div>
 <div>
 <div class="small"><a href="/">← Archive</a></div>
@@ -98,7 +98,7 @@ if (!is_string($prettyJson)) $prettyJson = '{}';
 <?php if($cake): ?>
 <section class="mooncake-exit">
 <a href="/oracle" aria-label="Ask The Oracle with the physical key for <?= crt_e($title) ?>">
-<img src="<?= crt_e($cake) ?>" alt="Mooncake for <?= crt_e($title) ?>">
+<img loading="lazy" decoding="async" src="<?= crt_e($cake) ?>" alt="Mooncake for <?= crt_e($title) ?>">
 <span class="eyebrow">THE PHYSICAL KEY</span>
 <strong>Have the original?<br>Ask The Oracle →</strong>
 </a>
@@ -110,7 +110,20 @@ if (!is_string($prettyJson)) $prettyJson = '{}';
 <div class="lightbox" id="lightbox"><button aria-label="Close">×</button><img alt="Full artwork"></div>
 <script>
 document.querySelectorAll('[data-copy]').forEach(el=>el.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(el.textContent.trim());const old=el.textContent;el.textContent='COPIED';setTimeout(()=>el.textContent=old,700)}catch(e){}}));
-const img=document.getElementById('ipfs-image');if(img){const cid=img.dataset.cid,status=document.getElementById('ipfs-status'),fallback=img.dataset.fallback,g=[`https://ipfs.io/ipfs/${cid}`,`https://w3s.link/ipfs/${cid}`];let n=0;img.addEventListener('load',()=>{try{status.textContent='IPFS / '+new URL(img.src).hostname}catch(e){}});img.addEventListener('error',()=>{if(n<g.length)img.src=g[n++];else if(fallback){status.textContent='IPFS / LOCAL ARCHIVAL COPY';img.src=fallback}else status.textContent='IPFS / UNAVAILABLE'})}
+const ipfsStatus=document.getElementById('ipfs-status');
+if(ipfsStatus){
+  const cid=ipfsStatus.dataset.cid;
+  const gateways=[`https://dweb.link/ipfs/${cid}`,`https://ipfs.io/ipfs/${cid}`,`https://w3s.link/ipfs/${cid}`];
+  let i=0;
+  const probe=()=>{
+    if(i>=gateways.length){ipfsStatus.textContent='LOCAL ARCHIVE / IPFS GATEWAYS UNAVAILABLE';return;}
+    const url=gateways[i++], test=new Image();
+    test.onload=()=>{try{ipfsStatus.textContent='LOCAL ARCHIVE / IPFS VERIFIED / '+new URL(url).hostname}catch(e){ipfsStatus.textContent='LOCAL ARCHIVE / IPFS VERIFIED'}};
+    test.onerror=probe;
+    test.src=url;
+  };
+  if('requestIdleCallback' in window) requestIdleCallback(probe,{timeout:1200}); else setTimeout(probe,250);
+}
 const lb=document.getElementById('lightbox'),lbi=lb.querySelector('img');document.querySelectorAll('.zoomable').forEach(z=>z.addEventListener('click',()=>{lbi.src=z.src;lb.classList.add('open')}));lb.addEventListener('click',()=>lb.classList.remove('open'));document.addEventListener('keydown',e=>{if(e.key==='Escape')lb.classList.remove('open')});
 </script>
 </body></html>
