@@ -8,7 +8,7 @@ require __DIR__ . '/inc/bootstrap.php';
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>CRTSHT / 128</title>
 <meta name="description" content="CRTSHT — 128 unique physical works generated, printed and minted on Ethereum in 2021. Reassembled in 2026.">
-<link rel="stylesheet" href="/site.css?v=3">
+<link rel="stylesheet" href="/site.css?v=5">
 </head>
 <body><main class="wrap">
 <header>
@@ -16,9 +16,9 @@ require __DIR__ . '/inc/bootstrap.php';
 <nav class="nav"><a href="/" aria-current="page">Archive</a><a href="/lore">The Lore</a><a href="/oracle">The Oracle</a></nav>
 </header>
 <section class="intro">
-<h1>Together once before our disperse</h1>
-<p>128 physical originals. Generated, printed and minted on Ethereum in 2021. Reassembled in 2026.</p>
-<p class="quiet">20 × 20 cm · one physical original each · look first, the rest is lore.</p>
+<h1>KEEP YOUR SHIT TOGETHER</h1>
+<p>Together once before we disperse.</p>
+<p class="quiet">128 physical originals · 20 × 20 cm · generated, printed and minted on Ethereum in 2021.</p>
 </section>
 <section class="grid">
 <?php for ($id=1; $id<=CRTSHT_TOTAL; $id++): $meta=crt_metadata($id); if(!$meta) continue; $img=crt_artwork($id); $title=crt_title($id,$meta); $aboveFold=$id<=12; ?>
