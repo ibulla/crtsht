@@ -20,6 +20,7 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 <div class="eyebrow">THE LORE</div>
 <h1>A small mythology for a very serious blockchain.</h1>
 <p>CRTSHT started in 2021, when almost every image on the internet suddenly wanted a wallet.</p>
+<p class="fortune">The Internet has forgotten.<br>The blockchain didn't.</p>
 </section>
 
 <section class="chapter">
