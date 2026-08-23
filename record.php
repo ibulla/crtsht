@@ -30,6 +30,8 @@ $ownerState = $currentOwner ? (strtolower($currentOwner) === strtolower($wallet)
 $birthday = (int)($attrs['birthday'] ?? 0);
 $jsonCid = trim((string)($dbrow['IPFS_JSON'] ?? ''));
 $description = trim((string)($meta['description'] ?? ''));
+$prettyJson = json_encode($meta, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+if (!is_string($prettyJson)) $prettyJson = '{}';
 ?><!doctype html>
 <html lang="en">
 <head>
@@ -37,7 +39,7 @@ $description = trim((string)($meta['description'] ?? ''));
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title><?= crt_e($title) ?> / CRTSHT</title>
 <meta name="description" content="<?= crt_e($title) ?> — CRTSHT <?= $id ?>/128. Physical work, Ethereum record and IPFS metadata.">
-<link rel="stylesheet" href="/site.css?v=1">
+<link rel="stylesheet" href="/site.css?v=2">
 </head>
 <body><main class="wrap">
 <header>
@@ -76,7 +78,7 @@ $description = trim((string)($meta['description'] ?? ''));
 <div class="row"><span class="label">owner now</span><span><?php if($currentOwner): ?><a target="_blank" rel="noopener" title="<?= crt_e($currentOwner) ?>" href="https://etherscan.io/address/<?= crt_e($currentOwner) ?>"><?= crt_e(short_wallet($currentOwner)) ?> ↗</a> <span class="status"><?= crt_e($ownerState) ?></span><?php else: ?><span class="muted">lookup unavailable</span><?php endif; ?></span></div>
 <div class="row"><span class="label">mint block</span><span><a target="_blank" rel="noopener" href="https://etherscan.io/block/<?= crt_e((string)($mint['blockNumber']??'')) ?>"><?= crt_e((string)($mint['blockNumber']??'')) ?> ↗</a></span></div>
 <?php if($ts): ?><div class="row"><span class="label">mint time</span><span><?= crt_e(gmdate('Y-m-d H:i:s',$ts)) ?> UTC</span></div><?php endif; ?>
-<div class="row"><span class="label">mint tx</span><span class="value"><a target="_blank" rel="noopener" href="https://etherscan.io/tx/<?= crt_e($tx) ?>"><?= crt_e(substr($tx,0,10).'....'.substr($tx,-6)) ?> ↗</a></span></div>
+<div class="row"><span class="label">mint tx</span><span class="value"><a target="_blank" rel="noopener" title="<?= crt_e($tx) ?>" href="https://etherscan.io/tx/<?= crt_e($tx) ?>"><?= crt_e(substr($tx,0,10).'....'.substr($tx,-6)) ?> ↗</a></span></div>
 <div class="row"><span class="label">from</span><span><?php if($from): ?><a target="_blank" rel="noopener" title="<?= crt_e($from) ?>" href="https://etherscan.io/address/<?= crt_e($from) ?>"><?= crt_e(short_wallet($from)) ?> ↗</a><?php endif; ?></span></div>
 <div class="row"><span class="label">to</span><span><?php if($to): ?><a target="_blank" rel="noopener" title="<?= crt_e($to) ?>" href="https://etherscan.io/address/<?= crt_e($to) ?>"><?= crt_e(short_wallet($to)) ?> ↗</a><?php endif; ?></span></div>
 <div class="row"><span class="label">confirmations</span><span><?= crt_e((string)($mint['confirmations']??'')) ?></span></div>
@@ -87,12 +89,22 @@ $description = trim((string)($meta['description'] ?? ''));
 <div class="section-head">NETWORK</div>
 <?php if($cid): ?><div class="row"><span class="label">artwork / mooncake cid</span><span class="value"><a target="_blank" rel="noopener" href="https://ipfs.io/ipfs/<?= crt_e($cid) ?>"><?= crt_e($cid) ?> ↗</a></span></div><?php endif; ?>
 <?php if($jsonCid): ?><div class="row"><span class="label">metadata cid</span><span class="value"><a target="_blank" rel="noopener" href="https://ipfs.io/ipfs/<?= crt_e($jsonCid) ?>"><?= crt_e($jsonCid) ?> ↗</a></span></div><?php endif; ?>
-<div class="row"><span class="label">json</span><span><a target="_blank" href="/JSON_1-128/<?= $id ?>.json">original 2021 metadata ↗</a><?php if($description !== ''): ?><br><span class="muted" style="display:block;margin-top:8px;line-height:1.5"><?= crt_e($description) ?></span><?php endif; ?></span></div>
+<div class="row"><span class="label">json</span><span class="value"><a target="_blank" href="/JSON_1-128/<?= $id ?>.json">original 2021 metadata ↗</a><?php if($description !== ''): ?><span class="metadata-description"><?= crt_e($description) ?></span><?php endif; ?><details class="json-reveal"><summary>Reveal JSON</summary><pre><?= crt_e($prettyJson) ?></pre></details></span></div>
 </div>
-
-<div class="oracle-link">Have the physical original? Four words are visible on the back. <a href="/oracle"><strong>Ask The Oracle →</strong></a></div>
+</div>
 </div>
 </section>
+
+<?php if($cake): ?>
+<section class="mooncake-exit">
+<a href="/oracle" aria-label="Ask The Oracle with the physical key for <?= crt_e($title) ?>">
+<img src="<?= crt_e($cake) ?>" alt="Mooncake for <?= crt_e($title) ?>">
+<span class="eyebrow">THE PHYSICAL KEY</span>
+<strong>Have the original?<br>Ask The Oracle →</strong>
+</a>
+</section>
+<?php endif; ?>
+
 <footer class="footer"><span><?= crt_e($title) ?> / CRTSHT</span><span><?= $id ?>/128</span></footer>
 </main>
 <div class="lightbox" id="lightbox"><button aria-label="Close">×</button><img alt="Full artwork"></div>
