@@ -39,7 +39,7 @@ if (!is_string($prettyJson)) $prettyJson = '{}';
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title><?= crt_e($title) ?> / CRTSHT</title>
 <meta name="description" content="<?= crt_e($title) ?> — CRTSHT <?= $id ?>/128. Physical work, Ethereum record and IPFS metadata.">
-<link rel="stylesheet" href="/site.css?v=3">
+<link rel="stylesheet" href="/site.css?v=4">
 </head>
 <body><main class="wrap">
 <header>
@@ -51,7 +51,7 @@ if (!is_string($prettyJson)) $prettyJson = '{}';
 <?php if($art): ?>
 <img class="zoomable" id="artwork-image" decoding="async" fetchpriority="high" src="<?= crt_e($art) ?>" alt="<?= crt_e($title) ?>">
 <?php endif; ?>
-<div class="ipfs-status">PHYSICAL ARTWORK / LOCAL ARCHIVE</div>
+<div class="ipfs-status">PRINTED IMAGE / IPFS VERIFIED MOONCAKE</div>
 </div>
 <div>
 <div class="small"><a href="/">← Archive</a></div>
