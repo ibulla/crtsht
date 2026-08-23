@@ -1,21 +1,26 @@
 Options -Indexes
 RewriteEngine On
 
-# Never serve configuration/include files.
-RewriteRule ^inc/ - [F,L]
+# Never expose private configuration, includes, dotfiles or local secrets.
+RewriteRule ^private(?:/|$) - [F,L,NC]
+RewriteRule ^inc(?:/|$) - [F,L,NC]
+RewriteRule (^|/)\. - [F,L]
+RewriteRule ^(?:config\.local\.php|\.env(?:\..*)?)$ - [F,L,NC]
 
-# Historical generator scripts are archived source, not web endpoints.
+# Historical PHP generators are archived source, not public endpoints.
 RewriteRule ^coin/.*\.php$ - [F,L,NC]
 RewriteRule ^bullshiter\.php$ - [F,L,NC]
 
-# Keep original metadata and archival assets directly readable.
+# Never execute arbitrary PHP files from archival/data folders.
+RewriteRule ^(?:JSON_1-128|coin_1-128|CoinThumb_1-128|shitpix_jpg_1-128|shitpix_pdf_1-128)/.*\.php$ - [F,L,NC]
+
+# Existing static archival assets remain directly readable.
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 
-# Canonical work URLs: /crtsht/1 ... /crtsht/128
+# Canonical work URLs.
 RewriteRule ^crtsht/[0-9]{1,3}/?$ index.php [L,QSA]
 RewriteRule ^[0-9]{1,3}/?$ index.php [L,QSA]
 
-# Everything else returns to the archive application.
 FallbackResource /index.php
