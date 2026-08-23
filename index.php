@@ -57,24 +57,84 @@ function dbRecord(int $id): ?array {
     $stmt->execute();
     $res = $stmt->get_result();
     $row = $res ? $res->fetch_assoc() : null;
-    $stmt->close(); $db->close();
+    $stmt->close();
+    $db->close();
     return is_array($row) ? $row : null;
 }
 function httpJson(string $url): ?array {
     $ch = curl_init($url);
-    curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER=>true, CURLOPT_CONNECTTIMEOUT=>4, CURLOPT_TIMEOUT=>8, CURLOPT_FOLLOWLOCATION=>true, CURLOPT_USERAGENT=>'CRTSHT archive/2026']);
-    $body = curl_exec($ch); $code = (int)curl_getinfo($ch, CURLINFO_RESPONSE_CODE); curl_close($ch);
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_CONNECTTIMEOUT => 4,
+        CURLOPT_TIMEOUT => 8,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_USERAGENT => 'CRTSHT archive/2026'
+    ]);
+    $body = curl_exec($ch);
+    $code = (int)curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+    curl_close($ch);
     if (!is_string($body) || $code < 200 || $code >= 300) return null;
     $data = json_decode($body, true);
     return is_array($data) ? $data : null;
 }
-function ethereumRecord(string $address): ?array {
+function ethereumTransfers(string $address): ?array {
     $key = envv('ETHERSCAN_API_KEY');
     if ($address === '' || $key === '') return null;
     $url = 'https://api.etherscan.io/v2/api?chainid=1&module=account&action=tokennfttx&address=' . rawurlencode($address) . '&startblock=0&endblock=999999999&sort=asc&apikey=' . rawurlencode($key);
     $data = httpJson($url);
     if (!$data || ($data['status'] ?? '') !== '1' || empty($data['result']) || !is_array($data['result'])) return null;
-    return is_array($data['result'][0] ?? null) ? $data['result'][0] : null;
+    return $data['result'];
+}
+function mintRecord(string $address): ?array {
+    $rows = ethereumTransfers($address);
+    if (!$rows) return null;
+    foreach ($rows as $row) {
+        if (is_array($row) && strtolower((string)($row['to'] ?? '')) === strtolower($address)) return $row;
+    }
+    return is_array($rows[0] ?? null) ? $rows[0] : null;
+}
+function rpcCall(string $method, array $params): ?string {
+    $configured = envv('ETH_RPC_URL');
+    $endpoints = array_values(array_unique(array_filter([
+        $configured,
+        'https://cloudflare-eth.com',
+        'https://ethereum-rpc.publicnode.com'
+    ])));
+    $payload = json_encode(['jsonrpc'=>'2.0','id'=>1,'method'=>$method,'params'=>$params]);
+    if (!is_string($payload)) return null;
+    foreach ($endpoints as $url) {
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => $payload,
+            CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
+            CURLOPT_CONNECTTIMEOUT => 3,
+            CURLOPT_TIMEOUT => 6,
+            CURLOPT_USERAGENT => 'CRTSHT archive/2026'
+        ]);
+        $body = curl_exec($ch);
+        $code = (int)curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+        curl_close($ch);
+        if (!is_string($body) || $code < 200 || $code >= 300) continue;
+        $json = json_decode($body, true);
+        if (is_array($json) && isset($json['result']) && is_string($json['result'])) return $json['result'];
+    }
+    return null;
+}
+function ownerOf(string $contract, string $tokenId): ?string {
+    if (!preg_match('/^0x[a-fA-F0-9]{40}$/', $contract)) return null;
+    if (!ctype_digit($tokenId)) return null;
+    $hexId = dechex((int)$tokenId);
+    $data = '0x6352211e' . str_pad($hexId, 64, '0', STR_PAD_LEFT);
+    $result = rpcCall('eth_call', [['to'=>$contract,'data'=>$data], 'latest']);
+    if (!$result || !preg_match('/^0x[a-fA-F0-9]{64}$/', $result)) return null;
+    $owner = '0x' . substr($result, -40);
+    return strtolower($owner) === '0x0000000000000000000000000000000000000000' ? null : $owner;
+}
+function shortAddress(string $address): string {
+    if (strlen($address) < 15) return $address;
+    return substr($address,0,8) . '…' . substr($address,-6);
 }
 
 $id = routeId();
@@ -103,12 +163,60 @@ header{display:flex;justify-content:space-between;align-items:baseline;border-bo
 <?php if (!$detail): ?>
 <section class="intro"><h1>128 physical works. One record each.</h1><div><p>CRTSHT is a series of 128 unique 25 × 25 cm prints created and recorded on Ethereum in 2021. Each physical work carries its own public address, a sealed private key and the first four words of its recovery phrase.</p><p>The PDF used to produce each print was hashed; that SHA-256 fingerprint is preserved in the NFT metadata together with an IPFS image reference. The physical object is therefore not an illustration of the token: it holds the key to it.</p><p class="muted">The archive was recovered in 2026. Blockchain records remain immutable; network infrastructure does not. Original IPFS identifiers are shown unchanged and are resolved through current gateways with a local archival fallback.</p></div></section>
 <section class="grid"><?php for($i=1;$i<=TOTAL;$i++): $m=metadata($i); if(!$m) continue; $img=localImage($i); $hex=artworkTitle($i,$m); ?><a class="card" href="/crtsht/<?= $i ?>"><div><?php if($img): ?><img loading="lazy" src="<?= e($img) ?>" alt="<?= e($hex) ?>"><?php endif; ?></div><div class="num"><span><?= e($hex) ?></span><span><?= $i ?>/128</span></div></a><?php endfor; ?></section>
-<?php else: $a=attrs($meta); $c=cid($meta); $fallback=localImage($id); $birthday=(int)($a['birthday']??0); $db=dbRecord($id); $ethAddress=trim((string)($db['ETH_Adr']??'')); $eth=$ethAddress!==''?ethereumRecord($ethAddress):null; ?>
-<section class="detail"><div class="art"><?php if($c): ?><img id="ipfs-image" data-cid="<?= e($c) ?>" data-fallback="<?= e($fallback ?? '') ?>" src="https://dweb.link/ipfs/<?= e($c) ?>" alt="<?= e($title) ?>"><div id="ipfs-status" class="ipfs-status muted">RESOLVING IPFS / <?= e($c) ?></div><?php elseif($fallback): ?><img src="<?= e($fallback) ?>" alt="<?= e($title) ?>"><?php endif; ?></div><div><div class="small"><a href="/">← INDEX</a></div><div class="record"><h1><?= e($title) ?></h1>
-<div class="row"><span class="label">archive id</span><span class="value"><?= $id ?>/128 · /crtsht/<?= $id ?></span></div><div class="row"><span class="label">status</span><span><span class="status">archived</span></span></div><div class="row"><span class="label">series</span><span class="value"><?= e($a['MINT'] ?? '1-128') ?></span></div><?php if($birthday): ?><div class="row"><span class="label">birthday</span><span class="value"><?= e(gmdate('Y-m-d H:i:s', $birthday)) ?> UTC</span></div><?php endif; ?><div class="row"><span class="label">print hash</span><span class="value copy" title="click to copy" data-copy><?= e($a['PRINT HASH'] ?? '') ?></span></div><div class="row"><span class="label">poo</span><span class="value"><?= e($a['POO'] ?? '') ?></span></div><div class="row"><span class="label">author</span><span class="value"><?= e($a['AUTHOR'] ?? '') ?></span></div>
+<?php else:
+$a=attrs($meta); $c=cid($meta); $fallback=localImage($id); $birthday=(int)($a['birthday']??0);
+$db=dbRecord($id); $ethAddress=trim((string)($db['ETH_Adr']??'')); $eth=$ethAddress!==''?mintRecord($ethAddress):null;
+$contract=$eth ? (string)($eth['contractAddress']??'') : '';
+$tokenId=$eth ? (string)($eth['tokenID']??'') : '';
+$currentOwner=($contract!=='' && $tokenId!=='') ? ownerOf($contract,$tokenId) : null;
+$ownerState=$currentOwner ? (strtolower($currentOwner)===strtolower($ethAddress) ? 'ORIGINAL WALLET' : 'TRANSFERRED') : 'UNKNOWN';
+?>
+<section class="detail"><div class="art"><?php if($c): ?><img id="ipfs-image" data-cid="<?= e($c) ?>" data-fallback="<?= e($fallback ?? '') ?>" src="https://dweb.link/ipfs/<?= e($c) ?>" alt="<?= e($title) ?>"><div id="ipfs-status" class="ipfs-status muted">RESOLVING IPFS / <?= e($c) ?></div><?php elseif($fallback): ?><img src="<?= e($fallback) ?>" alt="<?= e($title) ?>"><?php endif; ?></div>
+<div><div class="small"><a href="/">← INDEX</a></div><div class="record"><h1><?= e($title) ?></h1>
+<div class="row"><span class="label">archive id</span><span class="value"><?= $id ?>/128 · /crtsht/<?= $id ?></span></div>
+<div class="row"><span class="label">status</span><span><span class="status">archived</span></span></div>
+<div class="row"><span class="label">series</span><span class="value"><?= e($a['MINT'] ?? '1-128') ?></span></div>
+<?php if($birthday): ?><div class="row"><span class="label">birthday</span><span class="value"><?= e(gmdate('Y-m-d H:i:s', $birthday)) ?> UTC</span></div><?php endif; ?>
+<div class="row"><span class="label">print hash</span><span class="value copy" title="click to copy" data-copy><?= e($a['PRINT HASH'] ?? '') ?></span></div>
+<div class="row"><span class="label">poo</span><span class="value"><?= e($a['POO'] ?? '') ?></span></div>
+<div class="row"><span class="label">author</span><span class="value"><?= e($a['AUTHOR'] ?? '') ?></span></div>
+
 <div class="section-head">ETHEREUM RECORD</div>
-<?php if($ethAddress!==''): ?><div class="row"><span class="label">address</span><span class="value"><a target="_blank" rel="noopener" href="https://etherscan.io/address/<?= e($ethAddress) ?>"><?= e($ethAddress) ?> ↗</a></span></div><?php else: ?><div class="row"><span class="label">address</span><span class="value muted">awaiting secure database connection</span></div><?php endif; ?>
-<?php if($eth): $tx=(string)($eth['hash']??''); $contract=(string)($eth['contractAddress']??''); $tokenId=(string)($eth['tokenID']??''); $ts=(int)($eth['timeStamp']??0); ?><div class="row"><span class="label">network</span><span class="value">Ethereum Mainnet</span></div><div class="row"><span class="label">token</span><span class="value"><?= e((string)($eth['tokenName']??'')) ?><?php if(($eth['tokenSymbol']??'')!==''): ?> / <?= e((string)$eth['tokenSymbol']) ?><?php endif; ?></span></div><div class="row"><span class="label">token id</span><span class="value"><?= e($tokenId) ?></span></div><div class="row"><span class="label">contract</span><span class="value"><a target="_blank" rel="noopener" href="https://etherscan.io/token/<?= e($contract) ?>?a=<?= e($tokenId) ?>"><?= e($contract) ?> ↗</a></span></div><div class="row"><span class="label">block</span><span class="value"><a target="_blank" rel="noopener" href="https://etherscan.io/block/<?= e((string)($eth['blockNumber']??'')) ?>"><?= e((string)($eth['blockNumber']??'')) ?> ↗</a></span></div><?php if($ts): ?><div class="row"><span class="label">timestamp</span><span class="value"><?= e(gmdate('Y-m-d H:i:s',$ts)) ?> UTC</span></div><?php endif; ?><div class="row"><span class="label">transaction</span><span class="value"><a target="_blank" rel="noopener" href="https://etherscan.io/tx/<?= e($tx) ?>"><?= e($tx) ?> ↗</a></span></div><div class="row"><span class="label">from</span><span class="value"><?= e((string)($eth['from']??'')) ?></span></div><div class="row"><span class="label">to</span><span class="value"><?= e((string)($eth['to']??'')) ?></span></div><div class="row"><span class="label">confirmations</span><span class="value"><?= e((string)($eth['confirmations']??'')) ?></span></div><?php elseif($ethAddress!==''): ?><div class="row"><span class="label">chain data</span><span class="value muted">address recovered · Etherscan API not configured or unavailable</span></div><?php endif; ?>
-<div class="section-head">NETWORK / METADATA</div><div class="row"><span class="label">ipfs uri</span><span class="value copy" title="click to copy" data-copy><?= e($meta['image'] ?? '') ?></span></div><?php if($c): ?><div class="row"><span class="label">gateway</span><span class="value"><a target="_blank" rel="noopener" href="https://ipfs.io/ipfs/<?= e($c) ?>">open current IPFS gateway ↗</a></span></div><?php endif; ?><div class="row"><span class="label">metadata</span><span class="value"><a href="/JSON_1-128/<?= $id ?>.json" target="_blank">original JSON ↗</a></span></div></div><p class="note"><?= e($meta['description'] ?? '') ?></p><p class="note muted">The original 2021 metadata remains untouched. Ethereum and IPFS information shown here is a live archival reading of that record; the presentation layer was reconstructed in 2026.</p></div></section>
-<?php endif; ?><footer class="footer"><span>CRTSHT / iBulla</span><span>PHYSICAL · HASH · NFT · IPFS · KEY</span></footer></main>
-<script>document.querySelectorAll('[data-copy]').forEach(el=>el.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(el.textContent.trim());const old=el.textContent;el.textContent='COPIED';setTimeout(()=>el.textContent=old,700)}catch(e){}}));const img=document.getElementById('ipfs-image');if(img){const cid=img.dataset.cid,status=document.getElementById('ipfs-status'),fallback=img.dataset.fallback;const gateways=[`https://ipfs.io/ipfs/${cid}`,`https://${cid}.ipfs.dweb.link/`];let n=0;img.addEventListener('load',()=>{status.textContent='IPFS / RESOLVED / '+new URL(img.src).hostname});img.addEventListener('error',()=>{if(n<gateways.length){status.textContent='IPFS / TRYING GATEWAY '+(n+1);img.src=gateways[n++]}else if(fallback){status.textContent='IPFS / GATEWAYS UNAVAILABLE / LOCAL ARCHIVAL COPY';img.src=fallback}else{status.textContent='IPFS / UNAVAILABLE'}})}</script></body></html>
+<?php if($ethAddress!==''): ?>
+<div class="row"><span class="label">original wallet</span><span class="value"><a target="_blank" rel="noopener" href="https://etherscan.io/address/<?= e($ethAddress) ?>"><?= e($ethAddress) ?> ↗</a></span></div>
+<?php else: ?>
+<div class="row"><span class="label">original wallet</span><span class="value muted">awaiting secure database connection</span></div>
+<?php endif; ?>
+<?php if($eth): $tx=(string)($eth['hash']??''); $ts=(int)($eth['timeStamp']??0); ?>
+<div class="row"><span class="label">network</span><span class="value">Ethereum Mainnet</span></div>
+<div class="row"><span class="label">token</span><span class="value"><?= e((string)($eth['tokenName']??'')) ?><?php if(($eth['tokenSymbol']??'')!==''): ?> / <?= e((string)$eth['tokenSymbol']) ?><?php endif; ?></span></div>
+<div class="row"><span class="label">token id</span><span class="value"><?= e($tokenId) ?></span></div>
+<div class="row"><span class="label">contract</span><span class="value"><a target="_blank" rel="noopener" href="https://etherscan.io/token/<?= e($contract) ?>?a=<?= e($tokenId) ?>"><?= e($contract) ?> ↗</a></span></div>
+<div class="row"><span class="label">owner now</span><span class="value"><?php if($currentOwner): ?><a target="_blank" rel="noopener" href="https://etherscan.io/address/<?= e($currentOwner) ?>"><?= e($currentOwner) ?> ↗</a> · <span class="status"><?= e($ownerState) ?></span><?php else: ?><span class="muted">live ownerOf unavailable</span><?php endif; ?></span></div>
+<div class="row"><span class="label">block</span><span class="value"><a target="_blank" rel="noopener" href="https://etherscan.io/block/<?= e((string)($eth['blockNumber']??'')) ?>"><?= e((string)($eth['blockNumber']??'')) ?> ↗</a></span></div>
+<?php if($ts): ?><div class="row"><span class="label">timestamp</span><span class="value"><?= e(gmdate('Y-m-d H:i:s',$ts)) ?> UTC</span></div><?php endif; ?>
+<div class="row"><span class="label">transaction</span><span class="value"><a target="_blank" rel="noopener" href="https://etherscan.io/tx/<?= e($tx) ?>"><?= e($tx) ?> ↗</a></span></div>
+<div class="row"><span class="label">from</span><span class="value"><?= e((string)($eth['from']??'')) ?></span></div>
+<div class="row"><span class="label">to</span><span class="value"><?= e((string)($eth['to']??'')) ?></span></div>
+<div class="row"><span class="label">confirmations</span><span class="value"><?= e((string)($eth['confirmations']??'')) ?></span></div>
+<?php elseif($ethAddress!==''): ?>
+<div class="row"><span class="label">chain data</span><span class="value muted">address recovered · Etherscan API not configured or unavailable</span></div>
+<?php endif; ?>
+
+<div class="section-head">NETWORK / METADATA</div>
+<div class="row"><span class="label">ipfs uri</span><span class="value copy" title="click to copy" data-copy><?= e($meta['image'] ?? '') ?></span></div>
+<?php if($c): ?><div class="row"><span class="label">gateway</span><span class="value"><a target="_blank" rel="noopener" href="https://ipfs.io/ipfs/<?= e($c) ?>">open current IPFS gateway ↗</a></span></div><?php endif; ?>
+<div class="row"><span class="label">metadata</span><span class="value"><a href="/JSON_1-128/<?= $id ?>.json" target="_blank">original JSON ↗</a></span></div>
+</div>
+<p class="note"><?= e($meta['description'] ?? '') ?></p>
+<p class="note muted">The original 2021 metadata remains unchanged. Ethereum ownership is resolved live from the ERC-721 contract; IPFS gateway resolution and this interface belong to the recovered 2026 archive layer.</p>
+</div></section>
+<?php endif; ?>
+<footer class="footer"><span>CRTSHT / iBulla</span><span>PHYSICAL · HASH · NFT · IPFS · KEY</span></footer>
+</main>
+<script>
+document.querySelectorAll('[data-copy]').forEach(el=>el.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(el.textContent.trim());const old=el.textContent;el.textContent='COPIED';setTimeout(()=>el.textContent=old,700)}catch(e){}}));
+const img=document.getElementById('ipfs-image');
+if(img){const cid=img.dataset.cid,status=document.getElementById('ipfs-status'),fallback=img.dataset.fallback;const gateways=[`https://ipfs.io/ipfs/${cid}`,`https://w3s.link/ipfs/${cid}`];let n=0;img.addEventListener('load',()=>{status.textContent='IPFS / RESOLVED / '+new URL(img.src).hostname});img.addEventListener('error',()=>{if(n<gateways.length){status.textContent='IPFS / TRYING GATEWAY '+(n+1);img.src=gateways[n++]}else if(fallback){status.textContent='IPFS / GATEWAYS UNAVAILABLE / LOCAL ARCHIVAL COPY';img.src=fallback}else{status.textContent='IPFS / UNAVAILABLE'}})}
+</script>
+</body></html>
