@@ -1,0 +1,7 @@
+.DS_Store
+.env
+.env.*
+!.env.example
+inc/verbindung*.php
+config.local.php
+*.log
