@@ -38,7 +38,7 @@ $revealed = count($matches) > 0;
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>The Oracle / CRTSHT</title>
 <meta name="description" content="Four words open one CRTSHT mooncake.">
-<link rel="stylesheet" href="/site.css?v=6">
+<link rel="stylesheet" href="/site.css?v=7">
 <style>
 .oracle-system{border:1px solid var(--fg);margin-top:24px;background:rgba(255,255,255,.18)}
 .oracle-system-bar{display:flex;justify-content:space-between;gap:18px;padding:7px 9px;border-bottom:1px solid var(--fg);font-size:10px;text-transform:uppercase;letter-spacing:.08em;flex-wrap:wrap}
