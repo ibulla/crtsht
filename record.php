@@ -95,7 +95,7 @@ if (!is_string($prettyJson)) $prettyJson = '{}';
 </section>
 
 <?php if($cake): ?>
-<section class="mooncake-exit">
+<section class="detail">
 <div class="art">
 <a href="/oracle" aria-label="Ask The Oracle with the physical key for <?= crt_e($title) ?>">
 <img id="mooncake-image" loading="lazy" decoding="async" src="<?= crt_e($cake) ?>" alt="Mooncake for <?= crt_e($title) ?>">
