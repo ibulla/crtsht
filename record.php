@@ -51,7 +51,7 @@ if (!is_string($prettyJson)) $prettyJson = '{}';
 <?php if($art): ?>
 <img class="zoomable" id="artwork-image" decoding="async" fetchpriority="high" src="<?= crt_e($art) ?>" alt="<?= crt_e($title) ?>">
 <?php endif; ?>
-<div class="ipfs-status">PRINTED IMAGE / IPFS VERIFIED MOONCAKE</div>
+<div class="ipfs-status">GENUINE PRINT / IPFS VERIFIED</div>
 </div>
 <div>
 <div class="small"><a href="/">← Archive</a></div>
@@ -85,9 +85,10 @@ if (!is_string($prettyJson)) $prettyJson = '{}';
 <?php endif; ?>
 
 <div class="section-head">NETWORK</div>
-<?php if($cid): ?><div class="row"><span class="label">mooncake image cid</span><span class="value"><a target="_blank" rel="noopener" href="https://ipfs.io/ipfs/<?= crt_e($cid) ?>"><?= crt_e($cid) ?> ↗</a></span></div><?php endif; ?>
+<?php if($cid): ?><div class="row"><span class="label">mooncake cid</span><span class="value"><a target="_blank" rel="noopener" href="https://ipfs.io/ipfs/<?= crt_e($cid) ?>"><?= crt_e($cid) ?> ↗</a></span></div><?php endif; ?>
 <?php if($jsonCid): ?><div class="row"><span class="label">metadata cid</span><span class="value"><a target="_blank" rel="noopener" href="https://ipfs.io/ipfs/<?= crt_e($jsonCid) ?>"><?= crt_e($jsonCid) ?> ↗</a></span></div><?php endif; ?>
-<div class="row"><span class="label">json</span><span class="value"><a target="_blank" href="/JSON_1-128/<?= $id ?>.json">original 2021 metadata ↗</a><?php if($description !== ''): ?><span class="metadata-description"><?= crt_e($description) ?></span><?php endif; ?><details class="json-reveal"><summary>Reveal JSON</summary><pre><?= crt_e($prettyJson) ?></pre></details></span></div>
+<div class="row"><span class="label">json</span><span class="value"><a target="_blank" href="/JSON_1-128/<?= $id ?>.json">original 2021 metadata ↗</a>
+<details class="json-reveal"><summary>Reveal JSON</summary><pre><?= crt_e($prettyJson) ?></pre></details><?php if($description !== ''): ?><span class="metadata-description"><?= crt_e($description) ?></span><?php endif; ?></span></div>
 </div>
 </div>
 </div>
@@ -95,12 +96,18 @@ if (!is_string($prettyJson)) $prettyJson = '{}';
 
 <?php if($cake): ?>
 <section class="mooncake-exit">
+<div class="art">
 <a href="/oracle" aria-label="Ask The Oracle with the physical key for <?= crt_e($title) ?>">
 <img id="mooncake-image" loading="lazy" decoding="async" src="<?= crt_e($cake) ?>" alt="Mooncake for <?= crt_e($title) ?>">
 <?php if($cid): ?><span id="mooncake-ipfs-status" class="ipfs-status" data-cid="<?= crt_e($cid) ?>">TOKEN IMAGE / CHECKING IPFS</span><?php endif; ?>
+</a>
+</div>
+<div>
+<a href="/oracle" aria-label="Ask The Oracle with the physical key for <?= crt_e($title) ?>">
 <span class="eyebrow">THE PHYSICAL KEY</span>
 <strong>Have the original?<br>Ask The Oracle →</strong>
 </a>
+</div>
 </section>
 <?php endif; ?>
 

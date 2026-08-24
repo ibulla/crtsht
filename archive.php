@@ -17,8 +17,8 @@ require __DIR__ . '/inc/bootstrap.php';
 </header>
 <section class="intro">
 <h1>KEEP YOUR SHIT TOGETHER</h1>
-<p>Once, before we disperse.</p>
-<p class="quiet">128 physical originals · 20 × 20 cm · generated, printed and minted on Ethereum in 2021.</p>
+<p>Before it disperse.</p>
+<p class="quiet">128 physical originals · pixel square · minted and sealed for posterity as 金のうんこ</p>
 </section>
 <section class="grid">
 <?php for ($id=1; $id<=CRTSHT_TOTAL; $id++): $meta=crt_metadata($id); if(!$meta) continue; $img=crt_artwork($id); $title=crt_title($id,$meta); $aboveFold=$id<=12; ?>
@@ -28,7 +28,7 @@ require __DIR__ . '/inc/bootstrap.php';
 </a>
 <?php endfor; ?>
 </section>
-<footer class="footer"><span>CRTSHT / iBulla</span><span>The wall may empty. The archive will not.</span></footer>
+<footer class="footer"><span>CRTSHT / iBulla</span><span>The shit is real. The archive is meta.</span></footer>
 </main>
 <script>
 document.querySelectorAll('.card').forEach(card=>{

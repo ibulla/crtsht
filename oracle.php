@@ -78,9 +78,9 @@ $revealed = count($matches) > 0;
 <?php else: ?>
 <section class="intro">
 <div class="eyebrow">THE ORACLE</div>
-<h1>Four words.<br>One mooncake.</h1>
-<p>The 2021 instructions said the first four words could open your <strong>金のうんこ</strong> “and more…”. This is the and more.</p>
-<p class="oracle-note">Enter the four visible words from the physical CRTSHT. The Oracle checks them against the collection. The other twenty words stay sealed; they are neither needed nor wanted here.</p>
+<h1>Four seedwords.<br>One mooncake.</h1>
+<p>The 2021 instructions said the first four words could open your <strong>金のうんこ</strong> and more…”. This is the &.</p>
+<p class="oracle-note">Enter the four visible words from the physical CRTSHT. The Oracle checks them against the collection. The other words stay sealed; they are neither needed nor wanted here.</p>
 <form class="oracle-form" method="post" action="/oracle" autocomplete="off">
 <input name="w1" placeholder="1. word" value="<?= crt_e($words[0]) ?>" required>
 <input name="w2" placeholder="2. word" value="<?= crt_e($words[1]) ?>" required>
@@ -101,5 +101,5 @@ $revealed = count($matches) > 0;
 </section>
 <?php endif; ?>
 
-<footer class="footer"><span>CRTSHT / THE ORACLE</span><span><?= $revealed ? 'FORTUNE REVEALED · 97%' : '4 WORDS · 20 SEALED' ?></span></footer>
+<footer class="footer"><span>CRTSHT / THE ORACLE</span><span><?= $revealed ? 'FORTUNE REVEALED · 99%' : '4 WORDS · 20 SEALED' ?></span></footer>
 </main></body></html>

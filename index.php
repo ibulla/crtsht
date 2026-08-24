@@ -148,7 +148,7 @@ function verifyWords(string $title, array $words, string $stored): bool {
     return hash_equals(strtolower($stored),strtolower($derived));
 }
 function displayDescription(string $title): string {
-    return 'This MORE-Coin verifies the physical CRTSHT ' . $title . ' as ONE mooncake and one unique artwork by iBulla.com. Minted on Ethereum in 2021, it ties the printed work to its hash, wallet and token history. The image is public. The key belongs to the object.';
+    return 'This MORE-Coin verifies the physical CRTSHT ' . $title . ' as ONE mooncake and one unique artwork by iBulla.com. Minted on Ethereum in 2021, it ties the printed data to its hash, wallet and token history. The meta is public. The key belongs to the object.';
 }
 
 $id = routeId();
