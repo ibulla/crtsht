@@ -29,6 +29,13 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 .system-window{border:1px solid var(--fg);margin:30px 0 0;background:rgba(242,242,238,.72);backdrop-filter:blur(2px)}
 .system-bar{display:flex;justify-content:space-between;gap:20px;padding:7px 9px;border-bottom:1px solid var(--fg);font-size:10px;text-transform:uppercase;letter-spacing:.08em}
 .system-body{padding:18px}.system-body .shhh{font-size:clamp(22px,3vw,40px);letter-spacing:-.045em;margin:0 0 12px}.system-body p{font-size:13px;line-height:1.55;max-width:70ch;margin:0 0 .8em}.system-status{border-top:1px solid var(--line);padding:8px 9px;font-size:10px;letter-spacing:.04em;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.crt-blink{animation:crtBlink 2.3s steps(1,end) infinite}
+.connection-dots{display:inline-block;animation:connectionBlink 2.8s steps(2,end) infinite}
+.connection-progress{display:inline-block;min-width:3ch;text-align:right}
+.connection-progress.is-shifting{animation:connectionPulse .34s steps(2,end) 1}
+@keyframes crtBlink{0%,67%,100%{opacity:1}68%,82%{opacity:0}}
+@keyframes connectionBlink{0%,58%,100%{opacity:1}59%,70%{opacity:.22}71%,84%{opacity:.72}}
+@keyframes connectionPulse{0%,100%{opacity:1}50%{opacity:.28}}
 .myth-line{font-size:clamp(20px,2.2vw,31px)!important;line-height:1.15!important;letter-spacing:-.035em;max-width:28ch;margin:20px 0!important}
 .relic{display:block;width:100%;margin:22px 0 0;padding:0;border:0;background:none;color:inherit;text-align:left;font:inherit;cursor:zoom-in}.relic img{display:block;width:100%;border:1px solid var(--line);background:#fff}.relic-meta{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:8px;font-size:10px;line-height:1.45;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}.relic:hover .relic-open,.relic:focus-visible .relic-open{text-decoration:underline;color:var(--fg)}
 .zoomable-lore{cursor:zoom-in}
@@ -44,7 +51,7 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 .cake-pair img{display:block;width:100%;aspect-ratio:1;object-fit:cover}
 .founder{display:grid;grid-template-columns:minmax(220px,.8fr) minmax(0,1.2fr);gap:var(--pad);align-items:start}.founder img{display:block;width:100%;max-width:520px}.founder-copy{max-width:620px}.founder-copy .name{font-size:clamp(34px,5vw,72px);line-height:.9;letter-spacing:-.06em;margin:0 0 20px}.founder-copy p{font-size:clamp(14px,1.25vw,18px);line-height:1.55;margin:0 0 1em}.lore-last{font-size:clamp(22px,3vw,42px);line-height:1.05;letter-spacing:-.045em;max-width:24ch;margin:30px 0 0}
 @media(max-width:700px){.founder,.public-secret{grid-template-columns:1fr}.coin-drop{opacity:calc(var(--opacity) * .72)}.lore-hero{gap:16px}.lore-opening .hero-coin{width:clamp(86px,25vw,112px)}.spec-row{grid-template-columns:88px 18px minmax(0,1fr);padding:9px 10px}}
-@media(prefers-reduced-motion:reduce){.coin-rain{display:none}}
+@media(prefers-reduced-motion:reduce){.coin-rain{display:none}.crt-blink,.connection-dots,.connection-progress.is-shifting{animation:none}}
 </style>
 </head>
 <body class="lore-page">
@@ -66,13 +73,13 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 </div>
 
 <div class="system-window" aria-label="Recovered CRTSHT system message">
-<div class="system-bar"><span>CRYPTOSHIT / MORE SYSTEM</span><span>RL-HOOK ONLINE</span></div>
+<div class="system-bar"><span>CRYPTOSHIT / MORE SYSTEM</span><span class="crt-blink">RL-HOOK ONLINE</span></div>
 <div class="system-body">
 <p class="shhh">Shhhh. Take it easy.</p>
 <p>Of course your shit is pinned in an InterPlanetary File System, verified on a blockchain, connected to a wallet and surrounded by more metadata than it reasonably needs.</p>
 <p>But hey, who cares? There is only one physical original. Hang it on a wall, keep it in a box, pass it on. It should bring you luck and happiness.</p>
 </div>
-<div class="system-status"><span>WELCOME TO THE INTERPLANETARY FILE SYSTEM</span><span>CONNECTION ESTABLISHED ..........97%</span></div>
+<div class="system-status"><span>WELCOME TO THE INTERPLANETARY FILE SYSTEM</span><span>CONNECTION ESTABLISHED <span class="connection-dots">..........</span><span class="connection-progress" data-connection-progress>97%</span></span></div>
 </div>
 </section>
 
@@ -205,7 +212,7 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 </div>
 </section>
 
-<footer class="footer"><span>CRTSHT / THE LORE</span><span>2021 → 2026 · CONNECTION 97%</span></footer>
+<footer class="footer"><span>CRTSHT / THE LORE</span><span>2021 → 2026 · CONNECTION <span class="connection-progress" data-connection-progress>97%</span></span></footer>
 </main>
 
 <div class="lightbox" id="lore-lightbox" aria-hidden="true">
@@ -277,6 +284,26 @@ $sampleIds = [1,16,32,48,64,80,96,128];
   lightbox.addEventListener('click',close);
   lightbox.querySelector('button').addEventListener('click',event=>{event.stopPropagation();close();});
   document.addEventListener('keydown',event=>{if(event.key==='Escape'&&lightbox.classList.contains('open'))close();});
+})();
+
+(()=>{
+  const nodes=[...document.querySelectorAll('[data-connection-progress]')];
+  if(!nodes.length||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  const values=[95,96,97,97,97,98,99,96,97,98,97];
+  let current=97;
+  const tick=()=>{
+    let next=current;
+    while(next===current) next=values[Math.floor(Math.random()*values.length)];
+    current=next;
+    nodes.forEach(node=>{
+      node.textContent=current+'%';
+      node.classList.remove('is-shifting');
+      void node.offsetWidth;
+      node.classList.add('is-shifting');
+    });
+    window.setTimeout(tick,900+Math.random()*1900);
+  };
+  window.setTimeout(tick,1100+Math.random()*1200);
 })();
 </script>
 </body></html>
