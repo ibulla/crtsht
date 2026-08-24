@@ -27,13 +27,9 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 .system-bar{display:flex;justify-content:space-between;gap:20px;padding:7px 9px;border-bottom:1px solid var(--fg);font-size:10px;text-transform:uppercase;letter-spacing:.08em}
 .system-body{padding:18px}.system-body .shhh{font-size:clamp(22px,3vw,40px);letter-spacing:-.045em;margin:0 0 12px}.system-body p{font-size:13px;line-height:1.55;max-width:70ch;margin:0 0 .8em}.system-status{border-top:1px solid var(--line);padding:8px 9px;font-size:10px;letter-spacing:.04em;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 .myth-line{font-size:clamp(20px,2.2vw,31px)!important;line-height:1.15!important;letter-spacing:-.035em;max-width:28ch;margin:20px 0!important}
-.public-secret{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line);border-left:1px solid var(--line);margin:22px 0}
-.public-secret>div{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:16px}
-.public-secret h3{font-size:11px;text-transform:uppercase;letter-spacing:.08em;margin:0 0 14px}
-.public-secret p{font-size:12px;line-height:1.55;margin:0 0 .55em}
-.founder{display:grid;grid-template-columns:minmax(220px,.8fr) minmax(0,1.2fr);gap:var(--pad);align-items:start}
-.founder img{display:block;width:100%;max-width:520px}.founder-copy{max-width:620px}.founder-copy .name{font-size:clamp(34px,5vw,72px);line-height:.9;letter-spacing:-.06em;margin:0 0 20px}.founder-copy p{font-size:clamp(14px,1.25vw,18px);line-height:1.55;margin:0 0 1em}
-.lore-last{font-size:clamp(22px,3vw,42px);line-height:1.05;letter-spacing:-.045em;max-width:24ch;margin:30px 0 0}
+.relic{display:block;margin:22px 0 0;text-decoration:none}.relic img{display:block;width:100%;border:1px solid var(--line);background:#fff}.relic:hover{text-decoration:none}.relic-meta{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:8px;font-size:10px;line-height:1.45;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}.relic:hover .relic-open{text-decoration:underline;color:var(--fg)}
+.public-secret{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line);border-left:1px solid var(--line);margin:22px 0}.public-secret>div{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:16px}.public-secret h3{font-size:11px;text-transform:uppercase;letter-spacing:.08em;margin:0 0 14px}.public-secret p{font-size:12px;line-height:1.55;margin:0 0 .55em}
+.founder{display:grid;grid-template-columns:minmax(220px,.8fr) minmax(0,1.2fr);gap:var(--pad);align-items:start}.founder img{display:block;width:100%;max-width:520px}.founder-copy{max-width:620px}.founder-copy .name{font-size:clamp(34px,5vw,72px);line-height:.9;letter-spacing:-.06em;margin:0 0 20px}.founder-copy p{font-size:clamp(14px,1.25vw,18px);line-height:1.55;margin:0 0 1em}.lore-last{font-size:clamp(22px,3vw,42px);line-height:1.05;letter-spacing:-.045em;max-width:24ch;margin:30px 0 0}
 @media(max-width:700px){.founder,.public-secret{grid-template-columns:1fr}.coin-drop{opacity:calc(var(--opacity) * .72)}}
 @media(prefers-reduced-motion:reduce){.coin-rain{display:none}}
 </style>
@@ -67,9 +63,10 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 <h2>The creatures</h2>
 <div class="prose">
 <p>Before there was a collection, there was a cast.</p>
-<p>Some appeared as <strong>Kin no unko</strong>. Dr. Slurp wandered in. The Ice-Emoji saga froze mid-expression. Others never received a useful name. Colours drifted. Eyes changed. Accessories accumulated. Backgrounds mutated.</p>
+<p><strong>Kin no unko</strong> appeared first — or at least claims to have. Dr. Slurp wandered in soon after. Somewhere else the Ice-Emoji saga froze mid-expression. Others arrived without names and seem happier that way.</p>
+<p>Colours drifted. Eyes changed. Accessories accumulated. Backgrounds mutated. Nothing developed a reliable taxonomy.</p>
 <p class="myth-line">They resemble one another just enough to be family, and differ just enough to cause trouble.</p>
-<p>Each received a hexadecimal identity from <strong>0x0001</strong> to <strong>0x0080</strong>. No ranking. No rarity chart. Just 128 small lives inside the same badly behaved universe.</p>
+<p>Each received a hexadecimal identity from <strong>0x0001</strong> to <strong>0x0080</strong>. No ranking. No rarity chart. No chosen hero. Just 128 small lives inside the same badly behaved universe.</p>
 <div class="gallery">
 <?php foreach($sampleIds as $id): $img=crt_artwork($id); $meta=crt_metadata($id); if(!$img||!$meta) continue; ?>
 <a href="/crtsht/<?= $id ?>"><img loading="lazy" decoding="async" src="<?= crt_e($img) ?>" alt="<?= crt_e(crt_title($id,$meta)) ?>"></a>
@@ -81,10 +78,17 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 <section class="chapter">
 <h2>The TGP</h2>
 <div class="prose">
-<p>MORE generated the images as ready-to-print files. The old instructions gave them a wonderfully overconfident name: <strong>TGP — The Genuine Print</strong>.</p>
-<p>One image. One 20 × 20 cm physical print. One number. Instead of signing the front with a pencil, the system surrounded each TGP with cryptographic proof.</p>
+<p>MORE generated the creatures as ready-to-print files. The old instructions gave the result a wonderfully overconfident name: <strong>TGP — The Genuine Print</strong>.</p>
+<p>One image. One 20 × 20 cm physical original. One hexadecimal identity. Instead of signing the front with a pencil, the system built an unnecessarily elaborate bridge between the object and the network.</p>
+<p>The diagram below is not a reconstruction. It survived with the project.</p>
+<a class="relic" href="/img/2021-genuine-print.jpg" target="_blank" rel="noopener">
+<img src="/img/2021-genuine-print.jpg" alt="2021 CRTSHT Genuine Print diagram showing the physical print, RL-HOOK, public metadata and secret key" loading="lazy" decoding="async">
+<span class="relic-meta"><span>2021-GENUINE-PRINT.JPG / ORIGINAL PROJECT RELIC</span><span class="relic-open">OPEN FULL SIZE ↗</span></span>
+</a>
+<p class="myth-line">Part instruction manual. Part proof. Part promise from a future that arrived differently.</p>
 <div class="codebox">
 TGP → THE GENUINE PRINT<br>
+RL-HOOK → REAL-LIFE CONNECTION<br>
 FORMAT → 20 × 20 CM<br>
 EDITION → 1 PHYSICAL ORIGINAL<br>
 IDENTITY → HEX / 0x0001—0x0080<br>
@@ -95,13 +99,30 @@ PRINT → SHA-256 FINGERPRINT
 </section>
 
 <section class="chapter">
-<h2>The wall</h2>
+<h2>Public / Secret</h2>
 <div class="prose">
-<p>The family was always supposed to meet in real life. An exhibition plan survived from the unfinished project, waiting quietly beside the files.</p>
-<p class="myth-line">Together once before our disperse.</p>
-<p>The 128 originals can finally occupy the wall that was already drawn for them. It is less a display than a temporary family portrait: complete only until the first work leaves.</p>
-<img class="plan" src="/img/Exhibition-plan.png" alt="Original CRTSHT exhibition plan" loading="lazy" decoding="async">
-<p class="caption">EXHIBITION-PLAN.PNG / original project file</p>
+<p>The 2021 system divided every TGP into two territories: <strong>PUBLIC META</strong> and <strong>SECRET KEY</strong>. Five years later, that distinction is still the cleanest way into the object.</p>
+<div class="public-secret">
+<div>
+<h3>PUBLIC META</h3>
+<p>hex identity</p>
+<p>TGP fingerprint</p>
+<p>Ethereum wallet + token record</p>
+<p>IPFS references</p>
+<p>four visible words</p>
+</div>
+<div>
+<h3>SECRET KEY</h3>
+<p>24-word mnemonic</p>
+<p>private wallet material</p>
+<p>sealed with the physical object</p>
+<p>only 4U</p>
+</div>
+</div>
+<p>The four visible words do not open the wallet. That would be a terrible feature.</p>
+<p>They do something much less useful and therefore much more appropriate: they let the archive recognize the physical work and open its private fortune.</p>
+<p>The remaining twenty words stay sealed. Some doors are better when they remain doors.</p>
+<p><a href="/oracle">Ask The Oracle →</a></p>
 </div>
 </section>
 
@@ -127,29 +148,13 @@ POO → SHORT INTERNAL HASH
 </section>
 
 <section class="chapter">
-<h2>Public / Secret</h2>
+<h2>The wall</h2>
 <div class="prose">
-<p>The 2021 tutorial split the object into two zones: <strong>PUBLIC META</strong> and <strong>SECRET KEY</strong>. That distinction still holds.</p>
-<div class="public-secret">
-<div>
-<h3>PUBLIC META</h3>
-<p>hex identity</p>
-<p>TGP fingerprint</p>
-<p>Ethereum wallet + token record</p>
-<p>IPFS references</p>
-<p>four visible words</p>
-</div>
-<div>
-<h3>SECRET KEY</h3>
-<p>24-word mnemonic</p>
-<p>private wallet material</p>
-<p>sealed with the physical object</p>
-<p>only 4U</p>
-</div>
-</div>
-<p>The first four words are deliberately harmless on their own. They do not open the wallet. They wake a small part of the archive.</p>
-<p>Four words are enough to find your CRTSHT and ask what it has to say. The other twenty can stay exactly where they are.</p>
-<p><a href="/oracle">Ask The Oracle →</a></p>
+<p>The family was always supposed to meet in real life. An exhibition plan survived from the unfinished project, waiting quietly beside the files.</p>
+<p class="myth-line">Together once before our disperse.</p>
+<p>The 128 originals can finally occupy the wall that was already drawn for them. It is less a display than a temporary family portrait: complete only until the first work leaves.</p>
+<img class="plan" src="/img/Exhibition-plan.png" alt="Original CRTSHT exhibition plan" loading="lazy" decoding="async">
+<p class="caption">EXHIBITION-PLAN.PNG / ORIGINAL PROJECT FILE</p>
 </div>
 </section>
 
