@@ -14,23 +14,25 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 .lore-page{overflow-x:hidden}
 .lore-page .wrap{position:relative;z-index:2}
 .coin-rain{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
-.coin-drop{position:absolute;top:-180px;left:var(--x);width:var(--size);opacity:var(--opacity);perspective:700px;animation:coinFall var(--duration) linear infinite;animation-delay:var(--delay);will-change:transform}
-.coin-drop img{display:block;width:100%;animation:coinSpin var(--spin) linear infinite;transform-style:preserve-3d;filter:grayscale(.72) contrast(.9)}
-@keyframes coinFall{0%{transform:translate3d(0,-220px,0)}100%{transform:translate3d(var(--drift),calc(100vh + 260px),0)}}
-@keyframes coinSpin{0%{transform:rotateY(0deg) rotateZ(0deg)}50%{transform:rotateY(180deg) rotateZ(90deg)}100%{transform:rotateY(360deg) rotateZ(180deg)}}
+.coin-drop{position:absolute;top:-140px;left:var(--x);width:var(--size);opacity:var(--opacity);animation:coinFall var(--duration) linear infinite;animation-delay:var(--delay);will-change:transform}
+.coin-drop img{display:block;width:100%;filter:grayscale(.72) contrast(.9);transform-origin:50% 50%;animation:coinTurn var(--spin) linear infinite;animation-delay:var(--spin-delay);will-change:transform}
+@keyframes coinFall{0%{transform:translate3d(0,-180px,0)}50%{transform:translate3d(calc(var(--drift) * .42),50vh,0)}100%{transform:translate3d(var(--drift),calc(100vh + 220px),0)}}
+@keyframes coinTurn{0%{transform:rotate(var(--start-rot)) translateX(0) translateY(0)}25%{transform:rotate(calc(var(--start-rot) + var(--quarter-turn))) translateX(2px) translateY(-2px)}50%{transform:rotate(calc(var(--start-rot) + var(--half-turn))) translateX(0) translateY(2px)}75%{transform:rotate(calc(var(--start-rot) + var(--three-quarter-turn))) translateX(-2px) translateY(-1px)}100%{transform:rotate(calc(var(--start-rot) + var(--full-turn))) translateX(0) translateY(0)}}
 .lore-opening{margin:0 0 calc(var(--pad)*1.45)}
 .lore-opening .eyebrow{margin-bottom:12px}
-.lore-opening .hero-image{display:block;width:min(100%,760px);margin:0 0 18px}
+.lore-opening .hero-image{display:block;margin:0 0 22px}
+.lore-opening .hero-coin{width:clamp(96px,12vw,165px);height:auto}
 .lore-opening .fortune{font-size:clamp(31px,5.4vw,70px);line-height:.93;letter-spacing:-.06em;margin:0 0 22px;max-width:15ch}
 .lore-opening .origin{font-size:clamp(14px,1.25vw,18px);line-height:1.55;max-width:64ch;margin:0}
 .system-window{border:1px solid var(--fg);margin:30px 0 0;background:rgba(242,242,238,.72);backdrop-filter:blur(2px)}
 .system-bar{display:flex;justify-content:space-between;gap:20px;padding:7px 9px;border-bottom:1px solid var(--fg);font-size:10px;text-transform:uppercase;letter-spacing:.08em}
 .system-body{padding:18px}.system-body .shhh{font-size:clamp(22px,3vw,40px);letter-spacing:-.045em;margin:0 0 12px}.system-body p{font-size:13px;line-height:1.55;max-width:70ch;margin:0 0 .8em}.system-status{border-top:1px solid var(--line);padding:8px 9px;font-size:10px;letter-spacing:.04em;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 .myth-line{font-size:clamp(20px,2.2vw,31px)!important;line-height:1.15!important;letter-spacing:-.035em;max-width:28ch;margin:20px 0!important}
-.relic{display:block;margin:22px 0 0;text-decoration:none}.relic img{display:block;width:100%;border:1px solid var(--line);background:#fff}.relic:hover{text-decoration:none}.relic-meta{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:8px;font-size:10px;line-height:1.45;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}.relic:hover .relic-open{text-decoration:underline;color:var(--fg)}
+.relic{display:block;width:100%;margin:22px 0 0;padding:0;border:0;background:none;color:inherit;text-align:left;font:inherit;cursor:zoom-in}.relic img{display:block;width:100%;border:1px solid var(--line);background:#fff}.relic-meta{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:8px;font-size:10px;line-height:1.45;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}.relic:hover .relic-open,.relic:focus-visible .relic-open{text-decoration:underline;color:var(--fg)}
+.zoomable-lore{cursor:zoom-in}
 .public-secret{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line);border-left:1px solid var(--line);margin:22px 0}.public-secret>div{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:16px}.public-secret h3{font-size:11px;text-transform:uppercase;letter-spacing:.08em;margin:0 0 14px}.public-secret p{font-size:12px;line-height:1.55;margin:0 0 .55em}
 .founder{display:grid;grid-template-columns:minmax(220px,.8fr) minmax(0,1.2fr);gap:var(--pad);align-items:start}.founder img{display:block;width:100%;max-width:520px}.founder-copy{max-width:620px}.founder-copy .name{font-size:clamp(34px,5vw,72px);line-height:.9;letter-spacing:-.06em;margin:0 0 20px}.founder-copy p{font-size:clamp(14px,1.25vw,18px);line-height:1.55;margin:0 0 1em}.lore-last{font-size:clamp(22px,3vw,42px);line-height:1.05;letter-spacing:-.045em;max-width:24ch;margin:30px 0 0}
-@media(max-width:700px){.founder,.public-secret{grid-template-columns:1fr}.coin-drop{opacity:calc(var(--opacity) * .72)}}
+@media(max-width:700px){.founder,.public-secret{grid-template-columns:1fr}.coin-drop{opacity:calc(var(--opacity) * .72)}.lore-opening .hero-coin{width:112px}}
 @media(prefers-reduced-motion:reduce){.coin-rain{display:none}}
 </style>
 </head>
@@ -44,7 +46,7 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 
 <section class="lore-opening">
 <div class="eyebrow">THE LORE</div>
-<img class="hero-image" src="/img/cryptoshit_question.jpg" alt="CRTSHT question mark pile" fetchpriority="high">
+<img class="hero-image hero-coin" src="/img/TheCoin.png" alt="CRTSHT mooncake coin" fetchpriority="high">
 <p class="fortune">The Internet has forgotten.<br>The blockchain didn't.</p>
 <p class="origin">CRTSHT began in 2021, when images discovered wallets and almost every browser tab seemed to promise a new economy. From the great autonomous <strong>MORE-Algorithm — My Only Rare Experience</strong> came 128 creatures. They were generated, printed, hashed, minted, pinned, sealed — and then left waiting.</p>
 
@@ -81,10 +83,10 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 <p>MORE generated the creatures as ready-to-print files. The old instructions gave the result a wonderfully overconfident name: <strong>TGP — The Genuine Print</strong>.</p>
 <p>One image. One 20 × 20 cm physical original. One hexadecimal identity. Instead of signing the front with a pencil, the system built an unnecessarily elaborate bridge between the object and the network.</p>
 <p>The diagram below is not a reconstruction. It survived with the project.</p>
-<a class="relic" href="/img/2021-genuine-print.jpg" target="_blank" rel="noopener">
+<button type="button" class="relic" data-lightbox-src="/img/2021-genuine-print.jpg" data-lightbox-alt="2021 CRTSHT Genuine Print diagram showing the physical print, RL-HOOK, public metadata and secret key">
 <img src="/img/2021-genuine-print.jpg" alt="2021 CRTSHT Genuine Print diagram showing the physical print, RL-HOOK, public metadata and secret key" loading="lazy" decoding="async">
-<span class="relic-meta"><span>2021-GENUINE-PRINT.JPG / ORIGINAL PROJECT RELIC</span><span class="relic-open">OPEN FULL SIZE ↗</span></span>
-</a>
+<span class="relic-meta"><span>2021-GENUINE-PRINT.JPG / ORIGINAL PROJECT RELIC</span><span class="relic-open">OPEN FULL SIZE +</span></span>
+</button>
 <p class="myth-line">Part instruction manual. Part proof. Part promise from a future that arrived differently.</p>
 <div class="codebox">
 TGP → THE GENUINE PRINT<br>
@@ -153,8 +155,8 @@ POO → SHORT INTERNAL HASH
 <p>The family was always supposed to meet in real life. An exhibition plan survived from the unfinished project, waiting quietly beside the files.</p>
 <p class="myth-line">Together once before our disperse.</p>
 <p>The 128 originals can finally occupy the wall that was already drawn for them. It is less a display than a temporary family portrait: complete only until the first work leaves.</p>
-<img class="plan" src="/img/Exhibition-plan.png" alt="Original CRTSHT exhibition plan" loading="lazy" decoding="async">
-<p class="caption">EXHIBITION-PLAN.PNG / ORIGINAL PROJECT FILE</p>
+<img class="plan zoomable-lore" src="/img/Exhibition-plan.png" alt="Original CRTSHT exhibition plan" loading="lazy" decoding="async" data-lightbox-src="/img/Exhibition-plan.png" data-lightbox-alt="Original CRTSHT exhibition plan">
+<p class="caption">EXHIBITION-PLAN.PNG / ORIGINAL PROJECT FILE / CLICK TO ENLARGE</p>
 </div>
 </section>
 
@@ -190,26 +192,42 @@ POO → SHORT INTERNAL HASH
 
 <footer class="footer"><span>CRTSHT / THE LORE</span><span>2021 → 2026 · CONNECTION 97%</span></footer>
 </main>
+
+<div class="lightbox" id="lore-lightbox" aria-hidden="true">
+<button type="button" aria-label="Close">×</button>
+<img src="" alt="">
+</div>
+
 <script>
 (()=>{
   const layer=document.getElementById('coin-rain');
   if(!layer||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
   const mobile=window.innerWidth<700;
-  const count=mobile?8:17;
+  const count=mobile?7:14;
   for(let i=0;i<count;i++){
     const drop=document.createElement('span');
     drop.className='coin-drop';
-    const size=(mobile?34:42)+Math.random()*(mobile?64:108);
-    const duration=15+Math.random()*22;
+    const size=(mobile?26:30)+Math.random()*(mobile?44:62);
+    const duration=26+Math.random()*28;
     const delay=-(Math.random()*duration);
-    const drift=(-90+Math.random()*180)+'px';
-    drop.style.setProperty('--x',(Math.random()*96)+'%');
+    const spin=18+Math.random()*24;
+    const clockwise=Math.random()>.5;
+    const turn=clockwise?360:-360;
+    const start=Math.floor(Math.random()*360);
+    const drift=(-55+Math.random()*110)+'px';
+    drop.style.setProperty('--x',(Math.random()*97)+'%');
     drop.style.setProperty('--size',size+'px');
     drop.style.setProperty('--duration',duration+'s');
     drop.style.setProperty('--delay',delay+'s');
-    drop.style.setProperty('--spin',(5+Math.random()*9)+'s');
+    drop.style.setProperty('--spin',spin+'s');
+    drop.style.setProperty('--spin-delay',(-(Math.random()*spin))+'s');
     drop.style.setProperty('--drift',drift);
-    drop.style.setProperty('--opacity',(0.035+Math.random()*0.095).toFixed(3));
+    drop.style.setProperty('--opacity',(0.035+Math.random()*0.075).toFixed(3));
+    drop.style.setProperty('--start-rot',start+'deg');
+    drop.style.setProperty('--quarter-turn',(turn*.25)+'deg');
+    drop.style.setProperty('--half-turn',(turn*.5)+'deg');
+    drop.style.setProperty('--three-quarter-turn',(turn*.75)+'deg');
+    drop.style.setProperty('--full-turn',turn+'deg');
     const img=document.createElement('img');
     img.src='/img/TheCoin.png';
     img.alt='';
@@ -217,6 +235,33 @@ POO → SHORT INTERNAL HASH
     drop.appendChild(img);
     layer.appendChild(drop);
   }
+})();
+
+(()=>{
+  const lightbox=document.getElementById('lore-lightbox');
+  if(!lightbox)return;
+  const image=lightbox.querySelector('img');
+  const close=()=>{
+    lightbox.classList.remove('open');
+    lightbox.setAttribute('aria-hidden','true');
+    image.removeAttribute('src');
+    image.alt='';
+  };
+  const open=(source,alt)=>{
+    image.src=source;
+    image.alt=alt||'';
+    lightbox.classList.add('open');
+    lightbox.setAttribute('aria-hidden','false');
+  };
+  document.querySelectorAll('[data-lightbox-src]').forEach(el=>{
+    el.addEventListener('click',event=>{
+      event.preventDefault();
+      open(el.dataset.lightboxSrc,el.dataset.lightboxAlt||el.getAttribute('alt')||'');
+    });
+  });
+  lightbox.addEventListener('click',close);
+  lightbox.querySelector('button').addEventListener('click',event=>{event.stopPropagation();close();});
+  document.addEventListener('keydown',event=>{if(event.key==='Escape'&&lightbox.classList.contains('open'))close();});
 })();
 </script>
 </body></html>
