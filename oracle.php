@@ -47,6 +47,14 @@ $revealed = count($matches) > 0;
 .oracle-system-body b{font-weight:500;display:inline-block;min-width:126px}
 .oracle-note{font-size:12px!important;color:var(--muted);max-width:58ch}
 .oracle-reveal .oracle-system{width:min(100%,620px);margin-top:28px}
+.crt-blink{animation:crtBlink 2.3s steps(1,end) infinite}
+.connection-dots{display:inline-block;animation:connectionBlink 2.8s steps(2,end) infinite}
+.connection-progress{display:inline-block;min-width:3ch;text-align:right}
+.connection-progress.is-shifting{animation:connectionPulse .34s steps(2,end) 1}
+@keyframes crtBlink{0%,67%,100%{opacity:1}68%,82%{opacity:0}}
+@keyframes connectionBlink{0%,58%,100%{opacity:1}59%,70%{opacity:.22}71%,84%{opacity:.72}}
+@keyframes connectionPulse{0%,100%{opacity:1}50%{opacity:.28}}
+@media(prefers-reduced-motion:reduce){.crt-blink,.connection-dots,.connection-progress.is-shifting{animation:none}}
 </style>
 </head>
 <body><main class="wrap oracle<?= $revealed ? ' oracle-revealed' : '' ?>">
@@ -65,7 +73,7 @@ $revealed = count($matches) > 0;
 <div><span><?= crt_e((string)$match['title']) ?></span><a href="/crtsht/<?= $id ?>">Open the record →</a></div>
 </div>
 <div class="oracle-system" aria-label="Oracle system status">
-<div class="oracle-system-bar"><span>CRTSHT / ORACLE</span><span>CONNECTION ESTABLISHED ..........97%</span></div>
+<div class="oracle-system-bar"><span>CRTSHT / ORACLE</span><span>CONNECTION ESTABLISHED <span class="connection-dots">..........</span><span class="connection-progress" data-connection-progress>97%</span></span></div>
 <div class="oracle-system-body">
 <span><b>PUBLIC META</b> MATCHED</span>
 <span><b>MOONCAKE</b> OPEN</span>
@@ -90,16 +98,38 @@ $revealed = count($matches) > 0;
 </form>
 <?php if($error !== ''): ?><div class="error"><?= crt_e($error) ?></div><?php endif; ?>
 <div class="oracle-system" aria-label="Oracle waiting status">
-<div class="oracle-system-bar"><span>CRTSHT / ORACLE</span><span>WAITING FOR RL-HOOK</span></div>
+<div class="oracle-system-bar"><span>CRTSHT / ORACLE</span><span class="crt-blink">WAITING FOR RL-HOOK</span></div>
 <div class="oracle-system-body">
 <span><b>PUBLIC META</b> WAITING</span>
 <span><b>WORDS</b> 4 REQUIRED</span>
 <span><b>SECRET KEY</b> NOT REQUIRED</span>
-<span><b>CONNECTION</b> ..........00%</span>
+<span><b>CONNECTION</b> <span class="connection-dots">..........</span><span class="connection-progress" data-connection-progress>97%</span></span>
 </div>
 </div>
 </section>
 <?php endif; ?>
 
 <footer class="footer"><span>CRTSHT / THE ORACLE</span><span><?= $revealed ? 'FORTUNE REVEALED · 99%' : '4 WORDS · 20 SEALED' ?></span></footer>
-</main></body></html>
+</main>
+<script>
+(()=>{
+  const nodes=[...document.querySelectorAll('[data-connection-progress]')];
+  if(!nodes.length||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  const values=[95,96,97,97,97,98,99,96,97,98,97];
+  let current=97;
+  const tick=()=>{
+    let next=current;
+    while(next===current) next=values[Math.floor(Math.random()*values.length)];
+    current=next;
+    nodes.forEach(node=>{
+      node.textContent=current+'%';
+      node.classList.remove('is-shifting');
+      void node.offsetWidth;
+      node.classList.add('is-shifting');
+    });
+    window.setTimeout(tick,900+Math.random()*1900);
+  };
+  window.setTimeout(tick,1100+Math.random()*1200);
+})();
+</script>
+</body></html>
