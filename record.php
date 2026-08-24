@@ -39,12 +39,12 @@ if (!is_string($prettyJson)) $prettyJson = '{}';
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title><?= crt_e($title) ?> / CRTSHT</title>
 <meta name="description" content="<?= crt_e($title) ?> — CRTSHT <?= $id ?>/128. Physical work, Ethereum record and IPFS metadata.">
-<link rel="stylesheet" href="/site.css?v=4">
+<link rel="stylesheet" href="/site.css?v=7">
 </head>
 <body><main class="wrap">
 <header>
 <a class="brand" href="/">CRTSHT</a>
-<nav class="nav"><a href="/">Archive</a><a href="/lore">The Lore</a><a href="/oracle">The Oracle</a></nav>
+<nav class="nav"><a href="/" aria-current="page">Archive</a><a href="/lore">The Lore</a><a href="/oracle">The Oracle</a></nav>
 </header>
 <section class="detail">
 <div class="art">
@@ -95,14 +95,14 @@ if (!is_string($prettyJson)) $prettyJson = '{}';
 </section>
 
 <?php if($cake): ?>
-<section class="detail">
-<div class="art">
+<section class="mooncake-exit">
+<div class="mooncake-exit-media">
 <a href="/oracle" aria-label="Ask The Oracle with the physical key for <?= crt_e($title) ?>">
 <img id="mooncake-image" loading="lazy" decoding="async" src="<?= crt_e($cake) ?>" alt="Mooncake for <?= crt_e($title) ?>">
-<?php if($cid): ?><span id="mooncake-ipfs-status" class="ipfs-status" data-cid="<?= crt_e($cid) ?>">TOKEN IMAGE / CHECKING IPFS</span><?php endif; ?>
 </a>
+<?php if($cid): ?><div id="mooncake-ipfs-status" class="ipfs-status" data-cid="<?= crt_e($cid) ?>">TOKEN IMAGE / CHECKING IPFS</div><?php endif; ?>
 </div>
-<div>
+<div class="mooncake-exit-copy">
 <a href="/oracle" aria-label="Ask The Oracle with the physical key for <?= crt_e($title) ?>">
 <span class="eyebrow">THE PHYSICAL KEY</span>
 <strong>Have the original?<br>Ask The Oracle →</strong>
