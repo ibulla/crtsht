@@ -9,7 +9,7 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>The Lore / CRTSHT</title>
 <meta name="description" content="The lore behind CRTSHT: 128 creatures, TGPs, mooncakes, hashes, wallets, a wall, four words and one draw.">
-<link rel="stylesheet" href="/site.css?v=6">
+<link rel="stylesheet" href="/site.css?v=7">
 <style>
 .lore-page{overflow-x:hidden}
 .lore-page .wrap{position:relative;z-index:2}
@@ -19,9 +19,11 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 @keyframes coinFall{0%{transform:translate3d(0,-180px,0)}50%{transform:translate3d(calc(var(--drift) * .42),50vh,0)}100%{transform:translate3d(var(--drift),calc(100vh + 220px),0)}}
 @keyframes coinTurn{0%{transform:rotate(var(--start-rot)) translateX(0) translateY(0)}25%{transform:rotate(calc(var(--start-rot) + var(--quarter-turn))) translateX(2px) translateY(-2px)}50%{transform:rotate(calc(var(--start-rot) + var(--half-turn))) translateX(0) translateY(2px)}75%{transform:rotate(calc(var(--start-rot) + var(--three-quarter-turn))) translateX(-2px) translateY(-1px)}100%{transform:rotate(calc(var(--start-rot) + var(--full-turn))) translateX(0) translateY(0)}}
 .lore-opening{margin:0 0 calc(var(--pad)*1.45)}
+.lore-hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:clamp(20px,5vw,72px);align-items:start}
+.lore-hero-copy{min-width:0}
 .lore-opening .eyebrow{margin-bottom:12px}
-.lore-opening .hero-image{display:block;margin:0 0 22px}
-.lore-opening .hero-coin{width:clamp(96px,12vw,165px);height:auto}
+.lore-opening .hero-image{display:block}
+.lore-opening .hero-coin{width:clamp(112px,16vw,210px);height:auto;margin-top:2px}
 .lore-opening .fortune{font-size:clamp(31px,5.4vw,70px);line-height:.93;letter-spacing:-.06em;margin:0 0 22px;max-width:15ch}
 .lore-opening .origin{font-size:clamp(14px,1.25vw,18px);line-height:1.55;max-width:64ch;margin:0}
 .system-window{border:1px solid var(--fg);margin:30px 0 0;background:rgba(242,242,238,.72);backdrop-filter:blur(2px)}
@@ -30,9 +32,18 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 .myth-line{font-size:clamp(20px,2.2vw,31px)!important;line-height:1.15!important;letter-spacing:-.035em;max-width:28ch;margin:20px 0!important}
 .relic{display:block;width:100%;margin:22px 0 0;padding:0;border:0;background:none;color:inherit;text-align:left;font:inherit;cursor:zoom-in}.relic img{display:block;width:100%;border:1px solid var(--line);background:#fff}.relic-meta{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:8px;font-size:10px;line-height:1.45;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}.relic:hover .relic-open,.relic:focus-visible .relic-open{text-decoration:underline;color:var(--fg)}
 .zoomable-lore{cursor:zoom-in}
+.spec-table{border:1px solid var(--line);margin-top:20px;font-size:12px;line-height:1.45}
+.spec-row{display:grid;grid-template-columns:118px 24px minmax(0,1fr);align-items:baseline;padding:10px 12px;border-bottom:1px solid var(--line)}
+.spec-row:last-child{border-bottom:0}
+.spec-key{font-weight:700;letter-spacing:.04em}
+.spec-arrow{color:var(--muted)}
+.spec-value{overflow-wrap:anywhere}
 .public-secret{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line);border-left:1px solid var(--line);margin:22px 0}.public-secret>div{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:16px}.public-secret h3{font-size:11px;text-transform:uppercase;letter-spacing:.08em;margin:0 0 14px}.public-secret p{font-size:12px;line-height:1.55;margin:0 0 .55em}
+.cake-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:20px 0;max-width:none}
+.cake-pair a{display:block;min-width:0}
+.cake-pair img{display:block;width:100%;aspect-ratio:1;object-fit:cover}
 .founder{display:grid;grid-template-columns:minmax(220px,.8fr) minmax(0,1.2fr);gap:var(--pad);align-items:start}.founder img{display:block;width:100%;max-width:520px}.founder-copy{max-width:620px}.founder-copy .name{font-size:clamp(34px,5vw,72px);line-height:.9;letter-spacing:-.06em;margin:0 0 20px}.founder-copy p{font-size:clamp(14px,1.25vw,18px);line-height:1.55;margin:0 0 1em}.lore-last{font-size:clamp(22px,3vw,42px);line-height:1.05;letter-spacing:-.045em;max-width:24ch;margin:30px 0 0}
-@media(max-width:700px){.founder,.public-secret{grid-template-columns:1fr}.coin-drop{opacity:calc(var(--opacity) * .72)}.lore-opening .hero-coin{width:112px}}
+@media(max-width:700px){.founder,.public-secret{grid-template-columns:1fr}.coin-drop{opacity:calc(var(--opacity) * .72)}.lore-hero{gap:16px}.lore-opening .hero-coin{width:clamp(86px,25vw,112px)}.spec-row{grid-template-columns:88px 18px minmax(0,1fr);padding:9px 10px}}
 @media(prefers-reduced-motion:reduce){.coin-rain{display:none}}
 </style>
 </head>
@@ -45,10 +56,14 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 </header>
 
 <section class="lore-opening">
+<div class="lore-hero">
+<div class="lore-hero-copy">
 <div class="eyebrow">THE LORE</div>
-<img class="hero-image hero-coin" src="/img/TheCoin.png" alt="CRTSHT mooncake coin" fetchpriority="high">
 <p class="fortune">The Internet has forgotten.<br>The blockchain didn't.</p>
 <p class="origin">CRTSHT began in 2021, when images discovered wallets and almost every browser tab seemed to promise a new economy. From the great autonomous <strong>MORE-Algorithm — My Only Rare Experience</strong> came 128 creatures. They were generated, printed, hashed, minted, pinned, sealed — and then left waiting.</p>
+</div>
+<img class="hero-image hero-coin" src="/img/TheCoin.png" alt="CRTSHT mooncake coin" fetchpriority="high">
+</div>
 
 <div class="system-window" aria-label="Recovered CRTSHT system message">
 <div class="system-bar"><span>CRYPTOSHIT / MORE SYSTEM</span><span>RL-HOOK ONLINE</span></div>
@@ -88,13 +103,13 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 <span class="relic-meta"><span>2021-GENUINE-PRINT.JPG / ORIGINAL PROJECT RELIC</span><span class="relic-open">OPEN FULL SIZE +</span></span>
 </button>
 <p class="myth-line">Part instruction manual. Part proof. Part promise from a future that arrived differently.</p>
-<div class="codebox">
-TGP → THE GENUINE PRINT<br>
-RL-HOOK → REAL-LIFE CONNECTION<br>
-FORMAT → 20 × 20 CM<br>
-EDITION → 1 PHYSICAL ORIGINAL<br>
-IDENTITY → HEX / 0x0001—0x0080<br>
-PRINT → SHA-256 FINGERPRINT
+<div class="spec-table" role="table" aria-label="TGP object specification">
+<div class="spec-row" role="row"><span class="spec-key" role="cell">TGP</span><span class="spec-arrow" role="cell">→</span><span class="spec-value" role="cell">THE GENUINE PRINT</span></div>
+<div class="spec-row" role="row"><span class="spec-key" role="cell">RL-HOOK</span><span class="spec-arrow" role="cell">→</span><span class="spec-value" role="cell">REAL-LIFE CONNECTION</span></div>
+<div class="spec-row" role="row"><span class="spec-key" role="cell">FORMAT</span><span class="spec-arrow" role="cell">→</span><span class="spec-value" role="cell">20 × 20 CM</span></div>
+<div class="spec-row" role="row"><span class="spec-key" role="cell">EDITION</span><span class="spec-arrow" role="cell">→</span><span class="spec-value" role="cell">1 PHYSICAL ORIGINAL</span></div>
+<div class="spec-row" role="row"><span class="spec-key" role="cell">IDENTITY</span><span class="spec-arrow" role="cell">→</span><span class="spec-value" role="cell">HEX / 0x0001—0x0080</span></div>
+<div class="spec-row" role="row"><span class="spec-key" role="cell">PRINT</span><span class="spec-arrow" role="cell">→</span><span class="spec-value" role="cell">SHA-256 FINGERPRINT</span></div>
 </div>
 <p>The technology is very serious. The subject matter is under no obligation to be.</p>
 </div>
