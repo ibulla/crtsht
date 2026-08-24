@@ -151,13 +151,13 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 <div class="cake-pair">
 <?php foreach([1,64] as $id): $cake=crt_cake($id); if($cake): ?><a href="/crtsht/<?= $id ?>"><img loading="lazy" decoding="async" src="<?= crt_e($cake) ?>" alt="Mooncake <?= $id ?>"></a><?php endif; endforeach; ?>
 </div>
-<div class="codebox">
-HEX ID → 0x0001<br>
-TGP → SHA-256 FINGERPRINT<br>
-WALLET → ETHEREUM PUBLIC ADDRESS<br>
-TOKEN IMAGE → IPFS CID<br>
-METADATA → IPFS CID<br>
-POO → SHORT INTERNAL HASH
+<div class="spec-table" role="table" aria-label="Mooncake metadata specification">
+<div class="spec-row" role="row"><span class="spec-key" role="cell">HEX ID</span><span class="spec-arrow" role="cell">→</span><span class="spec-value" role="cell">0x0001</span></div>
+<div class="spec-row" role="row"><span class="spec-key" role="cell">TGP</span><span class="spec-arrow" role="cell">→</span><span class="spec-value" role="cell">SHA-256 FINGERPRINT</span></div>
+<div class="spec-row" role="row"><span class="spec-key" role="cell">WALLET</span><span class="spec-arrow" role="cell">→</span><span class="spec-value" role="cell">ETHEREUM PUBLIC ADDRESS</span></div>
+<div class="spec-row" role="row"><span class="spec-key" role="cell">TOKEN IMAGE</span><span class="spec-arrow" role="cell">→</span><span class="spec-value" role="cell">IPFS CID</span></div>
+<div class="spec-row" role="row"><span class="spec-key" role="cell">METADATA</span><span class="spec-arrow" role="cell">→</span><span class="spec-value" role="cell">IPFS CID</span></div>
+<div class="spec-row" role="row"><span class="spec-key" role="cell">POO</span><span class="spec-arrow" role="cell">→</span><span class="spec-value" role="cell">SHORT INTERNAL HASH</span></div>
 </div>
 <p>A hash points to an image carrying the signs of another hash, attached to a physical print whose fingerprint lives in the metadata.</p>
 <p>The mooncake is not decoration and not quite a certificate. It is closer to an amulet with too much metadata.</p>
