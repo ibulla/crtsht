@@ -9,7 +9,7 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>The Lore / CRTSHT</title>
 <meta name="description" content="Recovered lore from CRTSHT: 128 creatures, TGPs, mooncakes, hashes, wallets, a wall, four words and one draw.">
-<link rel="stylesheet" href="/site.css?v=7">
+<link rel="stylesheet" href="/site.css?v=8">
 <style>
 .lore-page{overflow-x:hidden}
 .lore-page .wrap{position:relative;z-index:2}
@@ -20,12 +20,12 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 @keyframes coinTurn{0%{transform:rotate(var(--start-rot)) translateX(0) translateY(0)}25%{transform:rotate(calc(var(--start-rot) + var(--quarter-turn))) translateX(2px) translateY(-2px)}50%{transform:rotate(calc(var(--start-rot) + var(--half-turn))) translateX(0) translateY(2px)}75%{transform:rotate(calc(var(--start-rot) + var(--three-quarter-turn))) translateX(-2px) translateY(-1px)}100%{transform:rotate(calc(var(--start-rot) + var(--full-turn))) translateX(0) translateY(0)}}
 .lore-opening{margin:0 0 calc(var(--pad)*1.45)}
 .lore-hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:clamp(20px,5vw,72px);align-items:start}
-.lore-hero-copy{min-width:0}
-.lore-opening .eyebrow{margin-bottom:12px}
+.lore-hero-copy{display:contents}
+.lore-opening .eyebrow{grid-column:1;grid-row:1;margin-bottom:12px}
 .lore-opening .hero-image{display:block}
-.lore-opening .hero-coin{width:clamp(112px,16vw,210px);height:auto;margin-top:2px}
-.lore-opening .fortune{font-family:inherit;font-weight:400;font-size:clamp(34px,6vw,92px);line-height:.9;letter-spacing:-.065em;margin:0 0 22px;max-width:13ch}
-.lore-opening .origin{font-size:clamp(14px,1.25vw,18px);line-height:1.55;max-width:64ch;margin:0}
+.lore-opening .hero-coin{grid-column:2;grid-row:1/3;width:clamp(112px,16vw,210px);height:auto;margin-top:2px}
+.lore-opening .fortune{grid-column:1;grid-row:2;font-family:inherit;font-weight:700;font-size:clamp(34px,6vw,92px);line-height:.9;letter-spacing:-.065em;margin:0 0 22px;max-width:13ch;text-transform:uppercase}
+.lore-opening .origin{grid-column:1/-1;grid-row:3;font-size:clamp(14px,1.25vw,18px);line-height:1.55;max-width:76ch;margin:0}
 .system-window{border:1px solid var(--fg);margin:30px 0 0;background:rgba(242,242,238,.72);backdrop-filter:blur(2px)}
 .system-bar{display:flex;justify-content:space-between;gap:20px;padding:7px 9px;border-bottom:1px solid var(--fg);font-size:10px;text-transform:uppercase;letter-spacing:.08em}
 .system-body{padding:18px}.system-body .shhh{font-family:inherit;font-weight:400;font-size:clamp(25px,3.5vw,54px);line-height:.95;letter-spacing:-.055em;margin:0 0 12px}.system-body p{font-size:13px;line-height:1.55;max-width:70ch;margin:0 0 .8em}.system-status{border-top:1px solid var(--line);padding:8px 9px;font-size:10px;letter-spacing:.04em;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
