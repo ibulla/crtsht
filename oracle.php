@@ -37,7 +37,7 @@ $revealed = count($matches) > 0;
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>The Oracle / CRTSHT</title>
-<meta name="description" content="Four words open one CRTSHT mooncake.">
+<meta name="description" content="Four visible words identify one CRTSHT and wake its private fortune.">
 <link rel="stylesheet" href="/site.css?v=7">
 <style>
 .oracle-system{border:1px solid var(--fg);margin-top:24px;background:rgba(255,255,255,.18)}
@@ -87,8 +87,8 @@ $revealed = count($matches) > 0;
 <section class="intro">
 <div class="eyebrow">THE ORACLE</div>
 <h1>Four seedwords.<br>One mooncake.</h1>
-<p>The 2021 instructions said the first four words could open your <strong>金のうんこ</strong> and more…”. This is the &.</p>
-<p class="oracle-note">Enter the four visible words from the physical CRTSHT. The Oracle checks them against the collection. The other words stay sealed; they are neither needed nor wanted here.</p>
+<p>The recovered 2021 instructions say that the first four words can open your <strong>金のうんこ</strong> — and more. The rest, predictably, remains unexplained.</p>
+<p class="oracle-note">Enter the four visible words from the physical CRTSHT. The Oracle uses them only to identify the specimen and reveal its fortune. The remaining twenty words stay sealed; they are neither needed nor wanted here.</p>
 <form class="oracle-form" method="post" action="/oracle" autocomplete="off">
 <input name="w1" placeholder="1. word" value="<?= crt_e($words[0]) ?>" required>
 <input name="w2" placeholder="2. word" value="<?= crt_e($words[1]) ?>" required>
