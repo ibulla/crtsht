@@ -8,7 +8,7 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>The Lore / CRTSHT</title>
-<meta name="description" content="The lore behind CRTSHT: 128 creatures, TGPs, mooncakes, hashes, wallets, a wall, four words and one draw.">
+<meta name="description" content="Recovered lore from CRTSHT: 128 creatures, TGPs, mooncakes, hashes, wallets, a wall, four words and one draw.">
 <link rel="stylesheet" href="/site.css?v=7">
 <style>
 .lore-page{overflow-x:hidden}
@@ -24,11 +24,11 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 .lore-opening .eyebrow{margin-bottom:12px}
 .lore-opening .hero-image{display:block}
 .lore-opening .hero-coin{width:clamp(112px,16vw,210px);height:auto;margin-top:2px}
-.lore-opening .fortune{font-size:clamp(31px,5.4vw,70px);line-height:.93;letter-spacing:-.06em;margin:0 0 22px;max-width:15ch}
+.lore-opening .fortune{font-family:inherit;font-weight:400;font-size:clamp(34px,6vw,92px);line-height:.9;letter-spacing:-.065em;margin:0 0 22px;max-width:13ch}
 .lore-opening .origin{font-size:clamp(14px,1.25vw,18px);line-height:1.55;max-width:64ch;margin:0}
 .system-window{border:1px solid var(--fg);margin:30px 0 0;background:rgba(242,242,238,.72);backdrop-filter:blur(2px)}
 .system-bar{display:flex;justify-content:space-between;gap:20px;padding:7px 9px;border-bottom:1px solid var(--fg);font-size:10px;text-transform:uppercase;letter-spacing:.08em}
-.system-body{padding:18px}.system-body .shhh{font-size:clamp(22px,3vw,40px);letter-spacing:-.045em;margin:0 0 12px}.system-body p{font-size:13px;line-height:1.55;max-width:70ch;margin:0 0 .8em}.system-status{border-top:1px solid var(--line);padding:8px 9px;font-size:10px;letter-spacing:.04em;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.system-body{padding:18px}.system-body .shhh{font-family:inherit;font-weight:400;font-size:clamp(25px,3.5vw,54px);line-height:.95;letter-spacing:-.055em;margin:0 0 12px}.system-body p{font-size:13px;line-height:1.55;max-width:70ch;margin:0 0 .8em}.system-status{border-top:1px solid var(--line);padding:8px 9px;font-size:10px;letter-spacing:.04em;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 .crt-blink{animation:crtBlink 2.3s steps(1,end) infinite}
 .connection-dots{display:inline-block;animation:connectionBlink 2.8s steps(2,end) infinite}
 .connection-progress{display:inline-block;min-width:3ch;text-align:right}
@@ -36,7 +36,7 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 @keyframes crtBlink{0%,67%,100%{opacity:1}68%,82%{opacity:0}}
 @keyframes connectionBlink{0%,58%,100%{opacity:1}59%,70%{opacity:.22}71%,84%{opacity:.72}}
 @keyframes connectionPulse{0%,100%{opacity:1}50%{opacity:.28}}
-.myth-line{font-size:clamp(20px,2.2vw,31px)!important;line-height:1.15!important;letter-spacing:-.035em;max-width:28ch;margin:20px 0!important}
+.myth-line{font-family:inherit;font-weight:400;font-size:clamp(25px,3.5vw,54px)!important;line-height:.95!important;letter-spacing:-.055em;max-width:20ch;margin:24px 0!important}
 .relic{display:block;width:100%;margin:22px 0 0;padding:0;border:0;background:none;color:inherit;text-align:left;font:inherit;cursor:zoom-in}.relic img{display:block;width:100%;border:1px solid var(--line);background:#fff}.relic-meta{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:8px;font-size:10px;line-height:1.45;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}.relic:hover .relic-open,.relic:focus-visible .relic-open{text-decoration:underline;color:var(--fg)}
 .zoomable-lore{cursor:zoom-in}
 .spec-table{border:1px solid var(--line);margin-top:20px;font-size:12px;line-height:1.45}
@@ -46,10 +46,8 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 .spec-arrow{color:var(--muted)}
 .spec-value{overflow-wrap:anywhere}
 .public-secret{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line);border-left:1px solid var(--line);margin:22px 0}.public-secret>div{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:16px}.public-secret h3{font-size:11px;text-transform:uppercase;letter-spacing:.08em;margin:0 0 14px}.public-secret p{font-size:12px;line-height:1.55;margin:0 0 .55em}
-.cake-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:20px 0;max-width:none}
-.cake-pair a{display:block;min-width:0}
-.cake-pair img{display:block;width:100%;aspect-ratio:1;object-fit:cover}
-.founder{display:grid;grid-template-columns:minmax(220px,.8fr) minmax(0,1.2fr);gap:var(--pad);align-items:start}.founder img{display:block;width:100%;max-width:520px}.founder-copy{max-width:620px}.founder-copy .name{font-size:clamp(34px,5vw,72px);line-height:.9;letter-spacing:-.06em;margin:0 0 20px}.founder-copy p{font-size:clamp(14px,1.25vw,18px);line-height:1.55;margin:0 0 1em}.lore-last{font-size:clamp(22px,3vw,42px);line-height:1.05;letter-spacing:-.045em;max-width:24ch;margin:30px 0 0}
+.cake-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:20px 0;max-width:none}.cake-pair a{display:block;min-width:0}.cake-pair img{display:block;width:100%;aspect-ratio:1;object-fit:cover}
+.founder{display:grid;grid-template-columns:minmax(220px,.8fr) minmax(0,1.2fr);gap:var(--pad);align-items:start}.founder img{display:block;width:100%;max-width:520px}.founder-copy{max-width:620px}.founder-copy .name{font-family:inherit;font-weight:400;font-size:clamp(34px,6vw,92px);line-height:.9;letter-spacing:-.065em;margin:0 0 20px}.founder-copy p{font-size:clamp(14px,1.25vw,18px);line-height:1.55;margin:0 0 1em}.lore-last{font-family:inherit;font-weight:400;font-size:clamp(25px,3.5vw,54px);line-height:.95;letter-spacing:-.055em;max-width:20ch;margin:30px 0 0}
 @media(max-width:700px){.founder,.public-secret{grid-template-columns:1fr}.coin-drop{opacity:calc(var(--opacity) * .72)}.lore-hero{gap:16px}.lore-opening .hero-coin{width:clamp(86px,25vw,112px)}.spec-row{grid-template-columns:88px 18px minmax(0,1fr);padding:9px 10px}}
 @media(prefers-reduced-motion:reduce){.coin-rain{display:none}.crt-blink,.connection-dots,.connection-progress.is-shifting{animation:none}}
 </style>
@@ -67,7 +65,7 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 <div class="lore-hero-copy">
 <div class="eyebrow">THE LORE</div>
 <p class="fortune">The Internet has forgotten.<br>The blockchain didn't.</p>
-<p class="origin">CRTSHT began in 2021, when images discovered wallets and almost every browser tab seemed to promise a new economy. From the great autonomous <strong>MORE-Algorithm — My Only Rare Experience</strong> came 128 creatures. They were generated, printed, hashed, minted, pinned, sealed — and then left waiting.</p>
+<p class="origin">CRTSHT began in 2021, when images discovered wallets and almost every browser tab seemed to promise a new economy. The <strong>MORE-Algorithm — My Only Rare Experience</strong> generated 128 creatures, along with prints, hashes, wallets, metadata and enough technical certainty to make the whole thing seem inevitable. Then the noise moved on. The files remained.</p>
 </div>
 <img class="hero-image hero-coin" src="/img/TheCoin.png" alt="CRTSHT mooncake coin" fetchpriority="high">
 </div>
@@ -86,11 +84,15 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 <section class="chapter">
 <h2>The creatures</h2>
 <div class="prose">
-<p>Before there was a collection, there was a cast.</p>
-<p><strong>Kin no unko</strong> appeared first — or at least claims to have. Dr. Slurp wandered in soon after. Somewhere else the Ice-Emoji saga froze mid-expression. Others arrived without names and seem happier that way.</p>
-<p>Colours drifted. Eyes changed. Accessories accumulated. Backgrounds mutated. Nothing developed a reliable taxonomy.</p>
+<p>Before there was a collection, there was debris.</p>
+<p>For a brief moment, almost anything the internet touched became an NFT. Images became assets. Jokes became tokens. Pixels became property. Wallets multiplied, marketplaces appeared overnight, and somewhere between speculation, metadata and collective delirium, a great amount of digital matter turned into shit.</p>
+<p>When the dust began to settle, something was moving underneath it.</p>
+<p>Small creatures were found scattered through the remains of abandoned collections, broken promises and forgotten wallets. Some appeared almost intact. Others seemed to have mutated from whatever had been left behind.</p>
+<p>Among the first identified specimens were <strong>Kin no unko</strong> and <strong>Dr. Slurp</strong>. The Ice-Emoji appeared somewhat later, apparently frozen during whatever had happened. Many others never received proper names.</p>
+<p>Colours drifted. Eyes changed. Accessories accumulated. Backgrounds mutated. Attempts at classification were unsuccessful.</p>
 <p class="myth-line">They resemble one another just enough to be family, and differ just enough to cause trouble.</p>
-<p>Each received a hexadecimal identity from <strong>0x0001</strong> to <strong>0x0080</strong>. No ranking. No rarity chart. No chosen hero. Just 128 small lives inside the same badly behaved universe.</p>
+<p>Eventually, 128 specimens were recovered. Each received a hexadecimal identity from <strong>0x0001</strong> to <strong>0x0080</strong>.</p>
+<p>No ranking. No rarity chart. No chosen hero. Just 128 small lives recovered from the dust of an NFT nightmare.</p>
 <div class="gallery">
 <?php foreach($sampleIds as $id): $img=crt_artwork($id); $meta=crt_metadata($id); if(!$img||!$meta) continue; ?>
 <a href="/crtsht/<?= $id ?>"><img loading="lazy" decoding="async" src="<?= crt_e($img) ?>" alt="<?= crt_e(crt_title($id,$meta)) ?>"></a>
@@ -102,8 +104,8 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 <section class="chapter">
 <h2>The TGP</h2>
 <div class="prose">
-<p>MORE generated the creatures as ready-to-print files. The old instructions gave the result a wonderfully overconfident name: <strong>TGP — The Genuine Print</strong>.</p>
-<p>One image. One 20 × 20 cm physical original. One hexadecimal identity. Instead of signing the front with a pencil, the system built an unnecessarily elaborate bridge between the object and the network.</p>
+<p>The recovered instructions refer to the physical works with a wonderfully overconfident name: <strong>TGP — The Genuine Print</strong>.</p>
+<p>One creature. One 20 × 20 cm physical original. One hexadecimal identity. Instead of signing the front with a pencil, the system built an unnecessarily elaborate bridge between the object and the network.</p>
 <p>The diagram below is not a reconstruction. It survived with the project.</p>
 <button type="button" class="relic" data-lightbox-src="/img/2021-genuine-print.jpg" data-lightbox-alt="2021 CRTSHT Genuine Print diagram showing the physical print, RL-HOOK, public metadata and secret key">
 <img src="/img/2021-genuine-print.jpg" alt="2021 CRTSHT Genuine Print diagram showing the physical print, RL-HOOK, public metadata and secret key" loading="lazy" decoding="async">
@@ -125,7 +127,7 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 <section class="chapter">
 <h2>Public / Secret</h2>
 <div class="prose">
-<p>The 2021 system divided every TGP into two territories: <strong>PUBLIC META</strong> and <strong>SECRET KEY</strong>. Five years later, that distinction is still the cleanest way into the object.</p>
+<p>Every recovered TGP contains two territories: <strong>PUBLIC META</strong> and <strong>SECRET KEY</strong>. One was built to be seen. The other was built to remain with the object.</p>
 <div class="public-secret">
 <div>
 <h3>PUBLIC META</h3>
@@ -144,8 +146,8 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 </div>
 </div>
 <p>The four visible words do not open the wallet. That would be a terrible feature.</p>
-<p>They do something much less useful and therefore much more appropriate: they let the archive recognize the physical work and open its private fortune.</p>
-<p>The remaining twenty words stay sealed. Some doors are better when they remain doors.</p>
+<p>They act instead as a small recognition ritual: four fragments from the object allow the archive to identify the specimen and wake its private fortune.</p>
+<p>The remaining twenty words stay sealed with the work. Some doors are better when they remain doors.</p>
 <p><a href="/oracle">Ask The Oracle →</a></p>
 </div>
 </section>
@@ -153,8 +155,9 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 <section class="chapter">
 <h2>The mooncake</h2>
 <div class="prose">
-<p>Every CRTSHT has a second body: a mooncake. Or, depending on which part of the old system you ask, a <strong>金のうんこ</strong>.</p>
-<p>The physical TGP carries the creature. The NFT points to the cake. The cake carries the identity of the same strange object through another route.</p>
+<p>Every CRTSHT appears to have developed a second body: a mooncake. In older records it is also called <strong>金のうんこ</strong> — Kin no unko.</p>
+<p>No surviving document explains why the creature needed another body. It only shows that the system insisted on one.</p>
+<p>The physical TGP carries the creature. The NFT points to the cake. The cake carries the identity back through hashes, addresses and references until the same specimen appears on both sides of the network.</p>
 <div class="cake-pair">
 <?php foreach([1,64] as $id): $cake=crt_cake($id); if($cake): ?><a href="/crtsht/<?= $id ?>"><img loading="lazy" decoding="async" src="<?= crt_e($cake) ?>" alt="Mooncake <?= $id ?>"></a><?php endif; endforeach; ?>
 </div>
@@ -167,16 +170,17 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 <div class="spec-row" role="row"><span class="spec-key" role="cell">POO</span><span class="spec-arrow" role="cell">→</span><span class="spec-value" role="cell">SHORT INTERNAL HASH</span></div>
 </div>
 <p>A hash points to an image carrying the signs of another hash, attached to a physical print whose fingerprint lives in the metadata.</p>
-<p>The mooncake is not decoration and not quite a certificate. It is closer to an amulet with too much metadata.</p>
+<p class="myth-line">Not quite a certificate. More like an amulet with too much metadata.</p>
 </div>
 </section>
 
 <section class="chapter">
 <h2>The wall</h2>
 <div class="prose">
-<p>The family was always supposed to meet in real life. An exhibition plan survived from the unfinished project, waiting quietly beside the files.</p>
+<p>Among the recovered files was a plan for a wall.</p>
+<p>The creatures had been generated, printed, hashed and given identities, but the planned encounter never happened. The family remained dispersed across folders, wallets and storage.</p>
 <p class="myth-line">Together once before our disperse.</p>
-<p>The 128 originals can finally occupy the wall that was already drawn for them. It is less a display than a temporary family portrait: complete only until the first work leaves.</p>
+<p>Five years later, the 128 originals can finally occupy the wall that was already drawn for them. It is less a display than a temporary family portrait: complete only until the first work leaves.</p>
 <img class="plan zoomable-lore" src="/img/Exhibition-plan.png" alt="Original CRTSHT exhibition plan" loading="lazy" decoding="async" data-lightbox-src="/img/Exhibition-plan.png" data-lightbox-alt="Original CRTSHT exhibition plan">
 <p class="caption">EXHIBITION-PLAN.PNG / ORIGINAL PROJECT FILE / CLICK TO ENLARGE</p>
 </div>
@@ -185,8 +189,8 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 <section class="chapter">
 <h2>The draw</h2>
 <div class="prose">
-<p>The complete collection is public. The assignment is not.</p>
-<p>Everyone who enters receives one CRTSHT. Chance decides which identity leaves the wall with them. Nobody gets to rescue the prettiest one first.</p>
+<p>The complete archive is public. The assignment is not.</p>
+<p>Everyone who enters receives one CRTSHT. Chance decides which identity leaves the wall with them. Nobody gets to rescue the prettiest specimen first.</p>
 <div class="ritual">
 <div><strong>SEE</strong><p>All 128 works and their records remain visible.</p></div>
 <div><strong>DRAW</strong><p>A number is pulled from the box.</p></div>
@@ -204,10 +208,11 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 <div class="founder-copy">
 <div class="eyebrow">MARCO SPITZBARTH / iBULLA</div>
 <p class="name">Shit happens.</p>
-<p>CRTSHT was initiated in Zürich in 2021 by artist Marco Spitzbarth as part of the MyOnlyRare / MORE experiment. It started with curiosity about digital ownership and ended up producing physical prints, wallets, hashes, mooncakes, NFTs and sealed keys.</p>
-<p>The works were made. The blockchain entries were made. The planned encounter never quite happened.</p>
-<p>Five years later, the surrounding internet has changed enough to become part of the work. The files are being recovered, the records read again, and the 128 can finally meet before they leave one another.</p>
-<p class="lore-last">The archive takes the work seriously. CRTSHT is under no such obligation.</p>
+<p>CRTSHT was initiated in Zürich in 2021 by artist Marco Spitzbarth as part of the MyOnlyRare / MORE experiment. It began as an investigation into digital ownership at the moment digital ownership seemed ready to swallow almost everything.</p>
+<p>The works were made. The wallets were created. The hashes were calculated. The NFTs were minted. The planned encounter never quite happened.</p>
+<p>Five years later, the surrounding internet has changed enough to become part of the work. What once looked like infrastructure now also looks like evidence.</p>
+<p>The files are being recovered, the records read again, and the 128 creatures can finally meet before they disperse for real.</p>
+<p class="lore-last">The archive takes the evidence seriously. CRTSHT is under no such obligation.</p>
 </div>
 </div>
 </section>
