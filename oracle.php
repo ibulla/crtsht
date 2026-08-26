@@ -38,7 +38,7 @@ $revealed = count($matches) > 0;
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>The Oracle / CRTSHT</title>
 <meta name="description" content="Four visible words identify one CRTSHT and wake its private fortune.">
-<link rel="stylesheet" href="/site.css?v=7">
+<link rel="stylesheet" href="/site.css?v=8">
 <style>
 .oracle-system{border:1px solid var(--fg);margin-top:24px;background:rgba(255,255,255,.18)}
 .oracle-system-bar{display:flex;justify-content:space-between;gap:18px;padding:7px 9px;border-bottom:1px solid var(--fg);font-size:10px;text-transform:uppercase;letter-spacing:.08em;flex-wrap:wrap}
@@ -47,6 +47,7 @@ $revealed = count($matches) > 0;
 .oracle-system-body b{font-weight:500;display:inline-block;min-width:126px}
 .oracle-note{font-size:12px!important;color:var(--muted);max-width:58ch}
 .oracle-reveal .oracle-system{width:min(100%,620px);margin-top:28px}
+.oracle .intro h1{font-family:inherit;font-weight:700;text-transform:uppercase}
 .crt-blink{animation:crtBlink 2.3s steps(1,end) infinite}
 .connection-dots{display:inline-block;animation:connectionBlink 2.8s steps(2,end) infinite}
 .connection-progress{display:inline-block;min-width:3ch;text-align:right}
@@ -86,7 +87,7 @@ $revealed = count($matches) > 0;
 <?php else: ?>
 <section class="intro">
 <div class="eyebrow">THE ORACLE</div>
-<h1>Four seedwords.<br>One mooncake.</h1>
+<h1>FOUR SEEDWORDS.<br>ONE MOONCAKE.</h1>
 <p>The recovered 2021 instructions say that the first four words can open your <strong>金のうんこ</strong> — and more. The rest, predictably, remains unexplained.</p>
 <p class="oracle-note">Enter the four visible words from the physical CRTSHT. The Oracle uses them only to identify the specimen and reveal its fortune. The remaining twenty words stay sealed; they are neither needed nor wanted here.</p>
 <form class="oracle-form" method="post" action="/oracle" autocomplete="off">
