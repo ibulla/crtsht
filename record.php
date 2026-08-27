@@ -19,7 +19,7 @@ $title = crt_title($id,$meta);
 $attrs = crt_attrs($meta);
 $art = crt_artwork($id);
 $cake = crt_cake($id);
-$cid = crt_cid($meta); // token metadata image = mooncake
+$cid = crt_cid($meta);
 $dbrow = crt_db_record($id);
 $wallet = trim((string)($dbrow['ETH_Adr'] ?? ''));
 $mint = $wallet !== '' ? crt_mint_record($wallet) : null;
@@ -30,6 +30,7 @@ $ownerState = $currentOwner ? (strtolower($currentOwner) === strtolower($wallet)
 $birthday = (int)($attrs['birthday'] ?? 0);
 $jsonCid = trim((string)($dbrow['IPFS_JSON'] ?? ''));
 $description = trim((string)($meta['description'] ?? ''));
+$tokenUri = $jsonCid !== '' ? 'ipfs://' . $jsonCid : '';
 $prettyJson = json_encode($meta, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 if (!is_string($prettyJson)) $prettyJson = '{}';
 ?><!doctype html>
@@ -48,9 +49,7 @@ if (!is_string($prettyJson)) $prettyJson = '{}';
 </header>
 <section class="detail">
 <div class="art">
-<?php if($art): ?>
-<img class="zoomable" id="artwork-image" decoding="async" fetchpriority="high" src="<?= crt_e($art) ?>" alt="<?= crt_e($title) ?>">
-<?php endif; ?>
+<?php if($art): ?><img class="zoomable" id="artwork-image" decoding="async" fetchpriority="high" src="<?= crt_e($art) ?>" alt="<?= crt_e($title) ?>"><?php endif; ?>
 <div class="ipfs-status">GENUINE PRINT / IPFS VERIFIED</div>
 </div>
 <div>
@@ -84,52 +83,32 @@ if (!is_string($prettyJson)) $prettyJson = '{}';
 <div class="row"><span class="label">chain data</span><span class="muted">wallet recovered · transaction lookup unavailable</span></div>
 <?php endif; ?>
 
+<div class="section-head">PROVENANCE</div>
+<?php if($mint): ?>
+<?php if($ts): ?><div class="row"><span class="label">minted</span><span><?= crt_e(gmdate('Y-m-d H:i:s',$ts)) ?> UTC</span></div><?php endif; ?>
+<div class="row"><span class="label">mint tx</span><span class="value"><a target="_blank" rel="noopener" href="https://etherscan.io/tx/<?= crt_e($tx) ?>"><?= crt_e(substr($tx,0,10).'....'.substr($tx,-6)) ?> ↗</a></span></div>
+<div class="row" data-tx-cost-row data-tx="<?= crt_e($tx) ?>"><span class="label">tx cost</span><span class="muted">recovering receipt…</span></div>
+<?php endif; ?>
+<?php if($tokenUri !== ''): ?><div class="row"><span class="label">token uri</span><span class="value copy" data-copy><?= crt_e($tokenUri) ?></span></div><?php endif; ?>
+<div class="row"><span class="label">physical</span><span>20 × 20 cm · 1 GENUINE PRINT · TGP</span></div>
+<div class="row"><span class="label">archive</span><span><?= $id ?>/128 · reconstructed 2026</span></div>
+
 <div class="section-head">NETWORK</div>
 <?php if($cid): ?><div class="row"><span class="label">mooncake cid</span><span class="value"><a target="_blank" rel="noopener" href="https://ipfs.io/ipfs/<?= crt_e($cid) ?>"><?= crt_e($cid) ?> ↗</a></span></div><?php endif; ?>
 <?php if($jsonCid): ?><div class="row"><span class="label">metadata cid</span><span class="value"><a target="_blank" rel="noopener" href="https://ipfs.io/ipfs/<?= crt_e($jsonCid) ?>"><?= crt_e($jsonCid) ?> ↗</a></span></div><?php endif; ?>
-<div class="row"><span class="label">json</span><span class="value"><a target="_blank" href="/JSON_1-128/<?= $id ?>.json">original 2021 metadata ↗</a>
-<details class="json-reveal"><summary>Reveal JSON</summary><pre><?= crt_e($prettyJson) ?></pre></details><?php if($description !== ''): ?><span class="metadata-description"><?= crt_e($description) ?></span><?php endif; ?></span></div>
+<div class="row"><span class="label">json</span><span class="value"><a target="_blank" href="/JSON_1-128/<?= $id ?>.json">original 2021 metadata ↗</a><details class="json-reveal"><summary>Reveal JSON</summary><pre><?= crt_e($prettyJson) ?></pre></details><?php if($description !== ''): ?><span class="metadata-description"><?= crt_e($description) ?></span><?php endif; ?></span></div>
 </div>
 </div>
 </div>
 </section>
 
-<?php if($cake): ?>
-<section class="mooncake-exit">
-<div class="mooncake-exit-media">
-<a href="/oracle" aria-label="Ask The Oracle with the physical key for <?= crt_e($title) ?>">
-<img id="mooncake-image" loading="lazy" decoding="async" src="<?= crt_e($cake) ?>" alt="Mooncake for <?= crt_e($title) ?>">
-</a>
-<?php if($cid): ?><div id="mooncake-ipfs-status" class="ipfs-status" data-cid="<?= crt_e($cid) ?>">TOKEN IMAGE / CHECKING IPFS</div><?php endif; ?>
-</div>
-<div class="mooncake-exit-copy">
-<a href="/oracle" aria-label="Ask The Oracle with the physical key for <?= crt_e($title) ?>">
-<span class="eyebrow">THE PHYSICAL KEY</span>
-<strong>Have the original?<br>Ask The Oracle →</strong>
-</a>
-</div>
-</section>
-<?php endif; ?>
-
+<?php if($cake): ?><section class="mooncake-exit"><div class="mooncake-exit-media"><a href="/oracle" aria-label="Ask The Oracle with the physical key for <?= crt_e($title) ?>"><img id="mooncake-image" loading="lazy" decoding="async" src="<?= crt_e($cake) ?>" alt="Mooncake for <?= crt_e($title) ?>"></a><?php if($cid): ?><div id="mooncake-ipfs-status" class="ipfs-status" data-cid="<?= crt_e($cid) ?>">TOKEN IMAGE / CHECKING IPFS</div><?php endif; ?></div><div class="mooncake-exit-copy"><a href="/oracle" aria-label="Ask The Oracle with the physical key for <?= crt_e($title) ?>"><span class="eyebrow">THE PHYSICAL KEY</span><strong>Have the original?<br>Ask The Oracle →</strong></a></div></section><?php endif; ?>
 <footer class="footer"><span><?= crt_e($title) ?> / CRTSHT</span><span><?= $id ?>/128</span></footer>
 </main>
 <div class="lightbox" id="lightbox"><button aria-label="Close">×</button><img alt="Full artwork"></div>
 <script>
 document.querySelectorAll('[data-copy]').forEach(el=>el.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(el.textContent.trim());const old=el.textContent;el.textContent='COPIED';setTimeout(()=>el.textContent=old,700)}catch(e){}}));
-const ipfsStatus=document.getElementById('mooncake-ipfs-status');
-if(ipfsStatus){
-  const cid=ipfsStatus.dataset.cid;
-  const gateways=[`https://dweb.link/ipfs/${cid}`,`https://ipfs.io/ipfs/${cid}`,`https://w3s.link/ipfs/${cid}`];
-  let i=0;
-  const probe=()=>{
-    if(i>=gateways.length){ipfsStatus.textContent='TOKEN IMAGE / IPFS GATEWAYS UNAVAILABLE';return;}
-    const url=gateways[i++], test=new Image();
-    test.onload=()=>{try{ipfsStatus.textContent='TOKEN IMAGE / IPFS VERIFIED / '+new URL(url).hostname}catch(e){ipfsStatus.textContent='TOKEN IMAGE / IPFS VERIFIED'}};
-    test.onerror=probe;
-    test.src=url;
-  };
-  if('requestIdleCallback' in window) requestIdleCallback(probe,{timeout:1200}); else setTimeout(probe,250);
-}
+const ipfsStatus=document.getElementById('mooncake-ipfs-status');if(ipfsStatus){const cid=ipfsStatus.dataset.cid;const gateways=[`https://dweb.link/ipfs/${cid}`,`https://ipfs.io/ipfs/${cid}`,`https://w3s.link/ipfs/${cid}`];let i=0;const probe=()=>{if(i>=gateways.length){ipfsStatus.textContent='TOKEN IMAGE / IPFS GATEWAYS UNAVAILABLE';return;}const url=gateways[i++],test=new Image();test.onload=()=>{try{ipfsStatus.textContent='TOKEN IMAGE / IPFS VERIFIED / '+new URL(url).hostname}catch(e){ipfsStatus.textContent='TOKEN IMAGE / IPFS VERIFIED'}};test.onerror=probe;test.src=url;};if('requestIdleCallback' in window)requestIdleCallback(probe,{timeout:1200});else setTimeout(probe,250);}
 const lb=document.getElementById('lightbox'),lbi=lb.querySelector('img');document.querySelectorAll('.zoomable').forEach(z=>z.addEventListener('click',()=>{lbi.src=z.src;lb.classList.add('open')}));lb.addEventListener('click',()=>lb.classList.remove('open'));document.addEventListener('keydown',e=>{if(e.key==='Escape')lb.classList.remove('open')});
 </script>
 </body></html>
