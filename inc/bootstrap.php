@@ -239,3 +239,19 @@ function crt_fortune(string $key, int $id): string {
     $hash = hash('sha256', $key . '.' . $id . '.fortune');
     return $fortunes[hexdec(substr($hash, 0, 8)) % count($fortunes)];
 }
+
+// Shared progressive enhancements for every public CRTSHT page that uses this bootstrap.
+// Keeping this here avoids maintaining the same script/link tags in Archive, Record, Lore and Oracle.
+if (PHP_SAPI !== 'cli') {
+    ob_start(static function (string $html): string {
+        if (!str_contains($html, 'class="brand"')) return $html;
+
+        if (str_contains($html, '</head>') && !str_contains($html, '/layout-tune.css')) {
+            $html = str_replace('</head>', '<link rel="stylesheet" href="/layout-tune.css?v=1">' . "\n" . '</head>', $html);
+        }
+        if (str_contains($html, '</body>') && !str_contains($html, '/js/leetspeak.js')) {
+            $html = str_replace('</body>', '<script src="/js/leetspeak.js?v=1" defer></script>' . "\n" . '</body>', $html);
+        }
+        return $html;
+    });
+}
