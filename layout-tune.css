@@ -1,0 +1,10 @@
+/* Desktop width tuning: keep the Oracle's ritual/form compact, but let the page breathe like Lore. */
+@media (min-width: 801px) {
+  .oracle {
+    max-width: 1180px;
+  }
+
+  .oracle:not(.oracle-revealed) .intro {
+    max-width: 760px;
+  }
+}
