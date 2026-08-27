@@ -43,7 +43,7 @@ if (!is_string($prettyJson)) $prettyJson = '{}';
 </head>
 <body><main class="wrap">
 <header>
-<a class="brand" href="/">CRTSHT</a>
+<a class="brand" href="/">CR¥P70$H!7.1NF0</a>
 <nav class="nav"><a href="/" aria-current="page">Archive</a><a href="/lore">The Lore</a><a href="/oracle">The Oracle</a></nav>
 </header>
 <section class="detail">
