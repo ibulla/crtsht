@@ -56,7 +56,7 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 <div class="coin-rain" id="coin-rain" aria-hidden="true"></div>
 <main class="wrap lore">
 <header>
-<a class="brand" href="/">CRTSHT</a>
+<a class="brand" href="/">[rYp70$H!7.1Nf0</a>
 <nav class="nav"><a href="/">Archive</a><a href="/lore" aria-current="page">The Lore</a><a href="/oracle">The Oracle</a></nav>
 </header>
 <section class="lore-opening">

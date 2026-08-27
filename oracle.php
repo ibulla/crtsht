@@ -60,7 +60,7 @@ $revealed = count($matches) > 0;
 </head>
 <body><main class="wrap oracle<?= $revealed ? ' oracle-revealed' : '' ?>">
 <header>
-<a class="brand" href="/">CRTSHT</a>
+<a class="brand" href="/"><Я¥P70$H|+.[N|=0</a>
 <nav class="nav"><a href="/">Archive</a><a href="/lore">The Lore</a><a href="/oracle" aria-current="page">The Oracle</a></nav>
 </header>
 

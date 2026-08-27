@@ -12,7 +12,7 @@ require __DIR__ . '/inc/bootstrap.php';
 </head>
 <body><main class="wrap">
 <header>
-<a class="brand" href="/">CRTSHT</a>
+<a class="brand" href="/">(RYP705H17.1NF0</a>
 <nav class="nav"><a href="/" aria-current="page">Archive</a><a href="/lore">The Lore</a><a href="/oracle">The Oracle</a></nav>
 </header>
 <section class="intro">
