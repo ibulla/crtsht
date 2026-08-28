@@ -214,18 +214,18 @@ $remainingSlots = $reservedSlots === null ? null : max(0, CRTSHT_TOTAL - $reserv
 <input type="hidden" name="csrf" value="<?= crt_e($csrf) ?>">
 <div class="hp" aria-hidden="true"><label>Company<input type="text" name="company" tabindex="-1" autocomplete="off"></label></div>
 <div class="entry-grid" aria-label="Draw entry quantities">
-<div class="entry"><input id="qty1" type="radio" name="quantity" value="1" <?= $form['quantity']==='1'?'checked':'' ?>><label for="qty1"><div><span>ONE / ENTRY</span><strong>1×</strong></div><p>One entry number. One unknown CRTSHT.</p></label></div>
-<div class="entry"><input id="qty2" type="radio" name="quantity" value="2" <?= $form['quantity']==='2'?'checked':'' ?>><label for="qty2"><div><span>PAIR / ENTRIES</span><strong>2×</strong></div><p>Two consecutive entry numbers. Two independent draws.</p></label></div>
-<div class="entry"><input id="qty3" type="radio" name="quantity" value="3" <?= $form['quantity']==='3'?'checked':'' ?>><label for="qty3"><div><span>TRIO / ENTRIES</span><strong>3×</strong></div><p>Three consecutive entry numbers. Three independent draws.</p></label></div>
+<div class="entry"><input id="qty1" type="radio" name="quantity" value="1" <?= $form['quantity']==='1'?'checked':'' ?>><label for="qty1"><div><span>ONE / ENTRY</span><strong>1×</strong></div><p>One entry. One unknown CRTSHT.</p></label></div>
+<div class="entry"><input id="qty2" type="radio" name="quantity" value="2" <?= $form['quantity']==='2'?'checked':'' ?>><label for="qty2"><div><span>PAIR / ENTRIES</span><strong>2×</strong></div><p>Two independent draws.</p></label></div>
+<div class="entry"><input id="qty3" type="radio" name="quantity" value="3" <?= $form['quantity']==='3'?'checked':'' ?>><label for="qty3"><div><span>TRIO / ENTRIES</span><strong>3×</strong></div><p>Three consecutive, independent draws.</p></label></div>
 </div>
 <div class="form-grid">
-<div class="field field-wide"><label for="name">Name</label><input id="name" name="name" maxlength="120" value="<?= crt_e($form['name']) ?>" autocomplete="name" required></div>
-<div class="field"><label for="email">Mail</label><input id="email" type="email" name="email" maxlength="190" value="<?= crt_e($form['email']) ?>" autocomplete="email" required></div>
-<div class="field"><label for="mobile">Mobile</label><input id="mobile" type="tel" name="mobile" maxlength="50" value="<?= crt_e($form['mobile']) ?>" autocomplete="tel" required></div>
-<div class="field field-wide"><label for="address">Address</label><input id="address" name="address" maxlength="190" value="<?= crt_e($form['address']) ?>" autocomplete="street-address" required></div>
-<div class="field"><label for="plz">PLZ / Postal code</label><input id="plz" name="plz" maxlength="24" value="<?= crt_e($form['plz']) ?>" autocomplete="postal-code" required></div>
-<div class="field"><label for="city">City</label><input id="city" name="city" maxlength="120" value="<?= crt_e($form['city']) ?>" autocomplete="address-level2" required></div>
-<div class="field field-wide"><label for="country">Country</label><input id="country" name="country" maxlength="120" value="<?= crt_e($form['country']) ?>" autocomplete="country-name" required></div>
+<div class="field field-wide"><label for="name">Name*</label><input id="name" name="name" maxlength="120" value="<?= crt_e($form['name']) ?>" autocomplete="name" required></div>
+<div class="field"><label for="email">Mail*</label><input id="email" type="email" name="email" maxlength="190" value="<?= crt_e($form['email']) ?>" autocomplete="email" required></div>
+<div class="field"><label for="mobile">Mobile*</label><input id="mobile" type="tel" name="mobile" maxlength="50" value="<?= crt_e($form['mobile']) ?>" autocomplete="tel" required></div>
+<div class="field field-wide"><label for="address">Address*</label><input id="address" name="address" maxlength="190" value="<?= crt_e($form['address']) ?>" autocomplete="street-address" required></div>
+<div class="field"><label for="plz">PLZ / Postal code*</label><input id="plz" name="plz" maxlength="24" value="<?= crt_e($form['plz']) ?>" autocomplete="postal-code" required></div>
+<div class="field"><label for="city">City*</label><input id="city" name="city" maxlength="120" value="<?= crt_e($form['city']) ?>" autocomplete="address-level2" required></div>
+<div class="field field-wide"><label for="country">Country*</label><input id="country" name="country" maxlength="120" value="<?= crt_e($form['country']) ?>" autocomplete="country-name" required></div>
 </div>
 <p class="form-consent">Submitting stores this reservation and temporarily holds the selected number of CRTSHT draw slots. The reservation remains marked <strong>PAYMENT PENDING</strong> until it is manually confirmed as paid. Your data is used to manage the reservation, draw and delivery of the work.</p>
 <div class="terminal-action"><button class="terminal-button" type="submit" <?= $remainingSlots === 0 ? 'disabled' : '' ?>>RESERVE DRAW <?= $form['quantity']==='1' ? 'ENTRY' : 'ENTRIES' ?></button><span class="terminal-note">No artwork is selected here. Every valid ticket is matched by chance with one remaining physical CRTSHT at its scheduled draw.</span></div>
