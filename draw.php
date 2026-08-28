@@ -182,7 +182,7 @@ $remainingSlots = $reservedSlots === null ? null : max(0, CRTSHT_TOTAL - $reserv
 <div class="system-bar"><span>CRTSHT / DRAW TERMINAL</span><span>RESERVATION STORED</span></div>
 <div class="system-body">
 <div class="eyebrow">ENTRY CONFIRMED / PAYMENT PENDING</div>
-<h1 class="success-title">YOUR PLACE, NOT YOUR SHIT.</h1>
+<h1 class="success-title">SUCCESS! NOW THE SHIT GETS REAL.</h1>
 <p class="terminal-copy">Your reservation is stored. <?= $success['quantity'] === 1 ? 'This ticket receives' : 'Each of these tickets receives' ?> one independent draw for one real, remaining CRTSHT. Nothing is duplicated and the draw cannot exceed the 128 physical originals.</p>
 <div class="receipt-box">
 <div class="receipt-line"><span>RESERVATION</span><strong><?= crt_e($success['code']) ?></strong></div>
@@ -244,7 +244,7 @@ $remainingSlots = $reservedSlots === null ? null : max(0, CRTSHT_TOTAL - $reserv
 
 <?php if (!$success): ?>
 <section class="receipt">
-<div><div class="eyebrow">AFTER ENTRY</div><h2>YOUR PLACE, NOT YOUR SHIT.</h2></div>
+<div><div class="eyebrow">READY.</div><h2>THE SHIT GETS REAL.</h2></div>
 <div><div class="receipt-box" aria-label="Example draw receipt">
 <div class="receipt-line"><span>ENTRY</span><strong>#0027</strong></div>
 <div class="receipt-line"><span>BATCH</span><span>DRAW <?= crt_e($currentBatch) ?></span></div>
