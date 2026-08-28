@@ -246,8 +246,19 @@ if (PHP_SAPI !== 'cli') {
     ob_start(static function (string $html): string {
         if (!str_contains($html, 'class="brand"')) return $html;
 
-        if (str_contains($html, '</head>') && !str_contains($html, '/layout-tune.css')) {
-            $html = str_replace('</head>', '<link rel="stylesheet" href="/layout-tune.css?v=1">' . "\n" . '</head>', $html);
+        if (str_contains($html, '</head>')) {
+            $head = '';
+            if (!str_contains($html, '/fav/favicon.ico')) {
+                $head .= '<link rel="icon" type="image/x-icon" href="/fav/favicon.ico">' . "\n";
+                $head .= '<link rel="icon" type="image/png" sizes="32x32" href="/fav/favicon-32x32.png">' . "\n";
+                $head .= '<link rel="icon" type="image/png" sizes="16x16" href="/fav/favicon-16x16.png">' . "\n";
+                $head .= '<link rel="apple-touch-icon" sizes="180x180" href="/fav/apple-touch-icon.png">' . "\n";
+                $head .= '<link rel="manifest" href="/fav/site.webmanifest">' . "\n";
+            }
+            if (!str_contains($html, '/layout-tune.css')) {
+                $head .= '<link rel="stylesheet" href="/layout-tune.css?v=1">' . "\n";
+            }
+            if ($head !== '') $html = str_replace('</head>', $head . '</head>', $html);
         }
         if (str_contains($html, '</body>') && !str_contains($html, '/js/leetspeak.js')) {
             $html = str_replace('</body>', '<script src="/js/leetspeak.js?v=1" defer></script>' . "\n" . '</body>', $html);
