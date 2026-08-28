@@ -200,7 +200,7 @@ $remainingSlots = $reservedSlots === null ? null : max(0, CRTSHT_TOTAL - $reserv
 </section>
 <?php else: ?>
 <section class="draw-hero">
-<div><div class="eyebrow">128 WORKS / 128 OWNERS / CHANCE DECIDES</div><h1>ENTER THE DRAW.</h1><p class="draw-lead">You choose to own one. Chance chooses which.</p></div>
+<div><div class="eyebrow">128 WORKS / 128 OWNERS / CHANCE DECIDES</div><h1>ENTER THE DRAW.</h1><p class="draw-lead">You want to own one. Chance chooses which.</p></div>
 <div class="draw-copy"><p>A draw entry reserves one physical CRTSHT. It does not reserve a number, colour, face or favourite.</p><p><strong>Every ticket receives one draw for one real CRTSHT.</strong> There are exactly 128 physical originals, therefore no more than 128 valid draw entries can exist.</p></div>
 </section>
 <section class="system-window" aria-label="CRTSHT draw terminal">
