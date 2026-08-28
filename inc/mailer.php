@@ -144,6 +144,26 @@ function crt_mail_entry_list(array $ids): string {
     return implode(', ', array_map(static fn($id) => '#' . str_pad((string)(int)$id, 4, '0', STR_PAD_LEFT), $ids));
 }
 
+function crt_mail_payment_block(string $reservationCode, $total): string {
+    $twint = crt_env('CRTSHT_PAYMENT_TWINT');
+    $iban = crt_env('CRTSHT_PAYMENT_IBAN');
+    $accountName = crt_env('CRTSHT_PAYMENT_NAME');
+    if ($twint === '' && $iban === '') return '';
+
+    $body = "PAYMENT\n\nPlease transfer " . crt_mail_price($total) . " using one of the following:\n\n";
+    if ($twint !== '') {
+        $body .= "TWINT\n{$twint}\n\n";
+    }
+    if ($iban !== '') {
+        $body .= "BANK TRANSFER\nIBAN  {$iban}\n";
+        if ($accountName !== '') $body .= "NAME  {$accountName}\n";
+        $body .= "\n";
+    }
+    $body .= "REFERENCE\n{$reservationCode}\n\n"
+        . "Please use the reservation code as the payment reference.\n\n";
+    return $body;
+}
+
 function crt_mail_reservation_customer(array $reservation, array $entryIds, string $drawDate): array {
     $code = (string)($reservation['ReservationCode'] ?? '');
     $name = trim((string)($reservation['Name'] ?? ''));
@@ -154,17 +174,19 @@ function crt_mail_reservation_customer(array $reservation, array $entryIds, stri
         . ($name !== '' ? "Hi {$name},\n\n" : '')
         . "Your place in the CRTSHT draw is reserved.\n\n"
         . "RESERVATION  {$code}\n"
-        . "ENTRY        " . crt_mail_entry_list($entryIds) . "\n"
+        . "VOUCHER      " . crt_mail_entry_list($entryIds) . "\n"
         . "BATCH        DRAW " . (string)($reservation['DrawBatch'] ?? '') . "\n"
         . "NEXT DRAW    {$drawDate}\n"
         . "QUANTITY     {$quantity}\n"
         . "UNIT PRICE   " . crt_mail_price($unit) . "\n"
         . "TOTAL        " . crt_mail_price($total) . "\n"
         . "STATUS       RESERVED / PAYMENT PENDING\n\n"
-        . "One entry = one genuine physical CRTSHT.\n"
+        . crt_mail_payment_block($code, $total)
+        . "Your voucher" . ($quantity === 1 ? ' is' : 's are') . " reserved. "
+        . ($quantity === 1 ? 'It becomes' : 'They become') . " active for the draw once payment has been received.\n"
+        . "You will receive a confirmation when payment is registered.\n\n"
+        . "One voucher = one genuine physical CRTSHT.\n"
         . "YOU CHOOSE TO OWN ONE. CHANCE CHOOSES WHICH.\n\n"
-        . "Your reservation becomes a valid draw entry when payment is confirmed.\n"
-        . "Keep the reservation code for reference.\n\n"
         . "cryptoshit.info/draw\n";
     return crt_mail_send((string)($reservation['Email'] ?? ''), 'CRTSHT / reservation ' . $code, $body);
 }
@@ -174,7 +196,7 @@ function crt_mail_reservation_admin(array $reservation, array $entryIds): array 
     if ($admin === '') return ['ok' => true, 'error' => ''];
     $body = "CRTSHT / NEW DRAW RESERVATION\n\n"
         . "RESERVATION  " . (string)($reservation['ReservationCode'] ?? '') . "\n"
-        . "ENTRY        " . crt_mail_entry_list($entryIds) . "\n"
+        . "VOUCHER      " . crt_mail_entry_list($entryIds) . "\n"
         . "BATCH        DRAW " . (string)($reservation['DrawBatch'] ?? '') . "\n"
         . "QUANTITY     " . (string)($reservation['Quantity'] ?? '') . "\n"
         . "UNIT PRICE   " . crt_mail_price($reservation['UnitPrice'] ?? null) . "\n"
@@ -185,6 +207,7 @@ function crt_mail_reservation_admin(array $reservation, array $entryIds): array 
         . "ADDRESS      " . (string)($reservation['Address'] ?? '') . "\n"
         . "             " . trim((string)($reservation['PLZ'] ?? '') . ' ' . (string)($reservation['City'] ?? '')) . "\n"
         . "COUNTRY      " . (string)($reservation['Country'] ?? '') . "\n\n"
+        . "REFERENCE    " . (string)($reservation['ReservationCode'] ?? '') . "\n"
         . "STATUS       RESERVED / PAYMENT PENDING\n";
     return crt_mail_send($admin, 'CRTSHT / new reservation ' . (string)($reservation['ReservationCode'] ?? ''), $body, (string)($reservation['Email'] ?? ''));
 }
@@ -193,11 +216,11 @@ function crt_mail_paid_customer(array $reservation, array $entryIds): array {
     $code = (string)($reservation['ReservationCode'] ?? '');
     $body = "CRTSHT / DRAW TERMINAL\nPAYMENT CONFIRMED\n\n"
         . "RESERVATION  {$code}\n"
-        . "ENTRY        " . crt_mail_entry_list($entryIds) . "\n"
+        . "VOUCHER      " . crt_mail_entry_list($entryIds) . "\n"
         . "BATCH        DRAW " . (string)($reservation['DrawBatch'] ?? '') . "\n"
         . "TOTAL        " . crt_mail_price($reservation['TotalPrice'] ?? null) . "\n"
         . "STATUS       PAID / DRAW ACTIVE\n\n"
-        . "Your ticket" . (count($entryIds) === 1 ? ' is' : 's are') . " now active for the draw.\n"
+        . "Your voucher" . (count($entryIds) === 1 ? ' is' : 's are') . " now active for the draw.\n"
         . "The object remains unknown.\n\n"
         . "YOU CHOOSE TO OWN ONE. CHANCE CHOOSES WHICH.\n\n"
         . "cryptoshit.info/draw\n";
@@ -208,7 +231,7 @@ function crt_mail_assignment_customer(array $reservation, int $entryId, int $crt
     $recordUrl = rtrim(crt_env('CRTSHT_SITE_URL') ?: 'https://cryptoshit.info', '/') . '/crtsht/' . $crtshtId;
     $body = "CRTSHT / DRAW TERMINAL\nYOUR SHIT HAS BEEN DETERMINED.\n\n"
         . "RESERVATION  " . (string)($reservation['ReservationCode'] ?? '') . "\n"
-        . "ENTRY        #" . str_pad((string)$entryId, 4, '0', STR_PAD_LEFT) . "\n"
+        . "VOUCHER      #" . str_pad((string)$entryId, 4, '0', STR_PAD_LEFT) . "\n"
         . "DRAW         " . (string)($reservation['DrawBatch'] ?? '') . "\n"
         . "CRTSHT       #" . str_pad((string)$crtshtId, 3, '0', STR_PAD_LEFT) . "\n"
         . "STATUS       ASSIGNED\n\n"
