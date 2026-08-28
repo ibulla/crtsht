@@ -187,7 +187,7 @@ function crt_mail_reservation_customer(array $reservation, array $entryIds, stri
         . "You will receive a confirmation when payment is registered.\n\n"
         . "One voucher = one genuine physical CRTSHT.\n"
         . "YOU CHOOSE TO OWN ONE. CHANCE CHOOSES WHICH.\n\n"
-        . "cryptoshit.info/draw\n";
+        . "cryptoshit.info\n";
     return crt_mail_send((string)($reservation['Email'] ?? ''), 'CRTSHT / reservation ' . $code, $body);
 }
 
