@@ -38,18 +38,28 @@ function crt_verify_words(string $title,array $words,string $stored): bool { if(
 function crt_oracle_matches(array $words): array { $words=crt_normalize_words($words);if(count($words)!==4)return [];foreach($words as $word)if($word==='')return [];if(!in_array('whirlpool',hash_algos(),true))return [];$keys=crt_key_map();$matches=[];foreach($keys as $id=>$stored){$meta=crt_metadata((int)$id);$title=crt_title((int)$id,$meta);$derived=substr(hash('whirlpool',strtolower($title).'.'.implode('.',$words)),0,8);if(hash_equals($stored,strtolower($derived)))$matches[]=['id'=>(int)$id,'title'=>$title,'key'=>$stored];}return $matches; }
 function crt_fortune(string $key,int $id): string { $fortunes=['The object knows something the screen does not.','Keep the key. Forget the price.','A good archive never tells you where the story ends.','The future has poor metadata. Keep your own.','Something you kept will outlive something you chased.','The work changes when it leaves the wall. Let it.','Chance is only the beginning of ownership.','Trust the strange detail you almost ignored.','One block after another is still a journey.','Today is a good day to keep something offline.','Open what is sealed only when you really need it.','The secret is not the image. It is the encounter.','A key matters because something remains closed.','No algorithm can tell you why this one became yours.','The archive stays complete. The collection does not.','Ownership begins where browsing ends.','You found a number. Now give it a history.','The shortest proof is sometimes the object in your hand.'];$hash=hash('sha256',$key.'.'.$id.'.fortune');return $fortunes[hexdec(substr($hash,0,8))%count($fortunes)]; }
 
-// Shared progressive enhancements for every public CRTSHT page that uses this bootstrap.
+// Shared progressive enhancements for public CRTSHT pages and the tiny draw-control UI.
 if (PHP_SAPI !== 'cli') {
     ob_start(static function (string $html): string {
         if (!str_contains($html, 'class="brand"')) return $html;
 
-        // Keep the main navigation synchronized without duplicating edits across page templates.
-        if (!str_contains($html, 'href="/draw"')) {
+        $path = trim((string)(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? ''), '/');
+        $isManager = str_starts_with($path, 'crtshtdrwmng');
+
+        // Make the manager always use an explicit index.php URL; some hosts deny directory requests.
+        if ($isManager) {
+            $html = str_replace('href="/crtshtdrwmng/"', 'href="/crtshtdrwmng/index.php"', $html);
+            if (!str_contains($html, '/crtshtdrwmng/price.php')) {
+                $html = str_replace('<a href="/draw" target="_blank">PUBLIC DRAW ↗</a>', '<a href="/draw" target="_blank">PUBLIC DRAW ↗</a> &nbsp; <a href="/crtshtdrwmng/price.php">PRICE</a>', $html);
+            }
+        }
+
+        // Keep the main public navigation synchronized without duplicating edits across templates.
+        if (!$isManager && !str_contains($html, 'href="/draw"')) {
             $html = str_replace('</nav>', '<a href="/draw">Draw</a></nav>', $html);
         }
 
         // Once a paid draw ticket receives a physical CRTSHT, add that event to the public record.
-        $path = trim((string)(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? ''), '/');
         if (preg_match('~^(?:crtsht/)?(\d{1,3})$~', $path, $m) && str_contains($html, '<div class="section-head">PROVENANCE / OBJECT</div>')) {
             $assignment = crt_draw_assignment((int)$m[1]);
             if ($assignment) {
@@ -69,10 +79,14 @@ if (PHP_SAPI !== 'cli') {
                 $head .= '<link rel="apple-touch-icon" sizes="180x180" href="/fav/apple-touch-icon.png">' . "\n";
                 $head .= '<link rel="manifest" href="/fav/site.webmanifest">' . "\n";
             }
-            if (!str_contains($html, '/layout-tune.css')) $head .= '<link rel="stylesheet" href="/layout-tune.css?v=1">' . "\n";
+            if (!$isManager && !str_contains($html, '/layout-tune.css')) $head .= '<link rel="stylesheet" href="/layout-tune.css?v=1">' . "\n";
             if ($head !== '') $html = str_replace('</head>', $head . '</head>', $html);
         }
-        if (str_contains($html, '</body>') && !str_contains($html, '/js/leetspeak.js')) {
+
+        if ($path === 'draw' && str_contains($html, '</body>') && !str_contains($html, '/js/draw-price.js')) {
+            $html = str_replace('</body>', '<script src="/js/draw-price.js?v=1" defer></script>' . "\n" . '</body>', $html);
+        }
+        if (!$isManager && str_contains($html, '</body>') && !str_contains($html, '/js/leetspeak.js')) {
             $html = str_replace('</body>', '<script src="/js/leetspeak.js?v=1" defer></script>' . "\n" . '</body>', $html);
         }
         return $html;
