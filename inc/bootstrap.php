@@ -26,6 +26,7 @@ function crt_cake(int $id): ?string { $file=dirname(__DIR__).'/coin_1-128/'.$id.
 function crt_cid(array $meta): string { $uri=(string)($meta['image']??''); return str_starts_with($uri,'ipfs://')?substr($uri,7):''; }
 function crt_db(): ?mysqli { $host=crt_env('CRTSHT_DB_HOST');$user=crt_env('CRTSHT_DB_USER');$pass=crt_env('CRTSHT_DB_PASS');$name=crt_env('CRTSHT_DB_NAME');if($host===''||$user===''||$name==='')return null;mysqli_report(MYSQLI_REPORT_OFF);$db=@new mysqli($host,$user,$pass,$name);if($db->connect_errno)return null;$db->set_charset('utf8mb4');return $db; }
 function crt_db_record(int $id): ?array { $db=crt_db();if(!$db)return null;$stmt=$db->prepare('SELECT `ID`,`ShitID`,`ETH_Adr`,`Hasher_Druck`,`LoginWhirlpool`,`IPFS_COIN`,`IPFS_JSON` FROM `ShitID` WHERE `ID` = ? LIMIT 1');if(!$stmt){$db->close();return null;}$stmt->bind_param('i',$id);$stmt->execute();$result=$stmt->get_result();$row=$result?$result->fetch_assoc():null;$stmt->close();$db->close();return is_array($row)?$row:null; }
+function crt_draw_assignment(int $id): ?array { if($id<1||$id>CRTSHT_TOTAL)return null;$db=crt_db();if(!$db)return null;$stmt=$db->prepare("SELECT e.ID AS EntryID,e.DrawBatch,e.AssignedAt,r.ReservationCode,r.ID AS ReservationID FROM CRTSHT_Draw_Entries e INNER JOIN CRTSHT_Draw_Reservations r ON r.ID=e.ReservationID WHERE e.AssignedCRTSHT=? AND e.Status='assigned' AND r.Status='paid' LIMIT 1");if(!$stmt){$db->close();return null;}$stmt->bind_param('i',$id);$stmt->execute();$res=$stmt->get_result();$row=$res?$res->fetch_assoc():null;$stmt->close();$db->close();return is_array($row)?$row:null; }
 function crt_key_map(): array { $db=crt_db();if(!$db)return [];$result=$db->query('SELECT `ID`,`LoginWhirlpool` FROM `ShitID` WHERE `ID` BETWEEN 1 AND 128');$out=[];if($result){while($row=$result->fetch_assoc()){$id=(int)($row['ID']??0);$key=strtolower(trim((string)($row['LoginWhirlpool']??'')));if($id>=1&&$id<=CRTSHT_TOTAL&&$key!=='')$out[$id]=$key;}$result->free();}$db->close();return $out; }
 function crt_http_json(string $url): ?array { $ch=curl_init($url);curl_setopt_array($ch,[CURLOPT_RETURNTRANSFER=>true,CURLOPT_CONNECTTIMEOUT=>4,CURLOPT_TIMEOUT=>8,CURLOPT_FOLLOWLOCATION=>true,CURLOPT_USERAGENT=>'CRTSHT archive/2026']);$body=curl_exec($ch);$code=(int)curl_getinfo($ch,CURLINFO_RESPONSE_CODE);curl_close($ch);if(!is_string($body)||$code<200||$code>=300)return null;$data=json_decode($body,true);return is_array($data)?$data:null; }
 function crt_transfers(string $address): ?array { $key=crt_env('ETHERSCAN_API_KEY');if($address===''||$key==='')return null;$url='https://api.etherscan.io/v2/api?chainid=1&module=account&action=tokennfttx&address='.rawurlencode($address).'&startblock=0&endblock=999999999&sort=asc&apikey='.rawurlencode($key);$data=crt_http_json($url);return $data&&($data['status']??'')==='1'&&is_array($data['result']??null)?$data['result']:null; }
@@ -45,6 +46,18 @@ if (PHP_SAPI !== 'cli') {
         // Keep the main navigation synchronized without duplicating edits across page templates.
         if (!str_contains($html, 'href="/draw"')) {
             $html = str_replace('</nav>', '<a href="/draw">Draw</a></nav>', $html);
+        }
+
+        // Once a paid draw ticket receives a physical CRTSHT, add that event to the public record.
+        $path = trim((string)(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? ''), '/');
+        if (preg_match('~^(?:crtsht/)?(\d{1,3})$~', $path, $m) && str_contains($html, '<div class="section-head">PROVENANCE / OBJECT</div>')) {
+            $assignment = crt_draw_assignment((int)$m[1]);
+            if ($assignment) {
+                $assignedAt = trim((string)($assignment['AssignedAt'] ?? ''));
+                $drawRow = '<div class="row"><span class="label">draw entry</span><span>' . crt_e((string)$assignment['ReservationCode']) . ' · #' . str_pad((string)$assignment['EntryID'], 4, '0', STR_PAD_LEFT) . ' · DRAW ' . crt_e((string)$assignment['DrawBatch']) . '</span></div>';
+                if ($assignedAt !== '') $drawRow .= '<div class="row"><span class="label">assigned</span><span>' . crt_e($assignedAt) . ' CET</span></div>';
+                $html = str_replace('<div class="section-head">PROVENANCE / OBJECT</div>', '<div class="section-head">PROVENANCE / OBJECT</div>' . $drawRow, $html);
+            }
         }
 
         if (str_contains($html, '</head>')) {
