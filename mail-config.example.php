@@ -21,6 +21,11 @@ return [
     // Internal notification recipient
     'CRTSHT_MAIL_ADMIN' => 'you@example.com',
 
+    // Payment information shown in reservation mails
+    'CRTSHT_PAYMENT_TWINT' => '+41 XX XXX XX XX',
+    'CRTSHT_PAYMENT_IBAN' => 'CHxx xxxx xxxx xxxx xxxx x',
+    'CRTSHT_PAYMENT_NAME' => 'Your name / account holder',
+
     // Used for links in assignment/result mail
     'CRTSHT_SITE_URL' => 'https://cryptoshit.info',
 ];
