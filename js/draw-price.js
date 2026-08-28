@@ -20,6 +20,11 @@
     if(status)status.textContent='128 / 128 HELD / STANDBY REMAINS OPEN';
   }
 
+  const action=document.querySelector('.terminal-action');
+  if(action&&!reservationMatch&&!document.querySelector('[data-price-lock-note]')){
+    const note=document.createElement('span');note.dataset.priceLockNote='1';note.className='terminal-note';note.innerHTML='<strong>CHF PRICE FIXED ON CONFIRMATION.</strong><br><span data-crypto-note>BTC / ETH are approximate live reference values.</span>';action.appendChild(note);
+  }
+
   const renderCrypto=()=>{
     if(!packagePrices||!crypto||!crypto.btc_chf||!crypto.eth_chf)return;
     document.querySelectorAll('.entry-grid .entry').forEach((entry,i)=>{
@@ -43,7 +48,7 @@
       });
       const terminal=document.querySelector('.terminal-copy');
       if(terminal&&!document.querySelector('[data-public-entry-price]')){const vals=[1,2,3].map(q=>Number(data.prices[String(q)]||0));if(vals.some(v=>v>0)){const p=document.createElement('p');p.dataset.publicEntryPrice='1';p.className='capacity';p.innerHTML=vals.map((v,i)=>v>0?'<strong>'+fmtCHF(v)+'</strong> / '+(i+1)+'×':'').filter(Boolean).join(' &nbsp; · &nbsp; ');terminal.insertAdjacentElement('afterend',p);}}
-      if(rates&&rates.ok){crypto=rates;renderCrypto();setInterval(renderCrypto,2600+Math.random()*1700);const action=document.querySelector('.terminal-action');if(action&&!document.querySelector('[data-price-lock-note]')){const note=document.createElement('span');note.dataset.priceLockNote='1';note.className='terminal-note';note.innerHTML='<strong>CHF PRICE FIXED ON CONFIRMATION.</strong><br>BTC / ETH are live reference values with ±1–3% display drift.';action.appendChild(note);}}
+      if(rates&&rates.ok){crypto=rates;renderCrypto();setInterval(renderCrypto,2600+Math.random()*1700);const n=document.querySelector('[data-crypto-note]');if(n)n.textContent='BTC / ETH live reference · ±1–3% display drift.';}
     }
     if(reservationMatch&&data.total_price!=null){const box=document.querySelector('.receipt-box');if(box&&!box.querySelector('[data-price-line]')){const line=document.createElement('div');line.className='receipt-line';line.dataset.priceLine='1';line.innerHTML='<span>PRICE</span><strong>'+fmtCHF(data.total_price)+'</strong>';box.appendChild(line);}}
   }).catch(()=>{});
