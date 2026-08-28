@@ -22,6 +22,66 @@
     window.setTimeout(mutate,1800+Math.random()*2500);
   });
 
+  // Public draw: stable deep-link target directly at the reservation terminal.
+  if(location.pathname.replace(/\/+$/,'')==='/draw'){
+    const form=document.querySelector('.draw-form');
+    const terminal=form?.closest('.system-window');
+    if(terminal){
+      terminal.id='draw-terminal';
+      terminal.style.scrollMarginTop='18px';
+      if(location.hash==='#draw-terminal') requestAnimationFrame(()=>terminal.scrollIntoView({block:'start'}));
+    }
+
+    const sentNote=[...document.querySelectorAll('.terminal-note')].find(el=>el.textContent.includes('has been sent to your email address'));
+    if(sentNote&&!sentNote.dataset.spamNote){
+      sentNote.dataset.spamNote='1';
+      sentNote.append(document.createElement('br'),'Check your spam folder. Shit tends to go there.');
+    }
+  }
+
+  // Archive landing page: temporary terminal window announcing the live draw.
+  if(location.pathname==='/'&&!sessionStorage.getItem('crtshtVoucherDismissed')){
+    const style=document.createElement('style');
+    style.textContent=`
+      .crt-voucher-overlay{position:fixed;inset:0;z-index:9998;background:rgba(17,17,17,.16);display:grid;place-items:center;padding:20px;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace}
+      .crt-voucher-window{width:min(560px,100%);background:var(--bg,#f2f2ee);color:var(--fg,#111);border:1px solid currentColor;box-shadow:10px 10px 0 rgba(17,17,17,.16)}
+      .crt-voucher-bar{display:flex;justify-content:space-between;align-items:center;gap:18px;border-bottom:1px solid currentColor;padding:8px 10px;font-size:10px;letter-spacing:.08em;text-transform:uppercase}
+      .crt-voucher-close{appearance:none;border:0;background:none;color:inherit;font:inherit;font-size:18px;line-height:1;cursor:pointer;padding:0 2px}
+      .crt-voucher-body{padding:22px}
+      .crt-voucher-kicker{font-size:10px;letter-spacing:.08em;text-transform:uppercase;margin:0 0 8px}
+      .crt-voucher-title{font-size:clamp(30px,6vw,54px);line-height:.9;letter-spacing:-.055em;margin:0 0 16px;max-width:10ch}
+      .crt-voucher-copy{font-size:12px;line-height:1.55;max-width:48ch;margin:0 0 22px}
+      .crt-voucher-action{display:inline-flex;align-items:center;justify-content:center;border:1px solid currentColor;background:var(--fg,#111);color:var(--bg,#f2f2ee);padding:12px 15px;font-size:11px;letter-spacing:.07em;text-transform:uppercase;text-decoration:none}
+      .crt-voucher-action:hover{background:transparent;color:inherit;text-decoration:none}
+      .crt-voucher-status{border-top:1px solid currentColor;padding:8px 10px;font-size:9px;letter-spacing:.06em;text-transform:uppercase;display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}
+      @media(max-width:600px){.crt-voucher-overlay{place-items:end center;padding:12px}.crt-voucher-window{box-shadow:6px 6px 0 rgba(17,17,17,.16)}.crt-voucher-body{padding:18px}}
+    `;
+    document.head.appendChild(style);
+
+    const overlay=document.createElement('div');
+    overlay.className='crt-voucher-overlay';
+    overlay.setAttribute('role','dialog');
+    overlay.setAttribute('aria-modal','true');
+    overlay.setAttribute('aria-label','CRTSHT draw vouchers');
+    overlay.innerHTML=`
+      <div class="crt-voucher-window">
+        <div class="crt-voucher-bar"><span>CRTSHT / DISPERSAL TERMINAL</span><button class="crt-voucher-close" type="button" aria-label="Close">×</button></div>
+        <div class="crt-voucher-body">
+          <p class="crt-voucher-kicker">RESERVATIONS OPEN / DRAW 01</p>
+          <h2 class="crt-voucher-title">VOUCHERS ARE AVAILABLE.</h2>
+          <p class="crt-voucher-copy">Reserve 1–3 vouchers for the next draw. You choose to own one. Chance chooses which CRTSHT becomes yours.</p>
+          <a class="crt-voucher-action" href="/draw#draw-terminal">ENTER THE DRAW →</a>
+        </div>
+        <div class="crt-voucher-status"><span>128 PHYSICAL ORIGINALS</span><span>OPEN → RESERVED → PAID → ASSIGNED</span></div>
+      </div>`;
+    document.body.appendChild(overlay);
+
+    const close=()=>{sessionStorage.setItem('crtshtVoucherDismissed','1');overlay.remove();style.remove();};
+    overlay.querySelector('.crt-voucher-close')?.addEventListener('click',close);
+    overlay.addEventListener('click',event=>{if(event.target===overlay)close();});
+    document.addEventListener('keydown',event=>{if(event.key==='Escape'&&document.body.contains(overlay))close();},{once:true});
+  }
+
   // Fill the single provenance tx-cost row from the mined receipt.
   const costRow=document.querySelector('[data-tx-cost-row]');
   const fallbackTxLink=document.querySelector('a[href^="https://etherscan.io/tx/0x"]');
