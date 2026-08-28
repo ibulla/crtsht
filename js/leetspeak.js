@@ -54,7 +54,7 @@
       .crt-voucher-action{display:inline-flex;align-items:center;justify-content:center;border:1px solid currentColor;background:var(--fg,#111);color:var(--bg,#f2f2ee);padding:12px 15px;font-size:11px;letter-spacing:.07em;text-transform:uppercase;text-decoration:none}
       .crt-voucher-action:hover{background:transparent;color:inherit;text-decoration:none}
       .crt-voucher-status{border-top:1px solid currentColor;padding:8px 10px;font-size:9px;letter-spacing:.06em;text-transform:uppercase;display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}
-      @media(max-width:600px){.crt-voucher-overlay{place-items:end center;padding:12px}.crt-voucher-window{box-shadow:6px 6px 0 rgba(17,17,17,.16)}.crt-voucher-body{padding:18px}}
+      @media(max-width:600px){.crt-voucher-overlay{place-items:center;padding:12px}.crt-voucher-window{box-shadow:6px 6px 0 rgba(17,17,17,.16)}.crt-voucher-body{padding:18px}}
     `;
     document.head.appendChild(style);
 
