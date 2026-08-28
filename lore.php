@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 require __DIR__ . '/inc/bootstrap.php';
-$sampleIds = [1,16,32,48,64,80,96,128];
+$sampleIds = [5,116,12,38,64,70,86,121];
 ?><!doctype html>
 <html lang="en">
 <head>
