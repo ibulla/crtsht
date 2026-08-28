@@ -24,7 +24,7 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 .lore-opening .eyebrow{grid-column:1;grid-row:1;margin-bottom:0px}
 .lore-opening .hero-image{display:block}
 .lore-opening .hero-coin{grid-column:2;grid-row:1/3;width:clamp(112px,16vw,210px);height:auto;margin-top:2px}
-.lore-opening .fortune{grid-column:1;grid-row:2;font-family:inherit;font-weight:700;font-size:clamp(34px,6vw,92px);line-height:.9;letter-spacing:-.065em;margin:0 0 22px;max-width:13ch;text-transform:uppercase}
+.lore-opening .fortune{grid-column:1;grid-row:2;font-family:inherit;font-weight:800;font-size:clamp(34px,6vw,92px);line-height:.9;letter-spacing:-.065em;margin:0 0 22px;max-width:13ch;text-transform:uppercase}
 .lore-opening .origin{grid-column:1/-1;grid-row:3;font-size:clamp(14px,1.25vw,0px);line-height:1.55;max-width:76ch;margin:0}
 .system-window{border:1px solid var(--fg);margin:30px 0 0;background:rgba(242,242,238,.72);backdrop-filter:blur(2px)}
 .system-bar{display:flex;justify-content:space-between;gap:20px;padding:7px 9px;border-bottom:1px solid var(--fg);font-size:10px;text-transform:uppercase;letter-spacing:.08em}
@@ -36,7 +36,7 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 @keyframes crtBlink{0%,67%,100%{opacity:1}68%,82%{opacity:0}}
 @keyframes connectionBlink{0%,58%,100%{opacity:1}59%,70%{opacity:.22}71%,84%{opacity:.72}}
 @keyframes connectionPulse{0%,100%{opacity:1}50%{opacity:.28}}
-.myth-line{font-family:inherit;font-weight:400;font-size:clamp(25px,3.5vw,54px)!important;line-height:.95!important;letter-spacing:-.055em;max-width:20ch;margin:24px 0!important}
+.myth-line{font-family:inherit;font-weight:800;font-size:clamp(25px,3.5vw,54px)!important;line-height:.95!important;letter-spacing:-.055em;max-width:20ch;margin:24px 0!important}
 .relic{display:block;width:100%;margin:22px 0 0;padding:0;border:0;background:none;color:inherit;text-align:left;font:inherit;cursor:zoom-in}.relic img{display:block;width:100%;border:1px solid var(--line);background:#fff}.relic-meta{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:8px;font-size:10px;line-height:1.45;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}.relic:hover .relic-open,.relic:focus-visible .relic-open{text-decoration:underline;color:var(--fg)}
 .zoomable-lore{cursor:zoom-in}
 .spec-table{border:1px solid var(--line);margin-top:20px;font-size:12px;line-height:1.45}
@@ -47,7 +47,7 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 .spec-value{overflow-wrap:anywhere}
 .public-secret{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line);border-left:1px solid var(--line);margin:22px 0}.public-secret>div{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:16px}.public-secret h3{font-size:11px;text-transform:uppercase;letter-spacing:.08em;margin:0 0 14px}.public-secret p{font-size:12px;line-height:1.55;margin:0 0 .55em}
 .cake-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:20px 0;max-width:none}.cake-pair a{display:block;min-width:0}.cake-pair img{display:block;width:100%;aspect-ratio:1;object-fit:cover}
-.founder{display:grid;grid-template-columns:minmax(220px,.8fr) minmax(0,1.2fr);gap:var(--pad);align-items:start}.founder img{display:block;width:100%;max-width:520px}.founder-copy{max-width:620px}.founder-copy .name{font-family:inherit;font-weight:400;font-size:clamp(34px,6vw,92px);line-height:.9;letter-spacing:-.065em;margin:0 0 20px}.founder-copy p{font-size:clamp(14px,1.25vw,18px);line-height:1.55;margin:0 0 1em}.lore-last{font-family:inherit;font-weight:400;font-size:clamp(25px,3.5vw,54px);line-height:.95;letter-spacing:-.055em;max-width:20ch;margin:30px 0 0}
+.founder{display:grid;grid-template-columns:minmax(220px,.8fr) minmax(0,1.2fr);gap:var(--pad);align-items:start}.founder img{display:block;width:100%;max-width:520px}.founder-copy{max-width:620px}.founder-copy .name{font-family:inherit;font-weight:800;font-size:clamp(34px,6vw,92px);line-height:.9;letter-spacing:-.065em;margin:0 0 20px}.founder-copy p{font-size:clamp(14px,1.25vw,18px);line-height:1.55;margin:0 0 1em}.lore-last{font-family:inherit;font-weight:400;font-size:clamp(25px,3.5vw,54px);line-height:.95;letter-spacing:-.055em;max-width:20ch;margin:30px 0 0}
 @media(max-width:700px){.founder,.public-secret{grid-template-columns:1fr}.coin-drop{opacity:calc(var(--opacity) * .72)}.lore-hero{gap:16px}.lore-opening .hero-coin{width:clamp(86px,25vw,112px)}.spec-row{grid-template-columns:88px 18px minmax(0,1fr);padding:9px 10px}}
 @media(prefers-reduced-motion:reduce){.coin-rain{display:none}.crt-blink,.connection-dots,.connection-progress.is-shifting{animation:none}}
 </style>
