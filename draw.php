@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 require __DIR__ . '/inc/bootstrap.php';
+require_once __DIR__ . '/inc/mailer.php';
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_set_cookie_params([
@@ -92,8 +93,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!$locked) {
                 $error = 'The terminal is busy assigning another entry. Please submit again.';
             } else {
+                $inTransaction = false;
                 try {
                     $db->begin_transaction();
+                    $inTransaction = true;
 
                     $countResult = $db->query("SELECT COUNT(*) AS total FROM CRTSHT_Draw_Entries e INNER JOIN CRTSHT_Draw_Reservations r ON r.ID=e.ReservationID WHERE r.Status IN ('reserved','paid') FOR UPDATE");
                     if (!$countResult) throw new RuntimeException('capacity');
@@ -102,6 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     if ($used + (int)$quantity > CRTSHT_TOTAL) {
                         $db->rollback();
+                        $inTransaction = false;
                         $remaining = max(0, CRTSHT_TOTAL - $used);
                         $error = $remaining === 0 ? 'All 128 CRTSHT slots are reserved.' : 'Only ' . $remaining . ' draw slot' . ($remaining === 1 ? '' : 's') . ' remain.';
                     } else {
@@ -126,6 +130,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $entryStmt->close();
 
                         $db->commit();
+                        $inTransaction = false;
+
+                        $reservation = null;
+                        $reservationStmt = $db->prepare('SELECT * FROM CRTSHT_Draw_Reservations WHERE ID=? LIMIT 1');
+                        if ($reservationStmt) {
+                            $reservationStmt->bind_param('i', $reservationId);
+                            if ($reservationStmt->execute()) {
+                                $result = $reservationStmt->get_result();
+                                $reservation = $result ? $result->fetch_assoc() : null;
+                                if ($result) $result->free();
+                            }
+                            $reservationStmt->close();
+                        }
+
+                        $mailOk = false;
+                        if (is_array($reservation)) {
+                            $customerMail = crt_mail_reservation_customer($reservation, $entryIds, $nextDrawDate);
+                            $adminMail = crt_mail_reservation_admin($reservation, $entryIds);
+                            $mailOk = (bool)($customerMail['ok'] ?? false);
+                            if (!$mailOk) {
+                                error_log('CRTSHT reservation mail failed for ' . $reservationCode . ': ' . (string)($customerMail['error'] ?? 'unknown error'));
+                            }
+                            if (!($adminMail['ok'] ?? false)) {
+                                error_log('CRTSHT admin reservation mail failed for ' . $reservationCode . ': ' . (string)($adminMail['error'] ?? 'unknown error'));
+                            }
+                        } else {
+                            error_log('CRTSHT reservation mail skipped: stored reservation could not be reloaded for ' . $reservationCode);
+                        }
+
                         $success = [
                             'code' => $reservationCode,
                             'entries' => $entryIds,
@@ -133,13 +166,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             'batch' => $currentBatch,
                             'draw_date' => $nextDrawDate,
                             'name' => $name,
-                            'email' => $email
+                            'email' => $email,
+                            'mail_ok' => $mailOk
                         ];
                         $_SESSION['draw_csrf'] = bin2hex(random_bytes(24));
                         $csrf = $_SESSION['draw_csrf'];
                     }
                 } catch (Throwable $e) {
-                    $db->rollback();
+                    if ($inTransaction) $db->rollback();
                     $error = 'The reservation could not be stored. Please try again.';
                 } finally {
                     $db->query("SELECT RELEASE_LOCK('" . $db->real_escape_string($lockName) . "')");
@@ -194,7 +228,11 @@ $remainingSlots = $reservedSlots === null ? null : max(0, CRTSHT_TOTAL - $reserv
 <div class="receipt-line"><span>BUYER</span><span><?= crt_e($success['name']) ?></span></div>
 <div class="receipt-line"><span>MAIL</span><span><?= crt_e($success['email']) ?></span></div>
 </div>
-<p class="terminal-note" style="margin-top:14px">Your place is reserved in the backend until payment is confirmed. Confirmation emails will be connected as the next step.</p>
+<?php if (!empty($success['mail_ok'])): ?>
+<p class="terminal-note" style="margin-top:14px">Your reservation is stored and a confirmation with payment instructions has been sent to your email address.</p>
+<?php else: ?>
+<p class="terminal-note" style="margin-top:14px">Your reservation is stored, but the confirmation email could not be sent. Please keep your reservation code and contact us if no mail arrives.</p>
+<?php endif; ?>
 </div>
 <div class="system-status"><span>OPEN → RESERVED → PAID → ASSIGNED</span><span>DRAW <?= crt_e($success['batch']) ?> · <?= crt_e($success['draw_date']) ?></span></div>
 </section>
