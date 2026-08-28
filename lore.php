@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 require __DIR__ . '/inc/bootstrap.php';
-$sampleIds = [5,116,12,38,64,70,86,121];
+$sampleIds = [1,16,32,48,64,80,96,128];
 ?><!doctype html>
 <html lang="en">
 <head>
@@ -19,7 +19,7 @@ $sampleIds = [5,116,12,38,64,70,86,121];
 @keyframes coinFall{0%{transform:translate3d(0,-180px,0)}50%{transform:translate3d(calc(var(--drift) * .42),50vh,0)}100%{transform:translate3d(var(--drift),calc(100vh + 220px),0)}}
 @keyframes coinTurn{0%{transform:rotate(var(--start-rot)) translateX(0) translateY(0)}25%{transform:rotate(calc(var(--start-rot) + var(--quarter-turn))) translateX(2px) translateY(-2px)}50%{transform:rotate(calc(var(--start-rot) + var(--half-turn))) translateX(0) translateY(2px)}75%{transform:rotate(calc(var(--start-rot) + var(--three-quarter-turn))) translateX(-2px) translateY(-1px)}100%{transform:rotate(calc(var(--start-rot) + var(--full-turn))) translateX(0) translateY(0)}}
 .lore-opening{margin:0 0 calc(var(--pad)*1.45)}
-.lore-hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:clamp(20px,5vw,72px);align-items:start}
+.lore-hero{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start}
 .lore-hero-copy{display:contents}
 .lore-opening .eyebrow{grid-column:1;grid-row:1;margin-bottom:0px}
 .lore-opening .hero-image{display:block}
