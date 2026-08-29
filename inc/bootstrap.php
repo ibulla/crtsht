@@ -47,16 +47,20 @@ if (PHP_SAPI !== 'cli') {
         $isManager = str_starts_with($path, 'crtshtdrwmng');
 
         // Make the manager always use an explicit index.php URL; some hosts deny directory requests.
+
         if ($isManager) {
-            $html = str_replace('href="/crtshtdrwmng/"', 'href="/crtshtdrwmng/index.php"', $html);
             if (!str_contains($html, '/crtshtdrwmng/price.php')) {
-                $html = str_replace('<a href="/draw" target="_blank">PUBLIC DRAW ↗</a>', '<a href="/draw" target="_blank">PUBLIC DRAW ↗</a> &nbsp; <a href="/crtshtdrwmng/price.php">PRICE</a>', $html);
+                $html = str_replace(
+                    '<a href="/draw" target="_blank">PUBLIC DRAW ↗</a>',
+                    '<a href="/draw" target="_blank">PUBLIC DRAW ↗</a> &nbsp; <a href="/crtshtdrwmng/price.php">PRICE</a>',
+                    $html
+                );
             }
         }
 
         // Keep the main public navigation synchronized without duplicating edits across templates.
         if (!$isManager && !str_contains($html, 'href="/draw"')) {
-            $html = str_replace('</nav>', '<a href="/draw">Draw</a></nav>', $html);
+            $html = str_replace('</nav>', '<a href="/draw">The Draw</a></nav>', $html);
         }
 
         // Once a paid draw ticket receives a physical CRTSHT, add that event to the public record.
