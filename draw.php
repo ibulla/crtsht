@@ -208,7 +208,7 @@ $remainingSlots = $reservedSlots === null ? null : max(0, CRTSHT_TOTAL - $reserv
 <body><main class="wrap draw-page">
 <header>
 <a class="brand" href="/">CR¥P70$H!7.DR4W</a>
-<nav class="nav"><a href="/">Archive</a><a href="/lore">The Lore</a><a href="/oracle">The Oracle</a><a href="/draw" aria-current="page">Draw</a></nav>
+<nav class="nav"><a href="/">Archive</a><a href="/lore">The Lore</a><a href="/oracle">The Oracle</a><a href="/draw" aria-current="page">The Draw</a></nav>
 </header>
 
 <?php if ($success): ?>
@@ -239,7 +239,7 @@ $remainingSlots = $reservedSlots === null ? null : max(0, CRTSHT_TOTAL - $reserv
 <?php else: ?>
 <section class="draw-hero">
 <div><div class="eyebrow">128 WORKS / 128 OWNERS / CHANCE DECIDES</div><h1>ENTER THE DRAW.</h1><p class="draw-lead">You want to own one. Chance chooses which.</p></div>
-<div class="draw-copy"><p>A draw entry reserves one physical CRTSHT. It does not reserve a number, colour, face or favourite.</p><p><strong>Every ticket receives one draw for one real CRTSHT.</strong> There are exactly 128 physical originals, therefore no more than 128 valid draw entries can exist.</p></div>
+<div class="draw-copy"><p>A draw entry reserves one physical CRTSHT. It does not reserve a number, colour, face or favourite.</p><p><strong>Every ticket receives one live draw for one real CRTSHT.</strong></div>
 </section>
 <section class="system-window" aria-label="CRTSHT draw terminal">
 <div class="system-bar"><span>CRTSHT / DRAW TERMINAL</span><span class="crt-blink">RESERVATIONS OPEN</span></div>
@@ -266,7 +266,7 @@ $remainingSlots = $reservedSlots === null ? null : max(0, CRTSHT_TOTAL - $reserv
 <div class="field field-wide"><label for="country">Country*</label><input id="country" name="country" maxlength="120" value="<?= crt_e($form['country']) ?>" autocomplete="country-name" required></div>
 </div>
 <p class="form-consent">Submitting stores this reservation and temporarily holds the selected number of CRTSHT draw slots. The reservation remains marked <strong>PAYMENT PENDING</strong> until it is manually confirmed as paid. Your data is used to manage the reservation, draw and delivery of the work.</p>
-<div class="terminal-action"><button class="terminal-button" type="submit" <?= $remainingSlots === 0 ? 'disabled' : '' ?>>RESERVE DRAW <?= $form['quantity']==='1' ? 'ENTRY' : 'ENTRIES' ?></button><span class="terminal-note">No artwork is selected here. Every valid ticket is matched by chance with one remaining physical CRTSHT at its scheduled draw.</span></div>
+<div class="terminal-action"><button class="terminal-button" type="submit" <?= $remainingSlots === 0 ? 'disabled' : '' ?>>RESERVE DRAW <?= $form['quantity']==='1' ? 'ENTRY' : 'ENTRIES' ?></button><span class="terminal-note">No artwork is selected here. Every valid ticket is matched by chance with one remaining physical CRTSHT at its scheduled live draw.</span></div>
 </form>
 </div>
 <div class="system-status"><span>OBJECT UNKNOWN / ENTRY RESERVED / PAYMENT PENDING</span><span>DRAW <?= crt_e($currentBatch) ?> · <?= crt_e($nextDrawDate) ?></span></div>
@@ -282,9 +282,9 @@ $remainingSlots = $reservedSlots === null ? null : max(0, CRTSHT_TOTAL - $reserv
 
 <?php if (!$success): ?>
 <section class="receipt">
-<div><div class="eyebrow">READY.</div><h2>THE SHIT GETS REAL.</h2></div>
+<div><div class="eyebrow">AFTER ENTRY.</div><h2>THE SHIT GETS REAL.</h2></div>
 <div><div class="receipt-box" aria-label="Example draw receipt">
-<div class="receipt-line"><span>ENTRY</span><strong>#0027</strong></div>
+<div class="receipt-line"><span>ENTRY</span><strong>#xxxx</strong></div>
 <div class="receipt-line"><span>BATCH</span><span>DRAW <?= crt_e($currentBatch) ?></span></div>
 <div class="receipt-line"><span>ENTERED</span><span>TIMESTAMPED</span></div>
 <div class="receipt-line"><span>OBJECT</span><span>UNKNOWN</span></div>
