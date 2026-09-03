@@ -39,7 +39,7 @@ $paid = is_array($reservation) && (string)$reservation['Status'] === 'paid';
 <?php if ($paid): ?>
 <h1>YOU'RE IN.</h1>
 <p>Your payment is confirmed. Your CRTSHT remains unassigned until The Draw.</p>
-<?php if (is_array($reservation)): ?><div class="pay-meta"><?=crt_e((string)$reservation['ReservationCode'])?> · <?=crt_e((string)$reservation['Quantity'])?>× DRAW ENTRY<?=((int)$reservation['Quantity']===1?'':'IES')?></div><?php endif; ?>
+<?php if (is_array($reservation)): ?><div class="pay-meta"><?=crt_e((string)$reservation['ReservationCode'])?> · <?=crt_e((string)$reservation['Quantity'])?>× DRAW <?=((int)$reservation['Quantity']===1?'ENTRY':'ENTRIES')?></div><?php endif; ?>
 <?php else: ?>
 <h1>PAYMENT<br>RECEIVED.</h1>
 <p>Stripe returned you to CRTSHT. Payment confirmation is being verified independently by the payment webhook. Do not submit a second reservation just because this page still says pending.</p>
