@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require dirname(__DIR__) . '/inc/stripe.php';
+require_once dirname(__DIR__) . '/inc/mailer.php';
 
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
@@ -69,7 +70,7 @@ try {
     $code = strtoupper(trim((string)($metadata['crtsht_reservation_code'] ?? '')));
     if (!$rid || !preg_match('/^R-[A-F0-9]{10}$/', $code)) throw new RuntimeException('Missing CRTSHT reservation metadata.');
 
-    $stmt = $db->prepare('SELECT ID,ReservationCode,Quantity,TotalPrice,Status FROM CRTSHT_Draw_Reservations WHERE ID=? AND ReservationCode=? LIMIT 1 FOR UPDATE');
+    $stmt = $db->prepare('SELECT * FROM CRTSHT_Draw_Reservations WHERE ID=? AND ReservationCode=? LIMIT 1 FOR UPDATE');
     if (!$stmt) throw new RuntimeException('Reservation lookup failed.');
     $stmt->bind_param('is', $rid, $code);
     $stmt->execute();
@@ -109,6 +110,18 @@ try {
         $stmt->bind_param('si', $entryStatus, $rid);
         $stmt->execute();
         $stmt->close();
+
+        $entryIds = [];
+        $stmt = $db->prepare('SELECT ID FROM CRTSHT_Draw_Entries WHERE ReservationID=? ORDER BY ID');
+        if (!$stmt) throw new RuntimeException('Entry lookup for payment mail failed.');
+        $stmt->bind_param('i', $rid);
+        $stmt->execute();
+        $entryRes = $stmt->get_result();
+        if ($entryRes) {
+            while ($entryRow = $entryRes->fetch_assoc()) $entryIds[] = (int)$entryRow['ID'];
+            $entryRes->free();
+        }
+        $stmt->close();
     } else {
         $mapped = $type === 'checkout.session.expired' ? 'expired' : ($type === 'checkout.session.async_payment_failed' ? 'failed' : ($paymentStatus !== '' ? $paymentStatus : 'open'));
         $stmt = $db->prepare('UPDATE CRTSHT_Draw_Reservations SET StripeCheckoutSessionID=?,StripePaymentIntentID=?,StripeCustomerID=?,StripeInvoiceID=?,StripePaymentStatus=?,StripeLastEventID=?,StripeUpdatedAt=NOW() WHERE ID=?');
@@ -119,8 +132,17 @@ try {
     }
 
     $db->commit();
+
+    $mailResult = null;
+    if ($isPaidEvent) {
+        $mailResult = crt_mail_paid_customer($reservation, $entryIds ?? []);
+        if (!($mailResult['ok'] ?? false)) {
+            error_log('CRTSHT payment confirmation mail failed for ' . $code . ': ' . (string)($mailResult['error'] ?? 'unknown error'));
+        }
+    }
+
     $db->close();
-    echo json_encode(['ok'=>true]);
+    echo json_encode(['ok'=>true, 'mail_ok'=>$mailResult === null ? null : (bool)($mailResult['ok'] ?? false)]);
 } catch (Throwable $e) {
     try { $db->rollback(); } catch (Throwable $ignore) {}
     $db->close();
