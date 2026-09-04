@@ -33,8 +33,8 @@ header('X-Robots-Tag: index, follow', true);
 <header class="legal-head"><div class="eyebrow">CRTSHT / LEGAL NOTICE</div><h1>LEGAL<br>SHIT.</h1><p>Operator, sales and privacy information for cryptoshit.info.</p></header>
 
 <section class="legal-grid"><h2>Operator / Seller</h2><div class="legal-copy legal-meta">
-<p><strong>Spitzbarth Juwelier GmbH</strong><br>Neumarkt 8<br>8001 Zürich<br>Switzerland</p>
-<p>Email: <a href="mailto:info@spitzbarth.com">info@spitzbarth.com</a><br>Website: cryptoshit.info</p>
+<p><strong>Marco Spitzbarth</strong><br>Zollstrasse 57<br>8005 Zürich<br>Switzerland</p>
+<p>Phone: +41 (0)76 394 39 82<br>Website: cryptoshit.info</p>
 <p>CRTSHT is an art project by Marco Spitzbarth / iBulla.</p>
 </div></section>
 
