@@ -312,7 +312,7 @@ $remainingSlots = $reservedSlots === null ? null : max(0, CRTSHT_TOTAL - $reserv
 </div></div>
 </section>
 <?php endif; ?>
-<footer class="footer"><span>CRTSHT / THE DRAW · <a href="/legal">LEGAL</a></span><span>OPEN → RESERVED → PAID → ASSIGNED</span></footer>
+<footer class="footer"><span>CRTSHT / THE DRAW · <a href="/legal">LEGAL</a> · <a href="https://ibulla.com" target="_blank" rel="noopener">iBulla</a></span><span>OPEN → RESERVED → PAID → ASSIGNED</span></footer>
 </main>
 <script>
 (()=>{
