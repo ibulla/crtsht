@@ -127,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         $stmt = $db->prepare('INSERT INTO CRTSHT_Draw_Reservations (ReservationCode, DrawBatch, Quantity, Name, Email, Mobile, Address, PLZ, City, Country, Status, UnitPrice, TotalPrice, CreatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())');
                         if (!$stmt) throw new RuntimeException('prepare reservation');
-                        $stmt->bind_param('ssisssssssdd', $reservationCode, $currentBatch, $q, $name, $email, $mobile, $address, $plz, $city, $country, $status, $unitPrice, $totalPrice);
+                        $stmt->bind_param('ssissssssssdd', $reservationCode, $currentBatch, $q, $name, $email, $mobile, $address, $plz, $city, $country, $status, $unitPrice, $totalPrice);
                         if (!$stmt->execute()) throw new RuntimeException('insert reservation');
                         $reservationId = (int)$stmt->insert_id;
                         $stmt->close();
