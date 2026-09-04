@@ -93,7 +93,7 @@ try {
             'crtsht_quantity' => (string)$quantity,
             'crtsht_draw_batch' => (string)$reservation['DrawBatch'],
         ],
-        'invoice_creation' => ['enabled' => true],
+        'invoice_creation' => ['enabled' => 'true'],
     ];
 
     $session = crt_stripe_request('POST', '/v1/checkout/sessions', $params, 'crtsht-checkout-' . $rid . '-' . $amountCents);
