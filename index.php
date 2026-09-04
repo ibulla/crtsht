@@ -261,7 +261,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'&&($_POST['action']??'')==='fortune'){
 </div>
 </section>
 <?php endif; ?>
-<footer class="footer"><span>CRTSHT / iBulla</span><span>SEE · DRAW · OWN · UNLOCK</span></footer>
+<footer class="footer"><span>CRTSHT / iBulla · <a href="/legal">LEGAL</a></span><span>SEE · DRAW · OWN · UNLOCK</span></footer>
 </main>
 <div class="lightbox" id="lightbox"><button aria-label="Close">×</button><img alt="Full artwork"></div>
 <script>
