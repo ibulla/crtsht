@@ -10,7 +10,11 @@ header('X-Robots-Tag: index, follow', true);
 <title>CRTSHT / LEGAL</title>
 <link rel="stylesheet" href="/site.css?v=8">
 <style>
-.legal{max-width:980px;margin:0 auto;padding:clamp(24px,5vw,70px) var(--pad)}
+.legal{max-width:1180px;margin:0 auto;padding:var(--pad)}
+.legal > header.project-header{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--fg);padding-bottom:12px;margin-bottom:var(--pad)}
+.project-header .brand{font-size:clamp(25px,4vw,58px);font-weight:700;letter-spacing:-.07em;text-decoration:none}
+.project-header .nav{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;text-transform:uppercase;letter-spacing:.06em}
+.project-header .nav a{color:inherit;text-decoration:none}.project-header .nav a:hover{text-decoration:underline}.project-header .nav a[aria-current="page"]{text-decoration:underline}
 .legal-head{border-bottom:1px solid var(--fg);padding-bottom:24px;margin-bottom:42px}
 .legal-head h1{font-size:clamp(58px,12vw,150px);line-height:.78;letter-spacing:-.08em;margin:12px 0 20px}
 .legal-grid{display:grid;grid-template-columns:minmax(180px,.45fr) minmax(0,1fr);gap:30px;border-top:1px solid var(--fg);padding:26px 0}
@@ -22,6 +26,10 @@ header('X-Robots-Tag: index, follow', true);
 </head>
 <body>
 <main class="legal">
+<header class="project-header">
+<a class="brand" href="/">CR¥P70$H!7</a>
+<nav class="nav"><a href="/">Archive</a><a href="/lore">The Lore</a><a href="/oracle">The Oracle</a><a href="/draw">The Draw</a><a href="/legal" aria-current="page">Legal</a></nav>
+</header>
 <header class="legal-head"><div class="eyebrow">CRTSHT / LEGAL NOTICE</div><h1>LEGAL<br>SHIT.</h1><p>Operator, sales and privacy information for cryptoshit.info.</p></header>
 
 <section class="legal-grid"><h2>Operator / Seller</h2><div class="legal-copy legal-meta">
