@@ -111,10 +111,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     } else {
                         $reservationCode = 'R-' . strtoupper(bin2hex(random_bytes(5)));
                         $status = 'reserved';
-                        $stmt = $db->prepare('INSERT INTO CRTSHT_Draw_Reservations (ReservationCode, DrawBatch, Quantity, Name, Email, Mobile, Address, PLZ, City, Country, Status, CreatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())');
-                        if (!$stmt) throw new RuntimeException('prepare reservation');
                         $q = (int)$quantity;
-                        $stmt->bind_param('ssissssssss', $reservationCode, $currentBatch, $q, $name, $email, $mobile, $address, $plz, $city, $country, $status);
+                        $priceKey = 'price_' . $q . '_chf';
+                        $priceStmt = $db->prepare('SELECT SettingValue FROM CRTSHT_Draw_Settings WHERE SettingKey=? LIMIT 1');
+                        if (!$priceStmt) throw new RuntimeException('prepare price');
+                        $priceStmt->bind_param('s', $priceKey);
+                        $priceStmt->execute();
+                        $priceRes = $priceStmt->get_result();
+                        $priceRow = $priceRes ? $priceRes->fetch_assoc() : null;
+                        if ($priceRes) $priceRes->free();
+                        $priceStmt->close();
+                        $totalPrice = is_array($priceRow) ? (float)$priceRow['SettingValue'] : 0.0;
+                        if ($totalPrice <= 0) throw new RuntimeException('price not configured');
+                        $unitPrice = $totalPrice / $q;
+
+                        $stmt = $db->prepare('INSERT INTO CRTSHT_Draw_Reservations (ReservationCode, DrawBatch, Quantity, Name, Email, Mobile, Address, PLZ, City, Country, Status, UnitPrice, TotalPrice, CreatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())');
+                        if (!$stmt) throw new RuntimeException('prepare reservation');
+                        $stmt->bind_param('ssisssssssdd', $reservationCode, $currentBatch, $q, $name, $email, $mobile, $address, $plz, $city, $country, $status, $unitPrice, $totalPrice);
                         if (!$stmt->execute()) throw new RuntimeException('insert reservation');
                         $reservationId = (int)$stmt->insert_id;
                         $stmt->close();
@@ -167,6 +180,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             'draw_date' => $nextDrawDate,
                             'name' => $name,
                             'email' => $email,
+                            'total' => $totalPrice,
                             'mail_ok' => $mailOk
                         ];
                         $_SESSION['draw_csrf'] = bin2hex(random_bytes(24));
@@ -200,8 +214,8 @@ $remainingSlots = $reservedSlots === null ? null : max(0, CRTSHT_TOTAL - $reserv
 .system-window{border:1px solid var(--fg);margin:0 0 calc(var(--pad)*1.3);background:rgba(242,242,238,.72)}.system-bar{display:flex;justify-content:space-between;gap:20px;padding:7px 9px;border-bottom:1px solid var(--fg);font-size:10px;text-transform:uppercase;letter-spacing:.08em;flex-wrap:wrap}.system-body{padding:18px}.system-status{border-top:1px solid var(--line);padding:8px 9px;font-size:10px;letter-spacing:.04em;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}.crt-blink{animation:crtBlink 2.3s steps(1,end) infinite}@keyframes crtBlink{0%,67%,100%{opacity:1}68%,82%{opacity:0}}
 .terminal-title{font-size:clamp(30px,4.5vw,66px);line-height:.92;letter-spacing:-.06em;margin:0 0 18px;max-width:14ch}.terminal-copy{font-size:13px;line-height:1.55;max-width:72ch;margin:0 0 22px}.capacity{font-size:11px;text-transform:uppercase;letter-spacing:.07em;margin:12px 0 0}.capacity strong{font-size:inherit}.entry-grid{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);border-left:1px solid var(--line);margin-top:20px}.entry{position:relative;border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:0;min-height:150px}.entry input{position:absolute;opacity:0;pointer-events:none}.entry label{height:100%;padding:16px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;transition:background .12s,color .12s}.entry input:checked+label{background:var(--fg);color:var(--bg)}.entry input:focus-visible+label{outline:2px solid var(--fg);outline-offset:-3px}.entry strong{display:block;font-size:clamp(30px,4vw,54px);letter-spacing:-.06em}.entry span{font-size:10px;text-transform:uppercase;letter-spacing:.08em}.entry p{font-size:11px;line-height:1.45;color:var(--muted);margin:8px 0 0}.entry input:checked+label p{color:inherit;opacity:.72}
 .draw-form{margin-top:22px;border-top:1px solid var(--line);padding-top:18px}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.field{display:flex;flex-direction:column;gap:6px}.field-wide{grid-column:1/-1}.field label{font-size:10px;text-transform:uppercase;letter-spacing:.07em}.field input{width:100%;font:inherit;font-size:12px;padding:12px;background:transparent;color:var(--fg);border:1px solid var(--line);border-radius:0}.field input:focus{outline:1px solid var(--fg);border-color:var(--fg)}.hp{position:absolute!important;left:-9999px!important;width:1px!important;height:1px!important;overflow:hidden!important}.form-consent{font-size:10px;line-height:1.5;color:var(--muted);max-width:72ch;margin:14px 0}.terminal-action{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-top:18px;flex-wrap:wrap}.terminal-button{display:inline-flex;align-items:center;justify-content:center;background:var(--fg);color:var(--bg);border:1px solid var(--fg);padding:13px 18px;font:inherit;font-size:12px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer}.terminal-button:hover{background:transparent;color:var(--fg)}.terminal-note{font-size:10px;color:var(--muted);max-width:54ch;line-height:1.5}.draw-error{border:1px solid var(--fg);padding:12px;margin:0 0 18px;font-size:12px;line-height:1.5}
-.draws{border-top:1px solid var(--fg);margin-top:calc(var(--pad)*1.35)}.draw-row{display:grid;grid-template-columns:120px 1fr auto;gap:20px;align-items:baseline;padding:16px 0;border-bottom:1px solid var(--line)}.draw-row .date{font-size:11px;text-transform:uppercase;letter-spacing:.08em}.draw-row strong{font-size:clamp(22px,3vw,38px);letter-spacing:-.045em}.draw-row .state{font-size:10px;text-transform:uppercase;letter-spacing:.08em;border:1px solid var(--fg);border-radius:100px;padding:5px 8px}.draw-note{font-size:13px;line-height:1.55;max-width:72ch;margin:20px 0 0}.receipt{margin-top:calc(var(--pad)*1.35);display:grid;grid-template-columns:minmax(190px,.55fr) minmax(0,1.45fr);gap:var(--pad);border-top:1px solid var(--fg);padding-top:22px}.receipt h2{font-size:clamp(28px,4vw,58px);line-height:.92;letter-spacing:-.055em;margin:0}.receipt-box{border:1px solid var(--fg);font-size:11px}.receipt-line{display:grid;grid-template-columns:130px 1fr;gap:16px;padding:9px 11px;border-bottom:1px solid var(--line)}.receipt-line:last-child{border-bottom:0}.receipt-line span:first-child{color:var(--muted);text-transform:uppercase;letter-spacing:.05em}.success-title{font-size:clamp(34px,5vw,72px);line-height:.9;letter-spacing:-.06em;margin:0 0 18px;max-width:11ch}.entry-numbers{display:flex;gap:7px;flex-wrap:wrap}.entry-number{border:1px solid var(--fg);border-radius:100px;padding:5px 8px}
-@media(max-width:760px){.draw-hero,.receipt{grid-template-columns:1fr}.entry-grid,.form-grid{grid-template-columns:1fr}.field-wide{grid-column:auto}.draw-row{grid-template-columns:1fr auto}.draw-row .date{grid-column:1/-1}.receipt-line{grid-template-columns:105px 1fr}}
+.draws{border-top:1px solid var(--fg);margin-top:calc(var(--pad)*1.35)}.draw-row{display:grid;grid-template-columns:120px 1fr auto;gap:20px;align-items:baseline;padding:16px 0;border-bottom:1px solid var(--line)}.draw-row .date{font-size:11px;text-transform:uppercase;letter-spacing:.08em}.draw-row strong{font-size:clamp(22px,3vw,38px);letter-spacing:-.045em}.draw-row .state{font-size:10px;text-transform:uppercase;letter-spacing:.08em;border:1px solid var(--fg);border-radius:100px;padding:5px 8px}.draw-note{font-size:13px;line-height:1.55;max-width:72ch;margin:20px 0 0}.receipt{margin-top:calc(var(--pad)*1.35);display:grid;grid-template-columns:minmax(190px,.55fr) minmax(0,1.45fr);gap:var(--pad);border-top:1px solid var(--fg);padding-top:22px}.receipt h2{font-size:clamp(28px,4vw,58px);line-height:.92;letter-spacing:-.055em;margin:0}.receipt-box{border:1px solid var(--fg);font-size:11px}.receipt-line{display:grid;grid-template-columns:130px 1fr;gap:16px;padding:9px 11px;border-bottom:1px solid var(--line)}.receipt-line:last-child{border-bottom:0}.receipt-line span:first-child{color:var(--muted);text-transform:uppercase;letter-spacing:.05em}.success-title{font-size:clamp(34px,5vw,72px);line-height:.9;letter-spacing:-.06em;margin:0 0 18px;max-width:11ch}.entry-numbers{display:flex;gap:7px;flex-wrap:wrap}.entry-number{border:1px solid var(--fg);border-radius:100px;padding:5px 8px}.payment-fork{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:18px}.payment-choice{border:1px solid var(--fg);padding:16px;display:flex;flex-direction:column;justify-content:space-between;gap:14px}.payment-choice strong{font-size:18px;letter-spacing:-.03em}.payment-choice p{font-size:11px;line-height:1.5;margin:0;color:var(--muted)}.payment-choice form{margin:0}.payment-choice .terminal-button{width:100%;text-decoration:none}
+@media(max-width:760px){.draw-hero,.receipt,.payment-fork{grid-template-columns:1fr}.entry-grid,.form-grid{grid-template-columns:1fr}.field-wide{grid-column:auto}.draw-row{grid-template-columns:1fr auto}.draw-row .date{grid-column:1/-1}.receipt-line{grid-template-columns:105px 1fr}}
 @media(prefers-reduced-motion:reduce){.crt-blink{animation:none}}
 </style>
 </head>
@@ -223,16 +237,21 @@ $remainingSlots = $reservedSlots === null ? null : max(0, CRTSHT_TOTAL - $reserv
 <div class="receipt-line"><span>ENTRY</span><span class="entry-numbers"><?php foreach($success['entries'] as $entryId): ?><strong class="entry-number">#<?= str_pad((string)$entryId, 4, '0', STR_PAD_LEFT) ?></strong><?php endforeach; ?></span></div>
 <div class="receipt-line"><span>BATCH</span><span>DRAW <?= crt_e($success['batch']) ?></span></div>
 <div class="receipt-line"><span>OBJECT</span><span>UNKNOWN</span></div>
+<div class="receipt-line"><span>AMOUNT</span><strong>CHF <?= crt_e(number_format((float)$success['total'], 2, '.', "'")) ?></strong></div>
 <div class="receipt-line"><span>STATUS</span><span>RESERVED / PAYMENT PENDING</span></div>
 <div class="receipt-line"><span>NEXT DRAW</span><span><?= crt_e($success['draw_date']) ?></span></div>
 <div class="receipt-line"><span>BUYER</span><span><?= crt_e($success['name']) ?></span></div>
 <div class="receipt-line"><span>MAIL</span><span><?= crt_e($success['email']) ?></span></div>
 </div>
 <?php if (!empty($success['mail_ok'])): ?>
-<p class="terminal-note" style="margin-top:14px">Your reservation is stored and a confirmation with payment instructions has been sent to your email address.</p>
+<p class="terminal-note" style="margin-top:14px">Your reservation confirmation has been sent. Choose how you want to pay:</p>
 <?php else: ?>
-<p class="terminal-note" style="margin-top:14px">Your reservation is stored, but the confirmation email could not be sent. Please keep your reservation code and contact us if no mail arrives.</p>
+<p class="terminal-note" style="margin-top:14px">Your reservation is stored. Choose how you want to pay:</p>
 <?php endif; ?>
+<div class="payment-fork">
+<div class="payment-choice"><div><strong>PAY NOW</strong><p>Card or TWINT via Stripe. Your draw entry activates automatically after payment.</p></div><form method="post" action="/stripe/start.php"><input type="hidden" name="reservation" value="<?= crt_e($success['code']) ?>"><button class="terminal-button" type="submit">CARD / TWINT →</button></form></div>
+<div class="payment-choice"><div><strong>PAY BY INVOICE</strong><p>Receive bank-transfer / invoice payment details by email and pay manually.</p></div><form method="post" action="/payment/mail.php"><input type="hidden" name="reservation" value="<?= crt_e($success['code']) ?>"><input type="hidden" name="csrf" value="<?= crt_e($csrf) ?>"><button class="terminal-button" type="submit">EMAIL PAYMENT DETAILS →</button></form></div>
+</div>
 </div>
 <div class="system-status"><span>OPEN → RESERVED → PAID → ASSIGNED</span><span>DRAW <?= crt_e($success['batch']) ?> · <?= crt_e($success['draw_date']) ?></span></div>
 </section>
