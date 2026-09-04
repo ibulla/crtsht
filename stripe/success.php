@@ -45,5 +45,5 @@ $paid = is_array($reservation) && (string)$reservation['Status'] === 'paid';
 <p>Stripe returned you to CRTSHT. Payment confirmation is being verified independently by the payment webhook. Do not submit a second reservation just because this page still says pending.</p>
 <div class="pay-meta">STATUS / VERIFYING</div>
 <?php endif; ?>
-<p><a href="/draw">← RETURN TO THE DRAW</a></p>
+<p><a href="/">← BACK TO THE ARCHIVE</a></p>
 </div></main></body></html>
