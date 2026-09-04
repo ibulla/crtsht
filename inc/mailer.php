@@ -148,6 +148,8 @@ function crt_mail_payment_block(string $reservationCode, $total): string {
     $twint = crt_env('CRTSHT_PAYMENT_TWINT');
     $iban = crt_env('CRTSHT_PAYMENT_IBAN');
     $accountName = crt_env('CRTSHT_PAYMENT_NAME');
+    $accountAddr = crt_env('CRTSHT_PAYMENT_ADDR');
+    $accountCity = crt_env('CRTSHT_PAYMENT_CITY');
     if ($twint === '' && $iban === '') return '';
 
     $body = "PAYMENT\n\nPlease transfer " . crt_mail_price($total) . " using one of the following:\n\n";
@@ -156,7 +158,9 @@ function crt_mail_payment_block(string $reservationCode, $total): string {
     }
     if ($iban !== '') {
         $body .= "BANK TRANSFER\nIBAN  {$iban}\n";
-        if ($accountName !== '') $body .= "NAME  {$accountName}\n";
+        if ($accountName !== '') $body .= "NAME     {$accountName}\n";
+        if ($accountAddr !== '') $body .= "ADDRESS  {$accountAddr}\n";
+        if ($accountCity !== '') $body .= "CITY     {$accountCity}\n";
         $body .= "\n";
     }
     $body .= "REFERENCE\n{$reservationCode}\n\n"
