@@ -46,7 +46,7 @@ header('X-Robots-Tag: index, follow', true);
 <p>The blockchain, NFT and archive records presented on this website form part of the artistic work and its provenance. Historical 2021 metadata is preserved as archival material. Ownership of a physical CRTSHT does not imply transfer of copyright or other intellectual-property rights unless expressly agreed otherwise.</p>
 </div></section>
 
-<footer class="footer"><span>CRTSHT / iBulla</span><span><a href="/">BACK TO ARCHIVE</a> · <a href="/draw">THE DRAW</a></span></footer>
+<footer class="footer"><span>CRTSHT / <a href="https://ibulla.com" target="_blank" rel="noopener">iBulla</a></span><span><a href="/">BACK TO ARCHIVE</a> · <a href="/draw">THE DRAW</a></span></footer>
 </main>
 </body>
 </html>
