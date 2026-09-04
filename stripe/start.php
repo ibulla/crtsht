@@ -118,5 +118,6 @@ try {
     $db->close();
     error_log('CRTSHT Stripe checkout start failed for ' . $reservationCode . ': ' . $e->getMessage());
     http_response_code(400);
-    echo '<!doctype html><meta charset="utf-8"><title>CRTSHT / CHECKOUT</title><p>Checkout could not be started.</p><p><a href="/draw">Return to The Draw</a></p>';
+    $detail = !crt_stripe_is_live() ? '<p><strong>Sandbox detail:</strong> ' . crt_e($e->getMessage()) . '</p>' : '';
+    echo '<!doctype html><meta charset="utf-8"><title>CRTSHT / CHECKOUT</title><p>Checkout could not be started.</p>' . $detail . '<p><a href="/draw">Return to The Draw</a></p>';
 }
