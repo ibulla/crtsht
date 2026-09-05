@@ -20,6 +20,18 @@
     if(status)status.textContent='128 / 128 HELD / STANDBY REMAINS OPEN';
   }
 
+  if(reservationMatch&&!document.querySelector('[data-spam-hint]')){
+    const sentNote=[...document.querySelectorAll('.terminal-note')].find(el=>/reservation confirmation has been sent/i.test(el.textContent||''));
+    if(sentNote){
+      const hint=document.createElement('p');
+      hint.dataset.spamHint='1';
+      hint.className='terminal-note';
+      hint.style.marginTop='6px';
+      hint.innerHTML='<strong>HOT SHIT SOMETIMES LANDS IN SPAM.</strong> If you can’t see the mail, check your junk folder. :)';
+      sentNote.insertAdjacentElement('afterend',hint);
+    }
+  }
+
   const action=document.querySelector('.terminal-action');
   if(action&&!reservationMatch&&!document.querySelector('[data-price-lock-note]')){
     const note=document.createElement('span');note.dataset.priceLockNote='1';note.className='terminal-note';note.innerHTML='<strong>CHF PRICE FIXED ON CONFIRMATION.</strong><br><span data-crypto-note>BTC / ETH are approximate live reference values.</span>';action.appendChild(note);
