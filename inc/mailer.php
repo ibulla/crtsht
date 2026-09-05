@@ -174,6 +174,8 @@ function crt_mail_reservation_customer(array $reservation, array $entryIds, stri
     $quantity = (int)($reservation['Quantity'] ?? count($entryIds));
     $unit = $reservation['UnitPrice'] ?? null;
     $total = $reservation['TotalPrice'] ?? null;
+    $base = rtrim(crt_env('CRTSHT_PUBLIC_URL') ?: (crt_env('CRTSHT_SITE_URL') ?: 'https://cryptoshit.info'), '/');
+    $paymentUrl = $base . '/payment/' . rawurlencode($code);
     $body = "CRTSHT / DRAW TERMINAL\nRESERVATION STORED\n\n"
         . ($name !== '' ? "Hi {$name},\n\n" : '')
         . "Your place in the CRTSHT draw is reserved.\n\n"
@@ -185,6 +187,9 @@ function crt_mail_reservation_customer(array $reservation, array $entryIds, stri
         . "UNIT PRICE   " . crt_mail_price($unit) . "\n"
         . "TOTAL        " . crt_mail_price($total) . "\n"
         . "STATUS       RESERVED / PAYMENT PENDING\n\n"
+        . "COMPLETE PAYMENT\n{$paymentUrl}\n\n"
+        . "Use this link to pay by card / TWINT or to view and receive bank-transfer details.\n"
+        . "You can return to the same link later if you close the browser now.\n\n"
         . "Your voucher" . ($quantity === 1 ? ' is' : 's are') . " reserved. "
         . ($quantity === 1 ? 'It becomes' : 'They become') . " active for the draw once payment has been received.\n"
         . "You will receive a confirmation when payment is registered.\n\n"
