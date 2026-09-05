@@ -57,12 +57,16 @@ if (PHP_SAPI !== 'cli') {
             }
         }
 
-        // Keep the main public navigation synchronized without duplicating edits across templates.
-        if (!$isManager) {
+        // Keep the main public navigation synchronized without being confused by footer links.
+        if (!$isManager && preg_match('~<nav\b[^>]*>.*?</nav>~s', $html, $navMatch)) {
+            $nav = $navMatch[0];
             $navExtras = '';
-            if (!str_contains($html, 'href="/draw"')) $navExtras .= '<a href="/draw">The Draw</a>';
-            if (!str_contains($html, 'href="/legal"')) $navExtras .= '<a href="/legal">Legal</a>';
-            if ($navExtras !== '') $html = str_replace('</nav>', $navExtras . '</nav>', $html);
+            if (!str_contains($nav, 'href="/draw"')) $navExtras .= '<a href="/draw">The Draw</a>';
+            if (!str_contains($nav, 'href="/legal"')) $navExtras .= '<a href="/legal">Legal</a>';
+            if ($navExtras !== '') {
+                $updatedNav = str_replace('</nav>', $navExtras . '</nav>', $nav);
+                $html = str_replace($nav, $updatedNav, $html);
+            }
         }
 
         // Once a paid draw ticket receives a physical CRTSHT, add that event to the public record.
