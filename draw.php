@@ -296,7 +296,7 @@ $remainingSlots = $reservedSlots === null ? null : max(0, CRTSHT_TOTAL - $reserv
 <div class="draw-row"><span class="date">25.09.2026</span><strong>DRAW 01 / FIRST DISPERSAL</strong><span class="state">01</span></div>
 <div class="draw-row"><span class="date">17.10.2026</span><strong>DRAW 02 / SECOND DISPERSAL</strong><span class="state">02</span></div>
 <div class="draw-row"><span class="date">31.10.2026</span><strong>DRAW 03 / FINAL DISPERSAL</strong><span class="state">FINAL</span></div>
-<p class="draw-note">Reservations enter the next scheduled draw once payment has been confirmed. After each draw, the terminal continues with the remaining physical works. The system stops at 128 entries because there are only 128 CRTSHTs to disperse.</p>
+<p class="draw-note"><strong>All three draws take place at <a href="https://endsafter.ch" target="_blank" rel="noopener">Endsafter</a>, Hardturmstrasse 307, 8005 Zürich.</strong><br>Reservations enter the next scheduled draw once payment has been confirmed. After each draw, the terminal continues with the remaining physical works. The system stops at 128 entries because there are only 128 CRTSHTs to disperse.</p>
 </section>
 
 <?php if (!$success): ?>
