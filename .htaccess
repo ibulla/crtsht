@@ -23,6 +23,7 @@ RewriteRule ^lore/?$ lore.php [L,QSA]
 RewriteRule ^oracle/?$ oracle.php [L,QSA]
 RewriteRule ^draw/?$ draw.php [L,QSA]
 RewriteRule ^legal/?$ legal.php [L,QSA]
+RewriteRule ^payment/(R-[A-F0-9]{10})/?$ payment.php?reservation=$1 [L,QSA,NC]
 RewriteRule ^crtsht/[0-9]{1,3}/?$ record.php [L,QSA]
 RewriteRule ^[0-9]{1,3}/?$ record.php [L,QSA]
 
