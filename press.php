@@ -62,6 +62,23 @@ if (is_dir($pressDir)) {
     });
 }
 
+$hero = null;
+foreach ([
+    ['dir' => $imageDir, 'url' => '/press/images/'],
+    ['dir' => $pressDir, 'url' => '/press/']
+] as $heroLocation) {
+    if (!is_dir($heroLocation['dir'])) continue;
+    $heroFiles = scandir($heroLocation['dir']) ?: [];
+    foreach ($heroFiles as $filename) {
+        if (!preg_match('/^CRTSHT[_-]?Hero\.(jpe?g|png|webp)$/i', $filename)) continue;
+        $hero = [
+            'name' => $filename,
+            'url' => $heroLocation['url'] . rawurlencode($filename)
+        ];
+        break 2;
+    }
+}
+
 $images = [];
 if (is_dir($imageDir)) {
     $files = scandir($imageDir) ?: [];
@@ -69,6 +86,7 @@ if (is_dir($imageDir)) {
         if ($filename === '.' || $filename === '..' || str_starts_with($filename, '.')) continue;
         $path = $imageDir . '/' . $filename;
         if (!is_file($path) || !preg_match('/\.(jpe?g|png|webp)$/i', $filename)) continue;
+        if (preg_match('/^CRTSHT[_-]?Hero\.(jpe?g|png|webp)$/i', $filename)) continue;
         $images[] = [
             'name' => $filename,
             'caption' => press_caption($filename),
@@ -87,6 +105,8 @@ if (is_dir($imageDir)) {
 <link rel="stylesheet" href="/site.css?v=8">
 <style>
 .press{max-width:1280px}
+.press-hero-image{margin:0 0 calc(var(--pad)*.9);border:1px solid var(--line);overflow:hidden;background:rgba(255,255,255,.2)}
+.press-hero-image img{display:block;width:100%;aspect-ratio:925/385;object-fit:cover}
 .press-hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(260px,.65fr);gap:var(--pad);align-items:end;padding:12px 0 calc(var(--pad)*1.15)}
 .press-hero h1{font-size:clamp(58px,11vw,162px);line-height:.76;letter-spacing:-.085em;margin:.08em 0 .16em;max-width:8ch}
 .press-hero .lead{font-size:clamp(15px,1.45vw,20px);line-height:1.5;max-width:58ch;margin:0}
@@ -130,6 +150,10 @@ if (is_dir($imageDir)) {
 <a class="brand" href="/">CR¥P70$H!7.1NF0</a>
 <nav class="nav"><a href="/">Archive</a><a href="/lore">The Lore</a><a href="/oracle">The Oracle</a><a href="/draw">The Draw</a><a href="/press" aria-current="page">Press</a><a href="/legal">Legal</a></nav>
 </header>
+
+<?php if($hero): ?>
+<figure class="press-hero-image"><img src="<?=crt_e($hero['url'])?>" alt="CRTSHT / SHIT HAPPENS! — Marco Spitzbarth (iBulla)" fetchpriority="high" decoding="async"></figure>
+<?php endif; ?>
 
 <section class="press-hero">
 <div>
