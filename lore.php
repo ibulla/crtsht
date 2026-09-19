@@ -57,7 +57,7 @@ $sampleIds = [1,16,32,48,64,80,96,128];
 <main class="wrap lore">
 <header>
 <a class="brand" href="/">[rYp70$H!7.1Nf0</a>
-<nav class="nav"><a href="/">Archive</a><a href="/lore" aria-current="page">The Lore</a><a href="/oracle">The Oracle</a></nav>
+<nav class="nav"><a href="/">Archive</a><a href="/lore" aria-current="page">The Lore</a><a href="/oracle">The Oracle</a><a href="/press">Press</a></nav>
 </header>
 <section class="lore-opening">
 <div class="lore-hero"><div class="lore-hero-copy"><div class="eyebrow">THE LORE</div><p class="fortune">THE INTERNET MAY FORGET.<br>THE BLOCKCHAIN CAN'T.</p><p class="origin">CRTSHT began in 2021, when images discovered wallets and almost every browser tab seemed to promise a new economy. The <strong>MORE-Algorithm — My Only Rare Experience</strong> generated 128 creatures, along with prints, hashes, wallets, metadata and enough technical certainty to make the whole thing seem inevitable. Then the noise moved on. The files remained.</p></div><img class="hero-image hero-coin" src="/img/TheCoin.png" alt="CRTSHT mooncake coin" fetchpriority="high"></div>
