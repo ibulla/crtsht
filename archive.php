@@ -25,7 +25,7 @@ $legalOperator = $legalCompany !== '' ? $legalCompany : $legalName;
 <body><main class="wrap">
 <header>
 <a class="brand" href="/">(RYP705H17.1NF0</a>
-<nav class="nav"><a href="/" aria-current="page">Archive</a><a href="/lore">The Lore</a><a href="/oracle">The Oracle</a><a href="/draw">The Draw</a><a href="/legal">Legal / Imprint</a></nav>
+<nav class="nav"><a href="/" aria-current="page">Archive</a><a href="/lore">The Lore</a><a href="/oracle">The Oracle</a><a href="/draw">The Draw</a><a href="/press">Press</a><a href="/legal">Legal / Imprint</a></nav>
 </header>
 <section class="intro">
 <h1>KEEP YOUR SHIT TOGETHER</h1>
@@ -44,7 +44,7 @@ $legalOperator = $legalCompany !== '' ? $legalCompany : $legalName;
 <div><a href="/legal"><strong>LEGAL / IMPRINT →</strong></a></div>
 <div class="legal-meta"><strong><?= crt_e($legalOperator) ?></strong><?php if($legalCompany !== '' && $legalName !== ''): ?> · <?= crt_e($legalName) ?><?php endif; ?><br><?= crt_e($legalAddr) ?> · <?= crt_e($legalCity) ?> · <?= crt_e($legalCountry) ?><?php if($legalEmail !== ''): ?><br><a href="mailto:<?= crt_e($legalEmail) ?>"><?= crt_e($legalEmail) ?></a><?php endif; ?><?php if($legalPhone !== ''): ?><?= $legalEmail !== '' ? ' · ' : '<br>' ?><?= crt_e($legalPhone) ?><?php endif; ?><br>Physical artworks · prices in CHF · Switzerland available as delivery destination.</div>
 </section>
-<footer class="footer"><span>CRTSHT / <a href="https://ibulla.com" target="_blank" rel="noopener">iBulla</a></span><span><a href="/legal">LEGAL / IMPRINT</a> · The shit is real. The archive is meta.</span></footer>
+<footer class="footer"><span>CRTSHT / <a href="https://ibulla.com" target="_blank" rel="noopener">iBulla</a></span><span><a href="/press">PRESS</a> · <a href="/legal">LEGAL / IMPRINT</a> · The shit is real. The archive is meta.</span></footer>
 </main>
 <script>
 document.querySelectorAll('.card').forEach(card=>{
