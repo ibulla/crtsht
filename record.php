@@ -22,7 +22,7 @@ $birthday=(int)($attrs['birthday']??0); $jsonCid=trim((string)($dbrow['IPFS_JSON
 $prettyJson=json_encode($meta,JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE); if(!is_string($prettyJson))$prettyJson='{}';
 ?><!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title><?=crt_e($title)?> / CRTSHT</title><meta name="description" content="<?=crt_e($title)?> — CRTSHT <?=$id?>/128. Physical work, Ethereum record and IPFS metadata."><link rel="stylesheet" href="/site.css?v=7"></head>
-<body><main class="wrap"><header><a class="brand" href="/">CR¥P70$H!7.1NF0</a><nav class="nav"><a href="/" aria-current="page">Archive</a><a href="/lore">The Lore</a><a href="/oracle">The Oracle</a></nav></header>
+<body><main class="wrap"><header><a class="brand" href="/">CR¥P70$H!7.1NF0</a><nav class="nav"><a href="/" aria-current="page">Archive</a><a href="/lore">The Lore</a><a href="/oracle">The Oracle</a><a href="/press">Press</a></nav></header>
 <section class="detail"><div class="art"><?php if($art):?><img class="zoomable" id="artwork-image" decoding="async" fetchpriority="high" src="<?=crt_e($art)?>" alt="<?=crt_e($title)?>"><?php endif;?><div class="ipfs-status">GENUINE PRINT / IPFS VERIFIED</div></div>
 <div><div class="small"><a href="/">← Archive</a></div><div class="record"><div class="titleline"><?php if($cake):?><img class="cake-icon" src="<?=crt_e($cake)?>" alt="Mooncake <?=$id?>"><?php endif;?><h1><?=crt_e($title)?></h1></div><p class="muted" style="font-size:12px;line-height:1.5;margin:0 0 22px">20 × 20 cm physical original · <?=$id?>/128 · minted 2021</p>
 
