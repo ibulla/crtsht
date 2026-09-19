@@ -38,7 +38,7 @@ $legalWebsite = crt_env('CRTSHT_LEGAL_WEBSITE') ?: 'https://cryptoshit.info';
 <main class="legal">
 <header class="project-header">
 <a class="brand" href="/">CR¥P70$H!7</a>
-<nav class="nav"><a href="/">Archive</a><a href="/lore">The Lore</a><a href="/oracle">The Oracle</a><a href="/draw">The Draw</a><a href="/legal" aria-current="page">Legal / Imprint</a></nav>
+<nav class="nav"><a href="/">Archive</a><a href="/lore">The Lore</a><a href="/oracle">The Oracle</a><a href="/draw">The Draw</a><a href="/press">Press</a><a href="/legal" aria-current="page">Legal / Imprint</a></nav>
 </header>
 <header class="legal-head"><div class="eyebrow">CRTSHT / LEGAL NOTICE</div><h1>LEGAL<br>SHIT.</h1><p>Operator, sales and privacy information for cryptoshit.info.</p></header>
 
