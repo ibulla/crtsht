@@ -110,5 +110,5 @@ $stripeReady = crt_stripe_ready() && $status === 'reserved' && $total > 0;
 </section>
 <?php endif; ?>
 
-<footer class="footer"><span>CRTSHT / <a href="https://ibulla.com" target="_blank" rel="noopener">iBulla</a></span><span><a href="/legal">LEGAL / IMPRINT</a></span></footer>
+<footer class="footer"><span>CRTSHT / <a href="https://ibulla.com" target="_blank" rel="noopener">iBulla</a></span><span><a href="/press">Press</a><a href="/legal">LEGAL / IMPRINT</a></span></footer>
 </main></body></html>
