@@ -102,7 +102,7 @@ if (is_dir($imageDir)) {
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Press / SHIT HAPPENS! / CRTSHT</title>
 <meta name="description" content="Press material for SHIT HAPPENS! — CRTSHT / Marco Spitzbarth (iBulla), 2021–2026. 128 physical works, Ethereum provenance, ENDSAFTER Zürich.">
-<link rel="stylesheet" href="/site.css?v=8">
+<link rel="stylesheet" href="/site.css?v=10">
 <style>
 .press{max-width:1280px}
 .press-hero-image{margin:0 0 calc(var(--pad)*.9);border:1px solid var(--line);overflow:hidden;background:rgba(255,255,255,.2)}
