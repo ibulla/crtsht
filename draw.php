@@ -207,7 +207,7 @@ $remainingSlots = $reservedSlots === null ? null : max(0, CRTSHT_TOTAL - $reserv
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>The Draw / CRTSHT</title>
 <meta name="description" content="Reserve a CRTSHT draw entry. Every ticket is matched with one real physical CRTSHT. Maximum 128 slots.">
-<link rel="stylesheet" href="/site.css?v=8">
+<link rel="stylesheet" href="/site.css?v=9">
 <style>
 .draw-page{max-width:1180px}.draw-hero{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr);gap:var(--pad);align-items:end;margin-bottom:calc(var(--pad)*1.25)}
 .draw-hero h1{font-size:clamp(34px,6vw,92px);line-height:.82;letter-spacing:-.075em;margin:.08em 0 .22em;max-width:8ch}.draw-lead{font-size:clamp(18px,2.2vw,31px);line-height:1.08;letter-spacing:-.035em;max-width:19ch;margin:0}.draw-copy{font-size:13px;line-height:1.58;max-width:62ch}.draw-copy p{margin:0 0 1em}
@@ -260,11 +260,18 @@ $remainingSlots = $reservedSlots === null ? null : max(0, CRTSHT_TOTAL - $reserv
 <div><div class="eyebrow">128 WORKS / 128 OWNERS / CHANCE DECIDES</div><h1>ENTER THE DRAW.</h1><p class="draw-lead">You want to own one. Chance chooses which.</p></div>
 <div class="draw-copy"><p>A draw entry reserves one physical CRTSHT. It does not reserve a number, colour, face or favourite.</p><p><strong>Every ticket receives one live draw for one real CRTSHT.</strong></div>
 </section>
-<section class="system-window" aria-label="CRTSHT draw terminal">
+<section class="draw-guide" aria-label="How the CRTSHT draw works">
+<div><span>01 / CHOOSE</span><strong>1, 2 OR 3</strong><p>Reserve vouchers, not artworks.</p></div>
+<div><span>02 / PAY</span><strong>ACTIVATE</strong><p>Card / TWINT or bank transfer.</p></div>
+<div><span>03 / DRAW</span><strong>TRUST LUCK</strong><p>You draw in Zürich or an innocent hand draws for you.</p></div>
+<div><span>04 / OWN</span><strong>REAL ART</strong><p>One 20 × 20 cm original per voucher.</p></div>
+</section>
+<section class="draw-callout"><strong>NO CRYPTO REQUIRED.</strong><span>The blockchain is provenance. What you receive is a physical artwork.</span></section>
+<section class="system-window" id="reserve" aria-label="CRTSHT draw terminal">
 <div class="system-bar"><span>CRTSHT / DRAW TERMINAL</span><span class="crt-blink">RESERVATIONS OPEN</span></div>
 <div class="system-body">
-<div class="eyebrow">BATCH <?= crt_e($currentBatch) ?> / <?= crt_e($currentDrawName) ?></div><h2 class="terminal-title">SECURE A PLACE IN THE DISPERSAL.</h2>
-<p class="terminal-copy">One entry equals one genuine 20 × 20 cm physical original, with its recovered Ethereum record, wallet material, Mooncake and packaging. Entries are numbered in the order they arrive. The artwork itself remains unknown until the draw.</p>
+<div class="eyebrow">BATCH <?= crt_e($currentBatch) ?> / <?= crt_e($currentDrawName) ?></div><h2 class="terminal-title">RESERVE YOUR VOUCHER.</h2>
+<p class="terminal-copy">One voucher equals one genuine 20 × 20 cm physical original, with its Ethereum provenance, Mooncake, sealed wallet material and packaging. Pick the quantity, enter your details and choose payment after reservation. The artwork itself stays unknown until the draw.</p>
 <p class="capacity">CAPACITY / <?php if($remainingSlots === null): ?><strong>128 TOTAL</strong><?php else: ?><strong><?= $remainingSlots ?> OF 128 SLOTS AVAILABLE</strong><?php endif; ?></p>
 <?php if($error !== ''): ?><div class="draw-error"><?= crt_e($error) ?></div><?php endif; ?>
 <form class="draw-form" method="post" action="/draw" autocomplete="on">
@@ -313,6 +320,7 @@ $remainingSlots = $reservedSlots === null ? null : max(0, CRTSHT_TOTAL - $reserv
 </section>
 <?php endif; ?>
 <footer class="footer"><span>CRTSHT / THE DRAW · <a href="/press">Press</a><a href="/legal">LEGAL</a> · <a href="https://ibulla.com" target="_blank" rel="noopener">iBulla</a></span><span>OPEN → RESERVED → PAID → ASSIGNED</span></footer>
+<?php if (!$success): ?><a class="mobile-draw-cta" href="#reserve">RESERVE A VOUCHER <span>→</span></a><?php endif; ?>
 </main>
 <script>
 (()=>{
