@@ -10,6 +10,9 @@ $legalCountry = crt_env('CRTSHT_LEGAL_COUNTRY') ?: 'Switzerland';
 $legalEmail = crt_env('CRTSHT_LEGAL_EMAIL');
 $legalPhone = crt_env('CRTSHT_LEGAL_PHONE') ?: '+41 (0)76 394 39 82';
 $legalOperator = $legalCompany !== '' ? $legalCompany : $legalName;
+$dispersed = crt_draw_assignments();
+$dispersedCount = count($dispersed);
+$remainingCount = CRTSHT_TOTAL - $dispersedCount;
 ?><!doctype html>
 <html lang="en">
 <head>
@@ -24,7 +27,7 @@ $legalOperator = $legalCompany !== '' ? $legalCompany : $legalName;
 <meta property="og:url" content="https://cryptoshit.info/">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://cryptoshit.info/">
-<link rel="stylesheet" href="/site.css?v=9">
+<link rel="stylesheet" href="/site.css?v=11">
 <style>
 .legal-strip{border-top:1px solid var(--fg);margin-top:calc(var(--pad)*1.4);padding:14px 0 0;display:grid;grid-template-columns:minmax(150px,.45fr) minmax(0,1.55fr);gap:var(--pad);font-size:11px;line-height:1.6}.legal-strip strong{font-size:12px;letter-spacing:.06em}.legal-strip .legal-meta{max-width:76ch}.legal-strip a{text-decoration:underline}.legal-strip a:hover{text-decoration:none}@media(max-width:700px){.legal-strip{grid-template-columns:1fr;gap:8px}}
 </style>
@@ -49,12 +52,13 @@ $legalOperator = $legalCompany !== '' ? $legalCompany : $legalName;
 <div><span class="eyebrow">THE MECHANISM</span><strong>YOU CHOOSE TO OWN ONE.<br>CHANCE CHOOSES WHICH.</strong></div>
 <div class="archive-steps"><span><b>01</b> Browse all 128</span><span><b>02</b> Reserve a voucher</span><span><b>03</b> Draw a number</span><span><b>04</b> Take the original home</span></div>
 </section>
-<div class="collection-heading"><div><span class="eyebrow">THE ARCHIVE</span><h2>ALL 128 / STILL COMPLETE HERE.</h2></div><a href="/draw">GET YOUR SHIT. DONE. →</a></div>
+<div class="collection-heading"><div><span class="eyebrow">THE ARCHIVE</span><h2>ALL 128 / STILL COMPLETE HERE.</h2><div class="archive-state" aria-label="Current dispersal state"><span><b>128</b> GENERATED</span><span><b><?= $dispersedCount ?></b> DISPERSED</span><span><b><?= $remainingCount ?></b> STILL HERE</span></div></div><a href="/draw">GET YOUR SHIT. DONE. →</a></div>
 <section class="grid">
-<?php for ($id=1; $id<=CRTSHT_TOTAL; $id++): $meta=crt_metadata($id); if(!$meta) continue; $img=crt_artwork($id); $title=crt_title($id,$meta); $aboveFold=$id<=12; ?>
-<a class="card" href="/crtsht/<?= $id ?>">
-<div><?php if($img): ?><img <?= $aboveFold ? 'loading="eager" fetchpriority="high"' : 'loading="lazy"' ?> decoding="async" src="<?= crt_e($img) ?>" alt="<?= crt_e($title) ?>"><?php endif; ?></div>
+<?php for ($id=1; $id<=CRTSHT_TOTAL; $id++): $meta=crt_metadata($id); if(!$meta) continue; $img=crt_artwork($id); $title=crt_title($id,$meta); $aboveFold=$id<=12; $assignment=$dispersed[$id]??null; $isDispersed=is_array($assignment); $assignedAt=$isDispersed?trim((string)($assignment['AssignedAt']??'')):''; $drawBatch=$isDispersed?trim((string)($assignment['DrawBatch']??'')):''; ?>
+<a class="card<?= $isDispersed ? ' is-dispersed' : '' ?>" href="/crtsht/<?= $id ?>"<?= $isDispersed ? ' data-state="dispersed"' : '' ?>>
+<div class="card-art"><?php if($img): ?><img <?= $aboveFold ? 'loading="eager" fetchpriority="high"' : 'loading="lazy"' ?> decoding="async" src="<?= crt_e($img) ?>" alt="<?= crt_e($title) ?>"><?php endif; ?><?php if($isDispersed): ?><span class="dispersed-mark">DISPERSED</span><?php endif; ?></div>
 <div class="num"><span><?= crt_e($title) ?></span><span><?= $id ?>/128</span></div>
+<?php if($isDispersed): ?><div class="dispersed-meta"><?= $drawBatch !== '' ? 'DRAW ' . crt_e($drawBatch) : 'DRAWN' ?><?php if($assignedAt !== ''): ?> · <?= crt_e(date('d.m.y', strtotime($assignedAt))) ?><?php endif; ?></div><?php endif; ?>
 </a>
 <?php endfor; ?>
 </section>
