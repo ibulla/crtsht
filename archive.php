@@ -16,11 +16,19 @@ $legalOperator = $legalCompany !== '' ? $legalCompany : $legalName;
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>CRTSHT / 128</title>
-<meta name="description" content="CRTSHT — 128 unique physical works generated, printed and minted on Ethereum in 2021. Reassembled in 2026.">
+<meta name="description" content="CRTSHT by Marco Spitzbarth (iBulla) — 128 unique physical artworks generated, printed and minted on Ethereum in 2021, reassembled and dispersed by draw in Zürich in 2026.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="CRTSHT — Together Before We Disperse">
+<meta property="og:description" content="128 physical originals. Generated in 2021. Reassembled in 2026. You choose to own one. Chance chooses which.">
+<meta property="og:image" content="https://cryptoshit.info/img/About_crtsht.jpg">
+<meta property="og:url" content="https://cryptoshit.info/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://cryptoshit.info/">
 <link rel="stylesheet" href="/site.css?v=9">
 <style>
 .legal-strip{border-top:1px solid var(--fg);margin-top:calc(var(--pad)*1.4);padding:14px 0 0;display:grid;grid-template-columns:minmax(150px,.45fr) minmax(0,1.55fr);gap:var(--pad);font-size:11px;line-height:1.6}.legal-strip strong{font-size:12px;letter-spacing:.06em}.legal-strip .legal-meta{max-width:76ch}.legal-strip a{text-decoration:underline}.legal-strip a:hover{text-decoration:none}@media(max-width:700px){.legal-strip{grid-template-columns:1fr;gap:8px}}
 </style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"VisualArtwork","name":"CRTSHT","alternateName":"CryptoShit","creator":{"@type":"Person","name":"Marco Spitzbarth","alternateName":"iBulla"},"dateCreated":"2021","artform":"Generative art / physical print / blockchain provenance","artMedium":"Genuine print on aluminium Dibond","description":"A series of 128 unique physical artworks generated, printed and minted on Ethereum in 2021 and reassembled for dispersal by draw in Zürich in 2026.","url":"https://cryptoshit.info/"}</script>
 </head>
 <body><main class="wrap">
 <header>
