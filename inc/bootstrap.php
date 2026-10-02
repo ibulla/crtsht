@@ -57,16 +57,24 @@ if (PHP_SAPI !== 'cli') {
             }
         }
 
-        // Keep the main public navigation synchronized without being confused by footer links.
-        if (!$isManager && preg_match('~<nav\b[^>]*>.*?</nav>~s', $html, $navMatch)) {
-            $nav = $navMatch[0];
-            $navExtras = '';
-            if (!str_contains($nav, 'href="/draw"')) $navExtras .= '<a href="/draw">The Draw</a>';
-            if (!str_contains($nav, 'href="/legal"')) $navExtras .= '<a href="/legal">Legal</a>';
-            if ($navExtras !== '') {
-                $updatedNav = str_replace('</nav>', $navExtras . '</nav>', $nav);
-                $html = str_replace($nav, $updatedNav, $html);
-            }
+        // One deliberate public navigation everywhere: project pages first, active Draw separated as the action.
+        if (!$isManager && preg_match('~<nav\\b[^>]*>.*?</nav>~s', $html, $navMatch)) {
+            $current = $path === '' ? 'archive' : ($path === 'draw' ? 'draw' : ($path === 'lore' ? 'lore' : ($path === 'oracle' ? 'oracle' : ($path === 'press' ? 'press' : ''))));
+            $navLink = static function (string $href, string $label, string $key, string $current, string $class = ''): string {
+                $attrs = $key === $current ? ' aria-current="page"' : '';
+                if ($class !== '') $attrs .= ' class="' . $class . '"';
+                return '<a href="' . $href . '"' . $attrs . '>' . $label . '</a>';
+            };
+            $updatedNav = '<nav class="nav" aria-label="Main navigation">'
+                . '<span class="nav-pages">'
+                . $navLink('/', 'Archive', 'archive', $current)
+                . $navLink('/lore', 'Lore', 'lore', $current)
+                . $navLink('/oracle', 'Oracle', 'oracle', $current)
+                . $navLink('/press', 'Press', 'press', $current)
+                . '</span>'
+                . $navLink('/draw#reserve', 'Enter the Draw →', 'draw', $current, 'nav-draw')
+                . '</nav>';
+            $html = str_replace($navMatch[0], $updatedNav, $html);
         }
 
         // Once a paid draw ticket receives a physical CRTSHT, add that event to the public record.
