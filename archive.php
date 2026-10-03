@@ -46,11 +46,11 @@ $remainingCount = CRTSHT_TOTAL - $dispersedCount;
 <div class="hero-actions"><a class="action action-primary" href="/draw">ENTER THE DRAW →</a><a class="action" href="/lore">READ THE LORE</a></div>
 <div class="archive-facts"><span><b>128</b> originals</span><span><b>20×20</b> cm</span><span><b>3</b> draws</span><span><b>1</b> complete archive</span></div>
 </div>
-<a class="archive-hero-image" href="/lore" aria-label="See the CRTSHT project story"><img src="press/images/CRTSHT_Hero.jpg" alt="Marco Spitzbarth with the CRTSHT installation" fetchpriority="high"><span>THE WORK IS PHYSICAL. THE META IS NOT. →</span></a>
+<a class="archive-hero-image" href="/lore" aria-label="See the CRTSHT project story"><img src="press/images/CRTSHT_Hero.jpg" alt="Marco Spitzbarth with the CRTSHT installation" fetchpriority="high"><span>THE WORK IS META. THE RECORD IS PHYSICAL. →</span></a>
 </section>
 <section class="archive-bridge">
 <div><span class="eyebrow">THE MECHANISM</span><strong>YOU CHOOSE TO OWN ONE.<br>CHANCE CHOOSES WHICH.</strong></div>
-<div class="archive-steps"><span><b>01</b> Browse all 128</span><span><b>02</b> Reserve a voucher</span><span><b>03</b> Draw a number</span><span><b>04</b> Take the original home</span></div>
+<div class="archive-steps"><span><b>01</b> Browse all 128</span><span><b>02</b> Reserve a voucher</span><span><b>03</b> Draw a number</span><span><b>04</b> Get the original</span></div>
 </section>
 <div class="collection-heading"><div><span class="eyebrow">THE ARCHIVE</span><h2>ALL 128 / STILL COMPLETE HERE.</h2><div class="archive-state" aria-label="Current dispersal state"><span><b>128</b> GENERATED</span><span><b><?= $dispersedCount ?></b> DISPERSED</span><span><b><?= $remainingCount ?></b> STILL HERE</span></div></div><a href="/draw">GET YOUR SHIT. DONE. →</a></div>
 <section class="grid">
