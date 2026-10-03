@@ -46,7 +46,7 @@ $remainingCount = CRTSHT_TOTAL - $dispersedCount;
 <div class="hero-actions"><a class="action action-primary" href="/draw">ENTER THE DRAW →</a><a class="action" href="/lore">READ THE LORE</a></div>
 <div class="archive-facts"><span><b>128</b> originals</span><span><b>20×20</b> cm</span><span><b>3</b> draws</span><span><b>1</b> complete archive</span></div>
 </div>
-<a class="archive-hero-image" href="/lore" aria-label="See the CRTSHT project story"><img src="/img/About_crtsht.jpg" alt="Marco Spitzbarth with the CRTSHT installation" fetchpriority="high"><span>THE WORK IS PHYSICAL. THE META IS NOT. →</span></a>
+<a class="archive-hero-image" href="/lore" aria-label="See the CRTSHT project story"><img src="press/images/CRTSHT_Hero.jpg" alt="Marco Spitzbarth with the CRTSHT installation" fetchpriority="high"><span>THE WORK IS PHYSICAL. THE META IS NOT. →</span></a>
 </section>
 <section class="archive-bridge">
 <div><span class="eyebrow">THE MECHANISM</span><strong>YOU CHOOSE TO OWN ONE.<br>CHANCE CHOOSES WHICH.</strong></div>
