@@ -23,7 +23,7 @@ $prettyJson=json_encode($meta,JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNES
 ?><!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title><?=crt_e($title)?> / CRTSHT</title><meta name="description" content="<?=crt_e($title)?> — CRTSHT <?=$id?>/128. Physical work, Ethereum record and IPFS metadata."><link rel="stylesheet" href="/site.css?v=10"></head>
 <body><main class="wrap"><header><a class="brand" href="/">CR¥P70$H!7.1NF0</a><nav class="nav"><a href="/" aria-current="page">Archive</a><a href="/lore">The Lore</a><a href="/oracle">The Oracle</a><a href="/press">Press</a></nav></header>
-<section class="record-intro"><div><span class="eyebrow">ARCHIVE OBJECT / ${id}</span><strong>ONE OF 128.<br>ONE PHYSICAL ORIGINAL.</strong></div><p>This page is the public record attached to the object: print fingerprint, 2021 metadata, Ethereum history and IPFS references. The object itself is simpler. It is a 20 × 20 cm artwork.</p></section>
+
 <section class="detail"><div class="art"><?php if($art):?><img class="zoomable" id="artwork-image" decoding="async" fetchpriority="high" src="<?=crt_e($art)?>" alt="<?=crt_e($title)?>"><?php endif;?><div class="ipfs-status">GENUINE PRINT / IPFS VERIFIED</div></div>
 <div><div class="small"><a href="/">← Archive</a></div><div class="record"><div class="titleline"><?php if($cake):?><img class="cake-icon" src="<?=crt_e($cake)?>" alt="Mooncake <?=$id?>"><?php endif;?><h1><?=crt_e($title)?></h1></div><p class="muted" style="font-size:12px;line-height:1.5;margin:0 0 22px">20 × 20 cm physical original · <?=$id?>/128 · minted 2021</p>
 
@@ -54,6 +54,9 @@ $prettyJson=json_encode($meta,JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNES
 <?php if($jsonCid):?><div class="row"><span class="label">metadata cid</span><span class="value"><a target="_blank" rel="noopener" href="https://ipfs.io/ipfs/<?=crt_e($jsonCid)?>"><?=crt_e($jsonCid)?> ↗</a></span></div><?php endif;?>
 <div class="row"><span class="label">json</span><span class="value"><a target="_blank" href="/JSON_1-128/<?=$id?>.json">original 2021 metadata ↗</a><details class="json-reveal"><summary>Reveal JSON</summary><pre><?=crt_e($prettyJson)?></pre></details><?php if($description!==''):?><span class="metadata-description"><?=crt_e($description)?></span><?php endif;?></span></div>
 </div></div></div></section>
+
+<section class="record-intro"><div><span class="eyebrow">ARCHIVE OBJECT / ${id}</span><strong>1 / 128.<br>ONE PHYSICAL ORIGINAL.</strong></div><p>This page is the public record attached to the object: print fingerprint, 2021 metadata, Ethereum history and IPFS references. The object itself is simpler. It is a 20 × 20 cm artwork.</p></section>
+
 <?php if($cake):?><section class="mooncake-exit"><div class="mooncake-exit-media"><a href="/oracle"><img id="mooncake-image" loading="lazy" decoding="async" src="<?=crt_e($cake)?>" alt="Mooncake for <?=crt_e($title)?>"></a><?php if($cid):?><div id="mooncake-ipfs-status" class="ipfs-status" data-cid="<?=crt_e($cid)?>">TOKEN IMAGE / CHECKING IPFS</div><?php endif;?></div><div class="mooncake-exit-copy"><a href="/oracle"><span class="eyebrow">THE PHYSICAL KEY</span><strong>Have the original?<br>Ask The Oracle →</strong></a></div></section><?php endif;?>
 <section class="record-next"><div><span class="eyebrow">THE COLLECTION DISPERSES. THE RECORD REMAINS.</span><strong>Want one without choosing one?</strong></div><a class="action action-primary" href="/draw">ENTER THE DRAW →</a></section>
 <footer class="footer"><span><?=crt_e($title)?> / CRTSHT</span><span><?=$id?>/128</span></footer></main><div class="lightbox" id="lightbox"><button aria-label="Close">×</button><img alt="Full artwork"></div>
