@@ -103,8 +103,15 @@ if (is_dir($imageDir)) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Press / SHIT HAPPENS! / CRTSHT</title>
-<meta name="description" content="In Zürich verschwinden gerade 128 Bilder aus einem Kunstraum: Press material for SHIT HAPPENS! — CRTSHT / Marco Spitzbarth (iBulla), ENDSAFTER Zürich, 2026.">
+<title>In Zürich verschwinden gerade 128 Bilder / CRTSHT Press</title>
+<meta name="description" content="In Zürich verschwinden gerade 128 Bilder aus einem Kunstraum. Nicht gestohlen. Gezogen. Press material for SHIT HAPPENS! — CRTSHT / Marco Spitzbarth (iBulla), Zürich 2026.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="In Zürich verschwinden gerade 128 Bilder aus einem Kunstraum!">
+<meta property="og:description" content="Nicht gestohlen. Gezogen. 128 physische Originale werden bei SHIT HAPPENS! nach und nach aus einem Zürcher Kunstraum verteilt.">
+<meta property="og:url" content="https://cryptoshit.info/press">
+<?php if($hero): ?><meta property="og:image" content="https://cryptoshit.info<?=crt_e($hero['url'])?>"><?php endif; ?>
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://cryptoshit.info/press">
 <link rel="stylesheet" href="/site.css?v=10">
 <style>
 .press{max-width:1280px}
