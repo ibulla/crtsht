@@ -219,7 +219,8 @@ FINAL DRAW · 31.10.2026
 <h2>Pressetext<br>DE</h2>
 <article class="press-copy" data-copy-source>
 <h3>IN ZÜRICH VERSCHWINDEN GERADE 128 BILDER AUS EINEM KUNSTRAUM!</h3>
-<p class="standfirst"><strong>Nicht gestohlen. Gezogen.</strong> In der Ausstellung <strong>SHIT HAPPENS!</strong> von Marco Spitzbarth (iBulla) hängen bei ENDSAFTER in Zürich 128 kleine Originale an einer Wand. Noch.</p>
+<p class="standfirst"><strong>128 Bilder hängen zu Beginn an einer Wand. Nach jeder Ziehung wird eines entfernt und durch eine nummerierte Plakette ersetzt. Bis zum 31. Oktober soll die Ausstellung vollständig verschwunden sein. Mit SHIT HAPPENS! übersetzt der Zürcher Künstler Marco Spitzbarth (iBulla) die Sammelmechanismen des NFT-Hypes von 2021 zurück in den physischen Raum.</strong></p>
+<p><strong>Nicht gestohlen. Gezogen.</strong></p>
 <p>Bei drei öffentlichen Ziehungen werden die Arbeiten nach und nach verteilt. Wer teilnimmt, entscheidet sich für ein Werk – aber nicht für welches. Eine Nummer wird gezogen, das entsprechende Original verlässt die Ausstellung. Zurück bleibt eine kleine, 3D-gedruckte Reliefplakette mit der Hexadezimalnummer des verschwundenen Bildes.</p>
 <p>So verändert sich die Ausstellung mit jeder Ziehung: Aus einer vollständigen Sammlung wird langsam das Abbild ihrer eigenen Zerstreuung.</p>
 <p class="press-quote">TOGETHER BEFORE WE DISPERSE.</p>
