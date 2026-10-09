@@ -13,12 +13,15 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 }
 
 function draw_batch(): array {
-    $now = new DateTimeImmutable('now', new DateTimeZone('Europe/Zurich'));
-    $draw1 = new DateTimeImmutable('2026-09-25 18:00:00', new DateTimeZone('Europe/Zurich'));
-    $draw2 = new DateTimeImmutable('2026-10-17 18:00:00', new DateTimeZone('Europe/Zurich'));
-    if ($now < $draw1) return ['01', '25.09.2026', 'FIRST DISPERSAL'];
-    if ($now < $draw2) return ['02', '17.10.2026', 'SECOND DISPERSAL'];
-    return ['03', '31.10.2026', 'FINAL DISPERSAL'];
+    $tz = new DateTimeZone('Europe/Zurich');
+    $now = new DateTimeImmutable('now', $tz);
+    $draw1 = new DateTimeImmutable('2026-09-25 19:00:00', $tz);
+    $draw2 = new DateTimeImmutable('2026-10-17 19:00:00', $tz);
+    $draw3 = new DateTimeImmutable('2026-10-31 19:00:00', $tz);
+    if ($now < $draw1) return ['01', '25.09.2026', 'FIRST DISPERSAL', true];
+    if ($now < $draw2) return ['02', '17.10.2026', 'SECOND DISPERSAL', true];
+    if ($now < $draw3) return ['03', '31.10.2026', 'FINAL DISPERSAL', true];
+    return ['03', '31.10.2026', 'FINAL DISPERSAL', false];
 }
 
 function draw_reserved_slots(): ?int {
@@ -37,7 +40,14 @@ function draw_clean(string $value, int $max): string {
     return mb_substr($value, 0, $max, 'UTF-8');
 }
 
-[$currentBatch, $nextDrawDate, $currentDrawName] = draw_batch();
+[$currentBatch, $nextDrawDate, $currentDrawName, $drawOpen] = draw_batch();
+$drawTz = new DateTimeZone('Europe/Zurich');
+$drawNow = new DateTimeImmutable('now', $drawTz);
+$drawTimes = [
+    '01' => new DateTimeImmutable('2026-09-25 19:00:00', $drawTz),
+    '02' => new DateTimeImmutable('2026-10-17 19:00:00', $drawTz),
+    '03' => new DateTimeImmutable('2026-10-31 19:00:00', $drawTz),
+];
 $csrf = $_SESSION['draw_csrf'] ?? '';
 if (!is_string($csrf) || strlen($csrf) < 32) {
     $csrf = bin2hex(random_bytes(24));
@@ -70,7 +80,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $city = draw_clean($form['city'], 120);
     $country = draw_clean($form['country'], 120);
 
-    if (!hash_equals($csrf, $postedCsrf) || $honeypot !== '') {
+    if (!$drawOpen) {
+        $error = 'The final dispersal is complete. Reservations are closed.';
+    } elseif (!hash_equals($csrf, $postedCsrf) || $honeypot !== '') {
         $error = 'The terminal rejected this request. Please reload the page and try again.';
     } elseif ($quantity === false) {
         $error = 'Choose one, two or three draw entries.';
@@ -268,12 +280,13 @@ $remainingSlots = $reservedSlots === null ? null : max(0, CRTSHT_TOTAL - $reserv
 </section>
 <section class="draw-callout"><strong>NO CRYPTO REQUIRED.</strong><span>The blockchain is provenance. What you receive is a physical artwork.</span></section>
 <section class="system-window" id="reserve" aria-label="CRTSHT draw terminal">
-<div class="system-bar"><span>CRTSHT / DRAW TERMINAL</span><span class="crt-blink">RESERVATIONS OPEN</span></div>
+<div class="system-bar"><span>CRTSHT / DRAW TERMINAL</span><span class="<?= $drawOpen ? 'crt-blink' : '' ?>"><?= $drawOpen ? 'RESERVATIONS OPEN' : 'RESERVATIONS CLOSED' ?></span></div>
 <div class="system-body">
 <div class="eyebrow">BATCH <?= crt_e($currentBatch) ?> / <?= crt_e($currentDrawName) ?></div><h2 class="terminal-title">RESERVE YOUR VOUCHER.</h2>
 <p class="terminal-copy">One voucher equals one genuine 20 × 20 cm physical original, with its Ethereum provenance, Mooncake, sealed wallet material and packaging. Pick the quantity, enter your details and choose payment after reservation. The artwork itself stays unknown until the draw.</p>
 <p class="capacity">CAPACITY / <?php if($remainingSlots === null): ?><strong>128 TOTAL</strong><?php else: ?><strong><?= $remainingSlots ?> OF 128 SLOTS AVAILABLE</strong><?php endif; ?></p>
 <?php if($error !== ''): ?><div class="draw-error"><?= crt_e($error) ?></div><?php endif; ?>
+<?php if($drawOpen): ?>
 <form class="draw-form" method="post" action="/draw" autocomplete="on">
 <input type="hidden" name="csrf" value="<?= crt_e($csrf) ?>">
 <div class="hp" aria-hidden="true"><label>Company<input type="text" name="company" tabindex="-1" autocomplete="off"></label></div>
@@ -293,18 +306,31 @@ $remainingSlots = $reservedSlots === null ? null : max(0, CRTSHT_TOTAL - $reserv
 <div class="field"><label for="city">City*</label><input id="city" name="city" maxlength="120" value="<?= crt_e($form['city']) ?>" autocomplete="address-level2" required></div>
 <div class="field field-wide"><label for="country">Country*</label><input id="country" name="country" maxlength="120" value="<?= crt_e($form['country']) ?>" autocomplete="country-name" required></div>
 </div></div>
-<p class="form-consent">Submitting stores this reservation and temporarily holds the selected number of CRTSHT draw slots. The reservation remains marked <strong>PAYMENT PENDING</strong> until it is manually confirmed as paid. Your data is used to manage the reservation, draw and delivery of the work.</p>
+<p class="form-consent">Submitting stores this reservation and temporarily holds the selected number of CRTSHT draw slots. Card / TWINT payments are confirmed automatically after successful payment; invoice / bank-transfer payments are confirmed manually. Your data is used to manage the reservation, draw and delivery of the work.</p>
 <div class="terminal-action"><button class="terminal-button" type="submit" <?= $remainingSlots === 0 ? 'disabled' : '' ?>>RESERVE DRAW <?= $form['quantity']==='1' ? 'ENTRY' : 'ENTRIES' ?></button><span class="terminal-note">No artwork is selected here. Every valid ticket is matched by chance with one remaining physical CRTSHT at its scheduled live draw.</span></div>
 </form>
+<?php else: ?>
+<div class="draw-error" style="margin-top:22px"><strong>FINAL DISPERSAL COMPLETE.</strong><br>Reservations are closed. The 128-work archive remains online as the record of the dispersal.</div>
+<?php endif; ?>
 </div>
-<div class="system-status"><span>OBJECT UNKNOWN / ENTRY RESERVED / PAYMENT PENDING</span><span>DRAW <?= crt_e($currentBatch) ?> · <?= crt_e($nextDrawDate) ?></span></div>
+<div class="system-status"><span><?= $drawOpen ? 'OBJECT UNKNOWN / ENTRY RESERVED / PAYMENT PENDING' : 'DRAW TERMINAL / CLOSED' ?></span><span><?= $drawOpen ? 'DRAW ' . crt_e($currentBatch) . ' · ' . crt_e($nextDrawDate) : 'FINAL DISPERSAL · 31.10.2026' ?></span></div>
 </section>
 <?php endif; ?>
 
 <section class="draws">
-<div class="draw-row is-past"><span class="date">25.09.2026</span><strong>DRAW 01 / FIRST DISPERSAL</strong><span class="state">DISPERSED</span></div>
-<div class="draw-row"><span class="date">17.10.2026</span><strong>DRAW 02 / SECOND DISPERSAL</strong><span class="state">02</span></div>
-<div class="draw-row"><span class="date">31.10.2026</span><strong>DRAW 03 / FINAL DISPERSAL</strong><span class="state">FINAL</span></div>
+<?php
+$timeline = [
+    ['01','25.09.2026','FIRST DISPERSAL'],
+    ['02','17.10.2026','SECOND DISPERSAL'],
+    ['03','31.10.2026','FINAL DISPERSAL'],
+];
+foreach($timeline as [$batch,$date,$name]):
+    $done = $drawNow >= $drawTimes[$batch];
+    $next = !$done && $batch === $currentBatch && $drawOpen;
+    $state = $done ? 'DISPERSED' : ($next ? 'NEXT' : ($batch === '03' ? 'FINAL' : $batch));
+?>
+<div class="draw-row<?= $done ? ' is-past' : '' ?>"><span class="date"><?= crt_e($date) ?></span><strong>DRAW <?= crt_e($batch) ?> / <?= crt_e($name) ?></strong><span class="state"><?= crt_e($state) ?></span></div>
+<?php endforeach; ?>
 <p class="draw-note"><strong>All three draws take place at <a href="https://endsafter.ch" target="_blank" rel="noopener">Endsafter</a>, Hardturmstrasse 307, 8005 Zürich.</strong><br>Reservations enter the next scheduled draw once payment has been confirmed. After each draw, the terminal continues with the remaining physical works. The system stops at 128 entries because there are only 128 CRTSHTs to disperse.</p>
 </section>
 
@@ -322,15 +348,24 @@ $remainingSlots = $reservedSlots === null ? null : max(0, CRTSHT_TOTAL - $reserv
 </section>
 <?php endif; ?>
 <footer class="footer"><span>CRTSHT / THE DRAW • <a href="/press">Press</a> • <a href="/legal">LEGAL</a> • <a href="https://ibulla.com" target="_blank" rel="noopener">iBulla</a></span><span>OPEN → RESERVED → PAID → ASSIGNED</span></footer>
-<?php if (!$success): ?><a class="mobile-draw-cta" href="#reserve">RESERVE A VOUCHER <span>→</span></a><?php endif; ?>
+<?php if (!$success && $drawOpen): ?><a class="mobile-draw-cta" href="#reserve">RESERVE A VOUCHER <span>→</span></a><?php endif; ?>
 </main>
 <script>
 (()=>{
  const radios=[...document.querySelectorAll('input[name="quantity"]')];
  const button=document.querySelector('.terminal-button');
- if(!radios.length||!button)return;
- const update=()=>{const q=radios.find(r=>r.checked)?.value||'1';button.textContent='RESERVE DRAW '+(q==='1'?'ENTRY':'ENTRIES');};
- radios.forEach(r=>r.addEventListener('change',update));update();
+ if(radios.length&&button){
+   const update=()=>{const q=radios.find(r=>r.checked)?.value||'1';button.textContent='RESERVE DRAW '+(q==='1'?'ENTRY':'ENTRIES');};
+   radios.forEach(r=>r.addEventListener('change',update));update();
+ }
+ const header=document.querySelector('header');
+ const reserve=document.getElementById('reserve');
+ const floating=document.querySelector('.mobile-draw-cta');
+ if(!header||!reserve||!floating)return;
+ let headerVisible=true,reserveVisible=false;
+ const updateFloating=()=>floating.classList.toggle('is-visible',!headerVisible&&!reserveVisible);
+ new IntersectionObserver(([entry])=>{headerVisible=entry.isIntersecting;updateFloating();},{threshold:0}).observe(header);
+ new IntersectionObserver(([entry])=>{reserveVisible=entry.isIntersecting;updateFloating();},{threshold:.08}).observe(reserve);
 })();
 </script>
 </body></html>
