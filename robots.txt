@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /payment/
+Disallow: /crtshtdrwmng/
+Disallow: /private/
+Disallow: /inc/
+
+Sitemap: https://cryptoshit.info/sitemap.xml
