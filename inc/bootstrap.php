@@ -79,17 +79,6 @@ if (PHP_SAPI !== 'cli') {
             $html = str_replace($navMatch[0], $updatedNav, $html);
         }
 
-        // Once a CRTSHT is assigned, expose only the public dispersal event — never reservation or internal IDs.
-        if (preg_match('~^(?:crtsht/)?(\d{1,3})$~', $path, $m) && str_contains($html, '<div class="section-head">PROVENANCE / OBJECT</div>')) {
-            $assignment = crt_draw_assignment((int)$m[1]);
-            if ($assignment) {
-                $assignedAt = trim((string)($assignment['AssignedAt'] ?? ''));
-                $drawRow = '<div class="row"><span class="label">dispersal</span><span><strong>DISPERSED · DRAW ' . crt_e((string)$assignment['DrawBatch']) . '</strong></span></div>';
-                if ($assignedAt !== '') $drawRow .= '<div class="row"><span class="label">assigned</span><span>' . crt_e($assignedAt) . ' CET</span></div>';
-                $html = str_replace('<div class="section-head">PROVENANCE / OBJECT</div>', '<div class="section-head">PROVENANCE / OBJECT</div>' . $drawRow, $html);
-            }
-        }
-
         if (str_contains($html, '</head>')) {
             $head = '';
             if (!str_contains($html, '/fav/favicon.ico')) {
