@@ -29,6 +29,10 @@ $prettyJson=json_encode($meta,JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNES
 <div><div class="small"><a href="/">← Archive</a></div><div class="record"><div class="titleline"><?php if($cake):?><img class="cake-icon" src="<?=crt_e($cake)?>" alt="Mooncake <?=$id?>"><?php endif;?><h1><?=crt_e($title)?></h1></div><?php if($assignment): ?><div class="record-dispersed">DISPERSED · DRAW <?=crt_e((string)$assignment['DrawBatch'])?></div><?php endif; ?><p class="muted" style="font-size:12px;line-height:1.5;margin:0 0 22px">20 × 20 cm physical original · <?=$id?>/128 · minted 2021</p>
 
 <div class="section-head">PROVENANCE / OBJECT</div>
+<?php if($assignment): ?>
+<div class="row"><span class="label">dispersal</span><span><strong>DISPERSED · DRAW <?=crt_e((string)$assignment['DrawBatch'])?></strong></span></div>
+<?php if(trim((string)($assignment['AssignedAt']??''))!==''): ?><div class="row"><span class="label">assigned</span><span><?=crt_e((string)$assignment['AssignedAt'])?> CET</span></div><?php endif; ?>
+<?php endif; ?>
 <div class="row"><span class="label">archive id</span><span><?=$id?>/128 · /crtsht/<?=$id?></span></div>
 <div class="row"><span class="label">physical</span><span>20 × 20 cm · 1 GENUINE PRINT · TGP</span></div>
 <div class="row"><span class="label">print hash</span><span class="value copy" data-copy><?=crt_e($attrs['PRINT HASH']??'')?></span></div>
