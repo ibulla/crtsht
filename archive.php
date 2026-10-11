@@ -37,7 +37,7 @@ if ($archiveNow < new DateTimeImmutable('2026-10-17 19:00:00', new DateTimeZone(
 <meta property="og:url" content="https://cryptoshit.info/">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://cryptoshit.info/">
-<link rel="stylesheet" href="/site.css?v=12">
+<link rel="stylesheet" href="/site.css?v=16">
 <style>
 .legal-strip{border-top:1px solid var(--fg);margin-top:calc(var(--pad)*1.4);padding:14px 0 0;display:grid;grid-template-columns:minmax(150px,.45fr) minmax(0,1.55fr);gap:var(--pad);font-size:11px;line-height:1.6}.legal-strip strong{font-size:12px;letter-spacing:.06em}.legal-strip .legal-meta{max-width:76ch}.legal-strip a{text-decoration:underline}.legal-strip a:hover{text-decoration:none}@media(max-width:700px){.legal-strip{grid-template-columns:1fr;gap:8px}}
 </style>
