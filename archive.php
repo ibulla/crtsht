@@ -18,8 +18,10 @@ $remainingCount = $dispersalAvailable ? CRTSHT_TOTAL - $dispersedCount : null;
 $archiveNow = new DateTimeImmutable('now', new DateTimeZone('Europe/Zurich'));
 if ($archiveNow < new DateTimeImmutable('2026-10-17 19:00:00', new DateTimeZone('Europe/Zurich'))) {
     $archiveNext = 'NEXT · DRAW 02 · 17.10';
-} elseif ($archiveNow < new DateTimeImmutable('2026-11-01 00:00:00', new DateTimeZone('Europe/Zurich'))) {
+} elseif ($archiveNow < new DateTimeImmutable('2026-10-31 19:00:00', new DateTimeZone('Europe/Zurich'))) {
     $archiveNext = 'NEXT · FINAL DRAW · 31.10';
+} elseif ($archiveNow < new DateTimeImmutable('2026-11-01 00:00:00', new DateTimeZone('Europe/Zurich'))) {
+    $archiveNext = 'FINAL DRAW LIVE · LATE ENTRY OPEN';
 } else {
     $archiveNext = 'DRAW PERIOD ENDED';
 }
