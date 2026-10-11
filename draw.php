@@ -18,10 +18,12 @@ function draw_batch(): array {
     $draw1 = new DateTimeImmutable('2026-09-25 19:00:00', $tz);
     $draw2 = new DateTimeImmutable('2026-10-17 19:00:00', $tz);
     $draw3 = new DateTimeImmutable('2026-10-31 19:00:00', $tz);
-    if ($now < $draw1) return ['01', '25.09.2026', 'FIRST DISPERSAL', true];
-    if ($now < $draw2) return ['02', '17.10.2026', 'SECOND DISPERSAL', true];
-    if ($now < $draw3) return ['03', '31.10.2026', 'FINAL DISPERSAL', true];
-    return ['03', '31.10.2026', 'FINAL DISPERSAL', false];
+    $close = new DateTimeImmutable('2026-11-01 00:00:00', $tz);
+    if ($now < $draw1) return ['01', '25.09.2026', 'FIRST DISPERSAL', true, false];
+    if ($now < $draw2) return ['02', '17.10.2026', 'SECOND DISPERSAL', true, false];
+    if ($now < $draw3) return ['03', '31.10.2026', 'FINAL DISPERSAL', true, false];
+    if ($now < $close) return ['03', '31.10.2026', 'FINAL DISPERSAL', true, true];
+    return ['03', '31.10.2026', 'FINAL DISPERSAL', false, false];
 }
 
 function draw_reserved_slots(): ?int {
@@ -40,7 +42,7 @@ function draw_clean(string $value, int $max): string {
     return mb_substr($value, 0, $max, 'UTF-8');
 }
 
-[$currentBatch, $nextDrawDate, $currentDrawName, $drawOpen] = draw_batch();
+[$currentBatch, $nextDrawDate, $currentDrawName, $drawOpen, $lateEntryOpen] = draw_batch();
 $drawTz = new DateTimeZone('Europe/Zurich');
 $drawNow = new DateTimeImmutable('now', $drawTz);
 $drawTimes = [
@@ -48,6 +50,7 @@ $drawTimes = [
     '02' => new DateTimeImmutable('2026-10-17 19:00:00', $drawTz),
     '03' => new DateTimeImmutable('2026-10-31 19:00:00', $drawTz),
 ];
+$finalClose = new DateTimeImmutable('2026-11-01 00:00:00', $drawTz);
 $csrf = $_SESSION['draw_csrf'] ?? '';
 if (!is_string($csrf) || strlen($csrf) < 32) {
     $csrf = bin2hex(random_bytes(24));
@@ -81,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $country = draw_clean($form['country'], 120);
 
     if (!$drawOpen) {
-        $error = 'The final dispersal is complete. Reservations are closed.';
+        $error = 'The draw period has ended. Reservations are closed.';
     } elseif (!hash_equals($csrf, $postedCsrf) || $honeypot !== '') {
         $error = 'The terminal rejected this request. Please reload the page and try again.';
     } elseif ($quantity === false) {
@@ -228,6 +231,7 @@ $remainingSlots = $reservedSlots === null ? null : max(0, CRTSHT_TOTAL - $reserv
 .draw-form{margin-top:22px;border-top:1px solid var(--line);padding-top:18px}.form-section{margin-top:20px}.form-section:first-of-type{margin-top:24px}.form-section-title{display:flex;align-items:center;gap:9px;margin:0 0 9px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em}.form-section-title span{display:inline-flex;width:21px;height:21px;align-items:center;justify-content:center;border:1px solid var(--fg);border-radius:50%;font-size:9px}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.field{display:flex;flex-direction:column;gap:0;position:relative}.field-wide{grid-column:1/-1}.field label{position:absolute;z-index:1;left:12px;top:8px;font-size:8px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);pointer-events:none;transition:color .12s}.field input{width:100%;font:inherit;font-size:13px;padding:23px 12px 9px;background:rgba(255,255,255,.18);color:var(--fg);border:1px solid var(--line);border-radius:7px;transition:border-color .12s,background .12s,box-shadow .12s}.field input:hover{border-color:var(--muted)}.field input:focus{outline:0;border-color:var(--fg);background:var(--paper);box-shadow:0 0 0 3px var(--signal)}.field:focus-within label{color:var(--fg);font-weight:700}.hp{position:absolute!important;left:-9999px!important;width:1px!important;height:1px!important;overflow:hidden!important}.form-consent{font-size:10px;line-height:1.5;color:var(--muted);max-width:72ch;margin:14px 0}.terminal-action{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-top:18px;flex-wrap:wrap}.terminal-button{display:inline-flex;align-items:center;justify-content:center;background:var(--fg);color:var(--bg);border:1px solid var(--fg);padding:13px 18px;font:inherit;font-size:12px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer}.terminal-button:hover{background:transparent;color:var(--fg)}.terminal-note{font-size:10px;color:var(--muted);max-width:54ch;line-height:1.5}.draw-error{border:1px solid var(--fg);padding:12px;margin:0 0 18px;font-size:12px;line-height:1.5}
 .draws{border-top:1px solid var(--fg);margin-top:calc(var(--pad)*1.35)}.draw-row{display:grid;grid-template-columns:120px 1fr auto;gap:20px;align-items:baseline;padding:16px 0;border-bottom:1px solid var(--line)}.draw-row.is-past{color:var(--muted)}.draw-row.is-past .date,.draw-row.is-past strong{text-decoration:line-through;text-decoration-thickness:1px;text-decoration-color:var(--line)}.draw-row.is-past .state{background:#e4e4df;border-color:var(--line);color:var(--muted);text-decoration:none}.draw-row .date{font-size:11px;text-transform:uppercase;letter-spacing:.08em}.draw-row strong{font-size:clamp(22px,3vw,38px);letter-spacing:-.045em}.draw-row .state{font-size:10px;text-transform:uppercase;letter-spacing:.08em;border:1px solid var(--fg);border-radius:100px;padding:5px 8px}.draw-note{font-size:13px;line-height:1.55;max-width:72ch;margin:20px 0 0}.receipt{margin-top:calc(var(--pad)*1.35);display:grid;grid-template-columns:minmax(190px,.55fr) minmax(0,1.45fr);gap:var(--pad);border-top:1px solid var(--fg);padding-top:22px}.receipt h2{font-size:clamp(28px,4vw,58px);line-height:.92;letter-spacing:-.055em;margin:0}.receipt-box{border:1px solid var(--fg);font-size:11px}.receipt-line{display:grid;grid-template-columns:130px 1fr;gap:16px;padding:9px 11px;border-bottom:1px solid var(--line)}.receipt-line:last-child{border-bottom:0}.receipt-line span:first-child{color:var(--muted);text-transform:uppercase;letter-spacing:.05em}.success-title{font-size:clamp(34px,5vw,72px);line-height:.9;letter-spacing:-.06em;margin:0 0 18px;max-width:11ch}.entry-numbers{display:flex;gap:7px;flex-wrap:wrap}.entry-number{border:1px solid var(--fg);border-radius:100px;padding:5px 8px}.payment-fork{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:18px}.payment-choice{border:1px solid var(--fg);padding:16px;display:flex;flex-direction:column;justify-content:space-between;gap:14px}.payment-choice strong{font-size:18px;letter-spacing:-.03em}.payment-choice p{font-size:11px;line-height:1.5;margin:0;color:var(--muted)}.payment-choice form{margin:0}.payment-choice .terminal-button{width:100%;text-decoration:none}
 @media(max-width:760px){.draw-hero,.receipt,.payment-fork{grid-template-columns:1fr}.entry-grid,.form-grid{grid-template-columns:1fr}.field-wide{grid-column:auto}.draw-row{grid-template-columns:1fr auto}.draw-row .date{grid-column:1/-1}.receipt-line{grid-template-columns:105px 1fr}}
+.draw-live-note{border:1px solid var(--fg);border-radius:100px;background:var(--signal);padding:9px 12px;font-size:10px;line-height:1.45;margin:0 0 18px}.draw-row.is-live .state{background:var(--signal);font-weight:700}
 @media(prefers-reduced-motion:reduce){.crt-blink{animation:none}}
 </style>
 </head>
@@ -280,9 +284,10 @@ $remainingSlots = $reservedSlots === null ? null : max(0, CRTSHT_TOTAL - $reserv
 </section>
 <section class="draw-callout"><strong>NO CRYPTO REQUIRED.</strong><span>The blockchain is provenance. What you receive is a physical artwork.</span></section>
 <section class="system-window" id="reserve" aria-label="CRTSHT draw terminal">
-<div class="system-bar"><span>CRTSHT / DRAW TERMINAL</span><span class="<?= $drawOpen ? 'crt-blink' : '' ?>"><?= $drawOpen ? 'RESERVATIONS OPEN' : 'RESERVATIONS CLOSED' ?></span></div>
+<div class="system-bar"><span>CRTSHT / DRAW TERMINAL</span><span class="<?= $drawOpen ? 'crt-blink' : '' ?>"><?= $lateEntryOpen ? 'LIVE / LATE ENTRY OPEN' : ($drawOpen ? 'RESERVATIONS OPEN' : 'RESERVATIONS CLOSED') ?></span></div>
 <div class="system-body">
 <div class="eyebrow">BATCH <?= crt_e($currentBatch) ?> / <?= crt_e($currentDrawName) ?></div><h2 class="terminal-title">RESERVE YOUR VOUCHER.</h2>
+<?php if($lateEntryOpen): ?><p class="draw-live-note"><strong>FINAL DRAW IN PROGRESS.</strong> Late entries remain open until 00:00 tonight and enter Draw 03.</p><?php endif; ?>
 <p class="terminal-copy">One voucher equals one genuine 20 × 20 cm physical original, with its Ethereum provenance, Mooncake, sealed wallet material and packaging. Pick the quantity, enter your details and choose payment after reservation. The artwork itself stays unknown until the draw.</p>
 <p class="capacity">CAPACITY / <?php if($remainingSlots === null): ?><strong>128 TOTAL</strong><?php else: ?><strong><?= $remainingSlots ?> OF 128 SLOTS AVAILABLE</strong><?php endif; ?></p>
 <?php if($error !== ''): ?><div class="draw-error"><?= crt_e($error) ?></div><?php endif; ?>
@@ -310,10 +315,10 @@ $remainingSlots = $reservedSlots === null ? null : max(0, CRTSHT_TOTAL - $reserv
 <div class="terminal-action"><button class="terminal-button" type="submit" <?= $remainingSlots === 0 ? 'disabled' : '' ?>>RESERVE DRAW <?= $form['quantity']==='1' ? 'ENTRY' : 'ENTRIES' ?></button><span class="terminal-note">No artwork is selected here. Every valid ticket is matched by chance with one remaining physical CRTSHT at its scheduled live draw.</span></div>
 </form>
 <?php else: ?>
-<div class="draw-error" style="margin-top:22px"><strong>FINAL DISPERSAL COMPLETE.</strong><br>Reservations are closed. The 128-work archive remains online as the record of the dispersal.</div>
+<div class="draw-error" style="margin-top:22px"><strong>DRAW PERIOD ENDED / REGISTRATION CLOSED.</strong><br>The 128-work archive remains online as the record of the dispersal.</div>
 <?php endif; ?>
 </div>
-<div class="system-status"><span><?= $drawOpen ? 'OBJECT UNKNOWN / ENTRY RESERVED / PAYMENT PENDING' : 'DRAW TERMINAL / CLOSED' ?></span><span><?= $drawOpen ? 'DRAW ' . crt_e($currentBatch) . ' · ' . crt_e($nextDrawDate) : 'FINAL DISPERSAL · 31.10.2026' ?></span></div>
+<div class="system-status"><span><?= $drawOpen ? 'OBJECT UNKNOWN / ENTRY RESERVED / PAYMENT PENDING' : 'DRAW TERMINAL / CLOSED' ?></span><span><?= $lateEntryOpen ? 'DRAW 03 · LIVE · ENTRY UNTIL 00:00' : ($drawOpen ? 'DRAW ' . crt_e($currentBatch) . ' · ' . crt_e($nextDrawDate) : 'REGISTRATION CLOSED · 01.11.2026 00:00') ?></span></div>
 </section>
 <?php endif; ?>
 
@@ -325,13 +330,14 @@ $timeline = [
     ['03','31.10.2026','FINAL DISPERSAL'],
 ];
 foreach($timeline as [$batch,$date,$name]):
-    $done = $drawNow >= $drawTimes[$batch];
-    $next = !$done && $batch === $currentBatch && $drawOpen;
-    $state = $done ? 'DISPERSED' : ($next ? 'NEXT' : ($batch === '03' ? 'FINAL' : $batch));
+    $done = $batch === '03' ? $drawNow >= $finalClose : $drawNow >= $drawTimes[$batch];
+    $live = $batch === '03' && $lateEntryOpen;
+    $next = !$done && !$live && $batch === $currentBatch && $drawOpen;
+    $state = $done ? 'DISPERSED' : ($live ? 'LIVE / LATE ENTRY' : ($next ? 'NEXT' : ($batch === '03' ? 'FINAL' : $batch)));
 ?>
-<div class="draw-row<?= $done ? ' is-past' : '' ?>"><span class="date"><?= crt_e($date) ?></span><strong>DRAW <?= crt_e($batch) ?> / <?= crt_e($name) ?></strong><span class="state"><?= crt_e($state) ?></span></div>
+<div class="draw-row<?= $done ? ' is-past' : '' ?><?= $live ? ' is-live' : '' ?>"><span class="date"><?= crt_e($date) ?></span><strong>DRAW <?= crt_e($batch) ?> / <?= crt_e($name) ?></strong><span class="state"><?= crt_e($state) ?></span></div>
 <?php endforeach; ?>
-<p class="draw-note"><strong>All three draws take place at <a href="https://endsafter.ch" target="_blank" rel="noopener">Endsafter</a>, Hardturmstrasse 307, 8005 Zürich.</strong><br>Reservations enter the next scheduled draw once payment has been confirmed. After each draw, the terminal continues with the remaining physical works. The system stops at 128 entries because there are only 128 CRTSHTs to disperse.</p>
+<p class="draw-note"><strong>All three draws take place at <a href="https://endsafter.ch" target="_blank" rel="noopener">Endsafter</a>, Hardturmstrasse 307, 8005 Zürich.</strong><br>Reservations enter the current scheduled draw once payment has been confirmed. On 31 October, late entries remain possible during the final draw until 00:00. After each draw, the terminal continues with the remaining physical works. The system stops at 128 entries because there are only 128 CRTSHTs to disperse.</p>
 </section>
 
 <?php if (!$success): ?>
