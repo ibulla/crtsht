@@ -8,9 +8,18 @@ $pressDir = __DIR__ . '/press';
 $imageDir = $pressDir . '/images';
 $pressEmail = crt_env('CRTSHT_PRESS_EMAIL');
 if ($pressEmail === '') $pressEmail = crt_env('CRTSHT_LEGAL_EMAIL');
-$dispersed = crt_draw_assignments();
-$dispersedCount = count($dispersed);
-$remainingCount = CRTSHT_TOTAL - $dispersedCount;
+$dispersedData = crt_draw_assignments();
+$dispersalAvailable = is_array($dispersedData);
+$dispersedCount = $dispersalAvailable ? count($dispersedData) : null;
+$remainingCount = $dispersalAvailable ? CRTSHT_TOTAL - $dispersedCount : null;
+$pressNow = new DateTimeImmutable('now', new DateTimeZone('Europe/Zurich'));
+if ($pressNow < new DateTimeImmutable('2026-10-17 19:00:00', new DateTimeZone('Europe/Zurich'))) {
+    $pressNext = 'NEXT DRAW · 17.10.2026';
+} elseif ($pressNow < new DateTimeImmutable('2026-11-01 00:00:00', new DateTimeZone('Europe/Zurich'))) {
+    $pressNext = 'FINAL DRAW · 31.10.2026';
+} else {
+    $pressNext = 'DRAW PERIOD ENDED';
+}
 
 function press_size(string $path): string {
     $bytes = @filesize($path);
@@ -176,8 +185,8 @@ if (is_dir($imageDir)) {
 2021—2026<br>
 25.09—31.10.2026<br>
 ENDSAFTER · Hardturmstrasse 307 · Zürich<br><br>
-<strong><?= $dispersedCount ?> / 128 DISPERSED</strong>
-NEXT DRAW · 17.10.2026<br>
+<?php if($dispersalAvailable): ?><strong><?= $dispersedCount ?> / 128 DISPERSED</strong><?php else: ?><strong>DISPERSAL STATUS UNAVAILABLE</strong><?php endif; ?>
+<?= crt_e($pressNext) ?><br>
 FINAL DRAW · 31.10.2026
 </div>
 </section>
@@ -186,7 +195,7 @@ FINAL DRAW · 31.10.2026
 <div class="press-fact"><span>Project</span><strong>CRTSHT / CryptoShit</strong></div>
 <div class="press-fact"><span>Artist</span><strong>Marco Spitzbarth (iBulla)</strong></div>
 <div class="press-fact"><span>Created / Recovered</span><strong>2021 / 2026</strong></div>
-<div class="press-fact"><span>Current state</span><strong><?= $dispersedCount ?> dispersed · <?= $remainingCount ?> still here</strong></div>
+<div class="press-fact"><span>Current state</span><strong><?php if($dispersalAvailable): ?><?= $dispersedCount ?> dispersed · <?= $remainingCount ?> still here<?php else: ?>status temporarily unavailable<?php endif; ?></strong></div>
 <div class="press-fact"><span>Physical</span><strong>20 × 20 cm · Alu-Dibond · Genuine Print</strong></div>
 <div class="press-fact"><span>Network</span><strong>Ethereum · IPFS</strong></div>
 <div class="press-fact"><span>Exhibition</span><strong>SHIT HAPPENS!</strong></div>
