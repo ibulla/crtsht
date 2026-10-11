@@ -14,11 +14,13 @@ $dispersedCount = $dispersalAvailable ? count($dispersedData) : null;
 $remainingCount = $dispersalAvailable ? CRTSHT_TOTAL - $dispersedCount : null;
 $pressNow = new DateTimeImmutable('now', new DateTimeZone('Europe/Zurich'));
 if ($pressNow < new DateTimeImmutable('2026-10-17 19:00:00', new DateTimeZone('Europe/Zurich'))) {
-    $pressNext = 'NEXT DRAW · 17.10.2026';
+    $pressSchedule = [['NEXT DRAW','17.10.2026'],['FINAL DRAW','31.10.2026']];
+} elseif ($pressNow < new DateTimeImmutable('2026-10-31 19:00:00', new DateTimeZone('Europe/Zurich'))) {
+    $pressSchedule = [['FINAL DRAW','31.10.2026']];
 } elseif ($pressNow < new DateTimeImmutable('2026-11-01 00:00:00', new DateTimeZone('Europe/Zurich'))) {
-    $pressNext = 'FINAL DRAW · 31.10.2026';
+    $pressSchedule = [['FINAL DRAW LIVE','LATE ENTRY OPEN']];
 } else {
-    $pressNext = 'DRAW PERIOD ENDED';
+    $pressSchedule = [['DRAW PERIOD','ENDED']];
 }
 
 function press_size(string $path): string {
@@ -186,8 +188,7 @@ if (is_dir($imageDir)) {
 25.09—31.10.2026<br>
 ENDSAFTER · Hardturmstrasse 307 · Zürich<br><br>
 <?php if($dispersalAvailable): ?><strong><?= $dispersedCount ?> / 128 DISPERSED</strong><?php else: ?><strong>DISPERSAL STATUS UNAVAILABLE</strong><?php endif; ?>
-<?= crt_e($pressNext) ?><br>
-FINAL DRAW · 31.10.2026
+<?php foreach($pressSchedule as [$label,$value]): ?><?= crt_e($label) ?> · <?= crt_e($value) ?><br><?php endforeach; ?>
 </div>
 </section>
 
