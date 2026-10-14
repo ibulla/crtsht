@@ -230,7 +230,36 @@ $remainingSlots = $reservedSlots === null ? null : max(0, CRTSHT_TOTAL - $reserv
 .terminal-title{font-size:clamp(30px,4.5vw,66px);line-height:.92;letter-spacing:-.06em;margin:0 0 18px;max-width:14ch}.terminal-copy{font-size:13px;line-height:1.55;max-width:72ch;margin:0 0 22px}.capacity{font-size:11px;text-transform:uppercase;letter-spacing:.07em;margin:12px 0 0}.capacity strong{font-size:inherit}.entry-grid{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);border-left:1px solid var(--line);margin-top:20px}.entry{position:relative;border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:0;min-height:150px}.entry input{position:absolute;opacity:0;pointer-events:none}.entry label{height:100%;padding:16px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;transition:background .12s,color .12s}.entry input:checked+label{background:var(--fg);color:var(--bg)}.entry input:focus-visible+label{outline:2px solid var(--fg);outline-offset:-3px}.entry strong{display:block;font-size:clamp(30px,4vw,54px);letter-spacing:-.06em}.entry span{font-size:10px;text-transform:uppercase;letter-spacing:.08em}.entry p{font-size:11px;line-height:1.45;color:var(--muted);margin:8px 0 0}.entry input:checked+label p{color:inherit;opacity:.72}
 .draw-form{margin-top:22px;border-top:1px solid var(--line);padding-top:18px}.form-section{margin-top:20px}.form-section:first-of-type{margin-top:24px}.form-section-title{display:flex;align-items:center;gap:9px;margin:0 0 9px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em}.form-section-title span{display:inline-flex;width:21px;height:21px;align-items:center;justify-content:center;border:1px solid var(--fg);border-radius:50%;font-size:9px}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.field{display:flex;flex-direction:column;gap:0;position:relative}.field-wide{grid-column:1/-1}.field label{position:absolute;z-index:1;left:12px;top:8px;font-size:8px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);pointer-events:none;transition:color .12s}.field input{width:100%;font:inherit;font-size:13px;padding:23px 12px 9px;background:rgba(255,255,255,.18);color:var(--fg);border:1px solid var(--line);border-radius:7px;transition:border-color .12s,background .12s,box-shadow .12s}.field input:hover{border-color:var(--muted)}.field input:focus{outline:0;border-color:var(--fg);background:var(--paper);box-shadow:0 0 0 3px var(--signal)}.field:focus-within label{color:var(--fg);font-weight:700}.hp{position:absolute!important;left:-9999px!important;width:1px!important;height:1px!important;overflow:hidden!important}.form-consent{font-size:10px;line-height:1.5;color:var(--muted);max-width:72ch;margin:14px 0}.terminal-action{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-top:18px;flex-wrap:wrap}.terminal-button{display:inline-flex;align-items:center;justify-content:center;background:var(--fg);color:var(--bg);border:1px solid var(--fg);padding:13px 18px;font:inherit;font-size:12px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer}.terminal-button:hover{background:transparent;color:var(--fg)}.terminal-note{font-size:10px;color:var(--muted);max-width:54ch;line-height:1.5}.draw-error{border:1px solid var(--fg);padding:12px;margin:0 0 18px;font-size:12px;line-height:1.5}
 .draws{border-top:1px solid var(--fg);margin-top:calc(var(--pad)*1.35)}.draw-row{display:grid;grid-template-columns:120px 1fr auto;gap:20px;align-items:baseline;padding:16px 0;border-bottom:1px solid var(--line)}.draw-row.is-past{color:var(--muted)}.draw-row.is-past .date,.draw-row.is-past strong{text-decoration:line-through;text-decoration-thickness:1px;text-decoration-color:var(--line)}.draw-row.is-past .state{background:#e4e4df;border-color:var(--line);color:var(--muted);text-decoration:none}.draw-row .date{font-size:11px;text-transform:uppercase;letter-spacing:.08em}.draw-row strong{font-size:clamp(22px,3vw,38px);letter-spacing:-.045em}.draw-row .state{font-size:10px;text-transform:uppercase;letter-spacing:.08em;border:1px solid var(--fg);border-radius:100px;padding:5px 8px}.draw-note{font-size:13px;line-height:1.55;max-width:72ch;margin:20px 0 0}.receipt{margin-top:calc(var(--pad)*1.35);display:grid;grid-template-columns:minmax(190px,.55fr) minmax(0,1.45fr);gap:var(--pad);border-top:1px solid var(--fg);padding-top:22px}.receipt h2{font-size:clamp(28px,4vw,58px);line-height:.92;letter-spacing:-.055em;margin:0}.receipt-box{border:1px solid var(--fg);font-size:11px}.receipt-line{display:grid;grid-template-columns:130px 1fr;gap:16px;padding:9px 11px;border-bottom:1px solid var(--line)}.receipt-line:last-child{border-bottom:0}.receipt-line span:first-child{color:var(--muted);text-transform:uppercase;letter-spacing:.05em}.success-title{font-size:clamp(34px,5vw,72px);line-height:.9;letter-spacing:-.06em;margin:0 0 18px;max-width:11ch}.entry-numbers{display:flex;gap:7px;flex-wrap:wrap}.entry-number{border:1px solid var(--fg);border-radius:100px;padding:5px 8px}.payment-fork{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:18px}.payment-choice{border:1px solid var(--fg);padding:16px;display:flex;flex-direction:column;justify-content:space-between;gap:14px}.payment-choice strong{font-size:18px;letter-spacing:-.03em}.payment-choice p{font-size:11px;line-height:1.5;margin:0;color:var(--muted)}.payment-choice form{margin:0}.payment-choice .terminal-button{width:100%;text-decoration:none}
-@media(max-width:760px){.draw-hero,.receipt,.payment-fork{grid-template-columns:1fr}.entry-grid,.form-grid{grid-template-columns:1fr}.field-wide{grid-column:auto}.draw-row{grid-template-columns:1fr auto}.draw-row .date{grid-column:1/-1}.receipt-line{grid-template-columns:105px 1fr}}
+/* Readable, finger-friendly registration without changing reservation/payment logic. */
+.system-body{padding:clamp(18px,3vw,34px)}
+.draw-form{max-width:900px}
+.form-section-title{font-size:12px}
+.field label{font-size:11px;top:7px}
+.field input{font-size:16px;min-height:56px;padding:26px 14px 10px}
+.entry span{font-size:12px}
+.entry p{font-size:13px}
+.form-consent,.terminal-note{font-size:12px;line-height:1.6}
+.terminal-button{min-height:50px;font-size:14px;padding:14px 22px}
+.terminal-button:disabled{opacity:.5;cursor:not-allowed}
+.draw-error{font-size:14px;line-height:1.55}
+@media(max-width:760px){
+.draw-hero,.receipt,.payment-fork{grid-template-columns:1fr}
+.entry-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.entry{min-height:112px}
+.entry label{padding:12px 9px;gap:10px}
+.entry strong{font-size:clamp(30px,9vw,46px)}
+.entry span{font-size:10px;letter-spacing:.02em}
+.entry p{font-size:11px;line-height:1.3;margin:3px 0 0}
+.form-grid{grid-template-columns:1fr}
+.field-wide{grid-column:auto}
+.draw-row{grid-template-columns:1fr auto}
+.draw-row .date{grid-column:1/-1}
+.receipt-line{grid-template-columns:105px 1fr}
+.terminal-action{align-items:stretch}
+.terminal-action .terminal-button{width:100%}
+}
+@media(max-width:380px){.entry label{padding:10px 6px}.entry p{font-size:10px}}
+
 .draw-live-note{border:1px solid var(--fg);border-radius:100px;background:var(--signal);padding:9px 12px;font-size:10px;line-height:1.45;margin:0 0 18px}.draw-row.is-live .state{background:var(--signal);font-weight:700}
 @media(prefers-reduced-motion:reduce){.crt-blink{animation:none}}
 </style>
@@ -290,7 +319,8 @@ $remainingSlots = $reservedSlots === null ? null : max(0, CRTSHT_TOTAL - $reserv
 <?php if($lateEntryOpen): ?><p class="draw-live-note"><strong>FINAL DRAW IN PROGRESS.</strong> Late entries remain open until 00:00 tonight and enter Draw 03.</p><?php endif; ?>
 <p class="terminal-copy">One voucher equals one genuine 20 × 20 cm physical original, with its Ethereum provenance, Mooncake, sealed wallet material and packaging. Pick the quantity, enter your details and choose payment after reservation. The artwork itself stays unknown until the draw.</p>
 <p class="capacity">CAPACITY / <?php if($remainingSlots === null): ?><strong>128 TOTAL</strong><?php else: ?><strong><?= $remainingSlots ?> OF 128 SLOTS AVAILABLE</strong><?php endif; ?></p>
-<?php if($error !== ''): ?><div class="draw-error"><?= crt_e($error) ?></div><?php endif; ?>
+<?php if($remainingSlots === 0 && $drawOpen): ?><div class="draw-error" role="status"><strong>ALL 128 VOUCHERS ARE CURRENTLY RESERVED.</strong> New reservations are unavailable. Please check back if a slot is released.</div><?php elseif($remainingSlots === null && $drawOpen): ?><div class="draw-error" role="status">Live availability cannot be checked right now. Please try again shortly.</div><?php endif; ?>
+<?php if($error !== ''): ?><div class="draw-error" role="alert"><?= crt_e($error) ?></div><?php endif; ?>
 <?php if($drawOpen): ?>
 <form class="draw-form" method="post" action="/draw" autocomplete="on">
 <input type="hidden" name="csrf" value="<?= crt_e($csrf) ?>">
@@ -312,7 +342,7 @@ $remainingSlots = $reservedSlots === null ? null : max(0, CRTSHT_TOTAL - $reserv
 <div class="field field-wide"><label for="country">Country*</label><input id="country" name="country" maxlength="120" value="<?= crt_e($form['country']) ?>" autocomplete="country-name" required></div>
 </div></div>
 <p class="form-consent">Submitting stores this reservation and temporarily holds the selected number of CRTSHT draw slots. Card / TWINT payments are confirmed automatically after successful payment; invoice / bank-transfer payments are confirmed manually. Your data is used to manage the reservation, draw and delivery of the work.</p>
-<div class="terminal-action"><button class="terminal-button" type="submit" <?= $remainingSlots === 0 ? 'disabled' : '' ?>>RESERVE DRAW <?= $form['quantity']==='1' ? 'ENTRY' : 'ENTRIES' ?></button><span class="terminal-note">No artwork is selected here. Every valid ticket is matched by chance with one remaining physical CRTSHT at its scheduled live draw.</span></div>
+<div class="terminal-action"><button class="terminal-button" type="submit" <?= ($remainingSlots === 0 || $remainingSlots === null) ? 'disabled' : '' ?>>RESERVE DRAW <?= $form['quantity']==='1' ? 'ENTRY' : 'ENTRIES' ?></button><span class="terminal-note">No artwork is selected here. Every valid ticket is matched by chance with one remaining physical CRTSHT at its scheduled live draw.</span></div>
 </form>
 <?php else: ?>
 <div class="draw-error" style="margin-top:22px"><strong>DRAW PERIOD ENDED / REGISTRATION CLOSED.</strong><br>The 128-work archive remains online as the record of the dispersal.</div>
