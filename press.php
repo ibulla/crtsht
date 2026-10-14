@@ -114,10 +114,10 @@ if (is_dir($imageDir)) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>In Zürich verschwinden gerade 128 Bilder / CRTSHT Press</title>
+<title>Aktuell verschwinden 128 Bilder aus einem Zürcher Kunstraum! / CRTSHT Press</title>
 <meta name="description" content="In Zürich verschwinden gerade 128 Bilder aus einem Kunstraum. Nicht gestohlen. Gezogen. Press material for SHIT HAPPENS! — CRTSHT / Marco Spitzbarth (iBulla), Zürich 2026.">
 <meta property="og:type" content="article">
-<meta property="og:title" content="In Zürich verschwinden gerade 128 Bilder aus einem Kunstraum!">
+<meta property="og:title" content="Aktuell verschwinden 128 Bilder aus einem Zürcher Kunstraum!">
 <meta property="og:description" content="Nicht gestohlen. Gezogen. 128 physische Originale werden bei SHIT HAPPENS! nach und nach aus einem Zürcher Kunstraum verteilt.">
 <meta property="og:url" content="https://cryptoshit.info/press">
 <?php if($hero): ?><meta property="og:image" content="https://cryptoshit.info<?=crt_e($hero['url'])?>"><?php endif; ?>
@@ -178,8 +178,8 @@ if (is_dir($imageDir)) {
 
 <section class="press-hero">
 <div>
-<div class="eyebrow">PRESS RELEASE / SHIT HAPPENS! / 05.10.2026</div>
-<h1>IN ZÜRICH VERSCHWINDEN GERADE 128 BILDER AUS EINEM KUNSTRAUM!</h1>
+<div class="eyebrow">PRESS RELEASE / SHIT HAPPENS! / 14.10.2026</div>
+<h1>AKTUELL VERSCHWINDEN 128 BILDER AUS EINEM ZÜRCHER KUNSTRAUM!</h1>
 <p class="lead"><strong>Nicht gestohlen. Gezogen.</strong> In der Ausstellung SHIT HAPPENS! verschwinden 128 physische Originale nach und nach von einer Wand. Was zurückbleibt, wird Teil des Werks.</p>
 </div>
 <div class="aside">
@@ -228,27 +228,19 @@ ENDSAFTER · Hardturmstrasse 307 · Zürich<br><br>
 <section class="press-section" id="de">
 <h2>Pressetext<br>DE</h2>
 <article class="press-copy" data-copy-source>
-<h3>IN ZÜRICH VERSCHWINDEN GERADE 128 BILDER AUS EINEM KUNSTRAUM!</h3>
-<p class="standfirst"><strong>128 Bilder hängen zu Beginn an einer Wand. Nach jeder Ziehung wird eines entfernt und durch eine nummerierte Plakette ersetzt. Bis zum 31. Oktober soll die Ausstellung vollständig verschwunden sein. Mit SHIT HAPPENS! übersetzt der Zürcher Künstler Marco Spitzbarth (iBulla) die Sammelmechanismen des NFT-Hypes von 2021 zurück in den physischen Raum.</strong></p>
-<p><strong>Nicht gestohlen. Gezogen.</strong></p>
-<p>Bei drei öffentlichen Ziehungen werden die Arbeiten nach und nach verteilt. Wer teilnimmt, entscheidet sich für ein Werk – aber nicht für welches. Eine Nummer wird gezogen, das entsprechende Original verlässt die Ausstellung. Zurück bleibt eine kleine, 3D-gedruckte Reliefplakette mit der Hexadezimalnummer des verschwundenen Bildes.</p>
-<p>So verändert sich die Ausstellung mit jeder Ziehung: Aus einer vollständigen Sammlung wird langsam das Abbild ihrer eigenen Zerstreuung.</p>
-<p class="press-quote">TOGETHER BEFORE WE DISPERSE.</p>
-<p>Die 128 Arbeiten entstanden bereits 2021, mitten im NFT-Boom. Spitzbarth generierte die Figuren algorithmisch und übersetzte sie gleichzeitig in physische Originale: 20 × 20 cm grosse Prints auf Alu-Dibond. Jedes Werk erhielt eine eigene Identität, einen digitalen Fingerabdruck, eine Wallet sowie einen NFT auf Ethereum. Metadaten und Bilddateien wurden über IPFS referenziert.</p>
-<p>Damals schien die Bewegung eindeutig: Alles Reale sollte digitalisiert, tokenisiert und ins Metaverse überführt werden. Fünf Jahre später läuft CRTSHT in die andere Richtung.</p>
-<p>2026 wurden alle 128 physischen Arbeiten erstmals gemeinsam an einer Wand versammelt. Die Blockchain ist dabei nicht mehr das Versprechen einer zukünftigen Kunstwelt, sondern Teil einer bereits vorhandenen Spur: Provenienz, Zeitstempel und digitales Gedächtnis eines realen Objekts.</p>
-<p class="press-quote">THE INTERNET MAY FORGET. THE RECORD REMAINS.</p>
-<p>Am 25. September begann die erste Zerstreuung. Mehr als dreissig Arbeiten verliessen die Wand. Ihre Plätze bleiben sichtbar.</p>
-<p>Die Reliefplaketten markieren, welches Werk dort einmal hing. Während die physische Sammlung immer kleiner wird, bleibt das digitale Archiv mit allen 128 Arbeiten vollständig bestehen. Bereits gezogene CRTSHTs werden dort als <strong>DISPERSED</strong> markiert.</p>
-<p>So entstehen zwei Archive gleichzeitig: Das eine befindet sich in Zürich und verschwindet Stück für Stück. Das andere bleibt vollständig.</p>
-<p><strong>DIE NÄCHSTEN ZIEHUNGEN</strong><br>
-DRAW 02 — SECOND DISPERSAL · 17.10.2026<br>
-DRAW 03 — FINAL DISPERSAL · 31.10.2026<br>
-ENDSAFTER · Hardturmstrasse 307 · Zürich</p>
-<p>Ein Voucher kann vorab online reserviert werden. Pro Voucher wird ein reales Original gezogen. Wer nicht vor Ort sein kann, überlässt die Ziehung einer unschuldigen Hand. Crypto-Kenntnisse sind dafür nicht erforderlich.</p>
-<p><strong>Am Ende geht es erstaunlich wenig um Crypto.</strong></p>
-<p>Es geht um 128 reale Bilder, die einmal zusammen waren – und danach nicht mehr.</p>
-<p><strong>SHIT HAPPENS!</strong><br>CRTSHT / Marco Spitzbarth (iBulla)<br>25.09—31.10.2026 · ENDSAFTER · Hardturmstrasse 307 · Zürich<br>cryptoshit.info</p>
+<h3>Aktuell verschwinden 128 Bilder aus einem Zürcher Kunstraum!</h3>
+<p class="standfirst">Die Serie CRTSHT wurde 2021 vom Zürcher Künstler Marco Spitzbarth (iBulla) algorithmisch generiert und mit allerlei kryptischen Informationen in der realen und virtuellen Welt verankert. Wer «down the rabbit hole» will, bekommt mit dieser Arbeit mehr als ein Unikat für die Wand, nämlich gleich einen eigenen Schlüssel in die Hand.</p>
+<p>Fünf Jahre später sind die 128 Arbeiten erstmals gemeinsam im Kunstraum ENDSAFTER in Zürich zu sehen. Allerdings nicht für lange.</p>
+<p>Die Arbeiten werden in drei Ziehungen, den sogenannten «Draws», verteilt. Wer online oder vor Ort ein Los erstanden hat, kommt früher oder später zum Zug und erhält sein eigenes Original CRTSHT. Jedes Los gewinnt. Wer anwesend ist, zieht selbst, alle anderen überlassen ihr Glück einer unschuldigen Hand.</p>
+<p>Mit jeder Ziehung verschwindet ein weiteres Bild von der Wand. An seiner Stelle bleibt eine nummerierte Relief-Plakette zurück. Die Ausstellung löst sich nach und nach auf.</p>
+<p>Doch damit ist die Sache noch lange nicht erledigt.</p>
+<p>Zu jedem 20 × 20 cm grossen Originalprint gehört ein Inlay mit allerlei Artefakten und Anspielungen auf die Zeit des grossen NFT-Hypes um 2021. Auf der Rückseite finden sich ein Mooncake und vier Seedwörter, mit denen sich ein Orakel öffnen lässt. Dazu kommt ein versiegelter Private Key. Alles zusammen wandert in eine Pizzaschachtel und verlässt den Kunstraum mit seinem neuen Halter. What?</p>
+<p>Mit CRTSHT rüttelt Marco Spitzbarth an den kryptischen Siegeln des Unverständnisses, die sich vor Technologien wie Blockchain und Non-Fungible Tokens auftürmen. Wer sich darauf einlässt, entdeckt eine Welt aus virtuellen Protokollen, mathematischen Gewissheiten und digitalen Versprechen, die sich auf eigentümliche Weise mit der physischen Welt verweben.</p>
+<p><strong>Wer selbst einen CryptoShit besitzen möchte, kann sich jetzt noch für die nächste Ziehung anmelden.</strong></p>
+<p>Am einfachsten online: <a href="/draw">https://cryptoshit.info/draw</a></p>
+<p><strong>SHIT HAPPENS! – CRTSHT</strong><br>Marco Spitzbarth (iBulla)<br>25. September – 31. Oktober 2026<br>ENDSAFTER, Hardturmstrasse 307, Zürich</p>
+<p>Nächste Draws: 17. und 31. Oktober 2026</p>
+<p>Pressebilder und weitere Informationen: <a href="/press">https://cryptoshit.info/press</a></p>
 <button class="copy-action" type="button">COPY PRESS TEXT / DE</button>
 </article>
 </section>
@@ -256,26 +248,19 @@ ENDSAFTER · Hardturmstrasse 307 · Zürich</p>
 <section class="press-section" id="en">
 <h2>Press text<br>EN</h2>
 <article class="press-copy" data-copy-source>
-<h3>128 PICTURES ARE DISAPPEARING FROM AN ART SPACE IN ZÜRICH.</h3>
-<p class="standfirst"><strong>Not stolen. Drawn.</strong> In Marco Spitzbarth’s (iBulla) exhibition <strong>SHIT HAPPENS!</strong> at ENDSAFTER in Zürich, 128 small originals hang together on one wall. For now.</p>
-<p>Across three public draws, the works are dispersed one by one. Participants decide to own a work, but not which one. A number is drawn and the corresponding original leaves the exhibition. In its place remains a small 3D-printed relief plaque carrying the hexadecimal identity of the missing image.</p>
-<p>With every draw, the exhibition changes: a complete collection gradually becomes an image of its own dispersal.</p>
-<p class="press-quote">TOGETHER BEFORE WE DISPERSE.</p>
-<p>The 128 works were created in 2021, in the middle of the NFT boom. Spitzbarth generated the figures algorithmically and translated them simultaneously into physical originals: 20 × 20 cm prints on aluminium Dibond. Each work received its own identity, digital fingerprint, wallet and NFT on Ethereum, with image files and metadata referenced through IPFS.</p>
-<p>Back then the direction seemed obvious: physical things were supposed to become digital, tokenized and moved into the metaverse. Five years later, CRTSHT runs in the opposite direction.</p>
-<p>In 2026 all 128 physical works were assembled on one wall for the first time. The blockchain is no longer presented as the promise of a future art world, but as one layer of an existing record: provenance, timestamp and digital memory attached to a real object.</p>
-<p class="press-quote">THE INTERNET MAY FORGET. THE RECORD REMAINS.</p>
-<p>The first dispersal began on 25 September. More than thirty works left the wall. Their positions remain visible.</p>
-<p>The relief plaques mark what used to hang there. While the physical collection becomes smaller, the digital archive remains complete with all 128 works. CRTSHTs that have already left are marked <strong>DISPERSED</strong>.</p>
-<p>Two archives now exist at once: one in Zürich that disappears piece by piece, and another that remains complete.</p>
-<p><strong>NEXT DRAWS</strong><br>
-DRAW 02 — SECOND DISPERSAL · 17.10.2026<br>
-DRAW 03 — FINAL DISPERSAL · 31.10.2026<br>
-ENDSAFTER · Hardturmstrasse 307 · Zürich</p>
-<p>Vouchers can be reserved online. Each voucher results in one physical original being drawn. Those unable to attend can leave the draw to an innocent hand. No crypto knowledge is required.</p>
-<p><strong>In the end, it is surprisingly little about crypto.</strong></p>
-<p>It is about 128 real pictures that were together once — and then no longer.</p>
-<p><strong>SHIT HAPPENS!</strong><br>CRTSHT / Marco Spitzbarth (iBulla)<br>25.09—31.10.2026 · ENDSAFTER · Hardturmstrasse 307 · Zürich<br>cryptoshit.info</p>
+<h3>128 Pictures Are Currently Disappearing from an Art Space in Zurich!</h3>
+<p class="standfirst">The CRTSHT series was generated algorithmically in 2021 by Zurich-based artist Marco Spitzbarth (iBulla), then anchored in both the real and virtual worlds with all sorts of cryptic information. Anyone wanting to go “down the rabbit hole” gets more than a one-of-a-kind work for the wall – they get a key of their own.</p>
+<p>Five years later, all 128 works are on display together for the first time at ENDSAFTER, an art space in Zurich. But not for long.</p>
+<p>The works are distributed through three drawings, known as “draws”. Anyone who has bought a ticket online or on site will sooner or later get their turn and receive their own original CRTSHT. Every ticket wins. Those who are there draw for themselves; everyone else leaves their luck to an innocent hand.</p>
+<p>With each draw, another picture disappears from the wall. A numbered relief plaque remains in its place. Little by little, the exhibition dissolves.</p>
+<p>But that is far from the end of it.</p>
+<p>Each 20 × 20 cm original print comes with an inlay full of artefacts and references to the great NFT hype of 2021. On the back are a mooncake and four seed words that unlock an oracle. There is also a sealed private key. Everything goes into a pizza box and leaves the art space with its new holder. What?</p>
+<p>With CRTSHT, Marco Spitzbarth rattles the cryptic seals of incomprehension that have built up around technologies such as blockchain and non-fungible tokens. Those who venture inside discover a world of virtual protocols, mathematical certainties and digital promises intertwined with the physical world in peculiar ways.</p>
+<p><strong>Anyone who wants to own a CryptoShit can still register for the next draw.</strong></p>
+<p>The easiest way is online: <a href="/draw">https://cryptoshit.info/draw</a></p>
+<p><strong>SHIT HAPPENS! – CRTSHT</strong><br>Marco Spitzbarth (iBulla)<br>25 September – 31 October 2026<br>ENDSAFTER, Hardturmstrasse 307, Zurich</p>
+<p>Next draws: 17 and 31 October 2026</p>
+<p>Press images and further information: <a href="/press">https://cryptoshit.info/press</a></p>
 <button class="copy-action" type="button">COPY PRESS TEXT / EN</button>
 </article>
 </section>
