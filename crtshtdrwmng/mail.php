@@ -16,8 +16,8 @@ if (!$db) { http_response_code(503); exit('Database unavailable'); }
 $filter = (string)($_POST['audience'] ?? 'active');
 $allowed = ['active','paid','02','03'];
 if (!in_array($filter,$allowed,true)) $filter='active';
-$subject = trim((string)($_POST['subject'] ?? 'CRTSHT / NEXT DRAW'));
-$body = trim((string)($_POST['body'] ?? "Hi {name},\n\nThe next CRTSHT Draw is on Saturday, 17 October at 19:00.\n\nENDSAFTER, Hardturmstrasse 307, 8005 Zürich.\n\nhttps://cryptoshit.info/draw\n\nSee you there (or let an innocent hand do the drawing).\n\nCRTSHT"));
+$subject = trim((string)($_POST['subject'] ?? 'CRTSHT / FINAL DRAW · 31 OCTOBER'));
+$body = trim((string)($_POST['body'] ?? "Hi {name},\n\nThe FINAL CRTSHT Draw is on Saturday, 31 October at 19:00.\n\nENDSAFTER, Hardturmstrasse 307, 8005 Zürich.\n\nhttps://cryptoshit.info/draw\n\nSee you there (or let an innocent hand do the drawing).\n\nCRTSHT"));
 $action=(string)($_POST['action'] ?? '');
 $error=''; $notice=''; $recipients=[];
 if ($filter==='paid') $where="Status='paid'";
@@ -116,7 +116,7 @@ $db->close();
 <?php if($error):?><p class="error" role="alert"><?=mc_e($error)?></p><?php endif;?>
 <?php if($notice):?><p class="notice" role="status"><?=mc_e($notice)?></p><?php endif;?>
 <section><h2>01 / PARTICIPANT UPDATE</h2><form method="post" id="campaign-form" onsubmit="return false"><input type="hidden" name="csrf" value="<?=mc_e($csrf)?>"><input type="hidden" name="action" value="queue_start">
-<label for="audience">Audience</label><select id="audience" name="audience" onchange="this.form.querySelector('[name=confirm]').value='';this.form.querySelector('[name=action]').value='preview';this.form.submit()">
+<label for="audience">Audience</label><select id="audience" name="audience" onchange="this.form.querySelector('[name=confirm]').value='';this.form.querySelector('[name=action]').value='preview';this.form.onsubmit=null;this.form.submit()">
 <?php foreach(['active'=>'All active reservations','paid'=>'Paid reservations','02'=>'Draw 02 participants','03'=>'Draw 03 participants'] as $v=>$name):?><option value="<?=$v?>" <?=$filter===$v?'selected':''?>><?=mc_e($name)?></option><?php endforeach;?></select>
 <label for="subject">Subject</label><input id="subject" name="subject" maxlength="140" value="<?=mc_e($subject)?>" required>
 <label for="body">Message (plain text, {name} personalizes the greeting)</label><textarea id="body" name="body" maxlength="6000" required><?=mc_e($body)?></textarea>
@@ -137,7 +137,7 @@ const form=document.getElementById('campaign-form'), start=document.getElementBy
 let running=false;
 const csrf=form.querySelector('[name=csrf]').value;
 async function request(action, data) {
- const p=new URLSearchParams({action,csrf,...data});
+ const p=new URLSearchParams({...data,action,csrf});
  const response=await fetch('/crtshtdrwmng/mail.php',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/x-www-form-urlencoded','Accept':'application/json'},body:p});
  const result=await response.json();
  if(!response.ok||result.error) throw Error(result.error||'Request failed');
