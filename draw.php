@@ -262,7 +262,7 @@ $remainingSlots = $reservedSlots === null ? null : max(0, CRTSHT_TOTAL - $reserv
 
 .draw-live-note{border:1px solid var(--fg);border-radius:100px;background:var(--signal);padding:9px 12px;font-size:10px;line-height:1.45;margin:0 0 18px}.draw-row.is-live .state{background:var(--signal);font-weight:700}
 @media(prefers-reduced-motion:reduce){.crt-blink{animation:none}}
-</style>
+ .entry input:disabled+label{opacity:.35;cursor:not-allowed;text-decoration:line-through} </style>
 </head>
 <body><main class="wrap draw-page">
 <header>
@@ -326,9 +326,9 @@ $remainingSlots = $reservedSlots === null ? null : max(0, CRTSHT_TOTAL - $reserv
 <input type="hidden" name="csrf" value="<?= crt_e($csrf) ?>">
 <div class="hp" aria-hidden="true"><label>Company<input type="text" name="company" tabindex="-1" autocomplete="off"></label></div>
 <div class="entry-grid" aria-label="Draw entry quantities">
-<div class="entry"><input id="qty1" type="radio" name="quantity" value="1" <?= $form['quantity']==='1'?'checked':'' ?>><label for="qty1"><div><span>ONE / ENTRY</span><strong>1×</strong></div><p>One entry. One unknown CRTSHT.</p></label></div>
-<div class="entry"><input id="qty2" type="radio" name="quantity" value="2" <?= $form['quantity']==='2'?'checked':'' ?>><label for="qty2"><div><span>PAIR / ENTRIES</span><strong>2×</strong></div><p>Two independent draws.</p></label></div>
-<div class="entry"><input id="qty3" type="radio" name="quantity" value="3" <?= $form['quantity']==='3'?'checked':'' ?>><label for="qty3"><div><span>TRIO / ENTRIES</span><strong>3×</strong></div><p>Three consecutive, independent draws.</p></label></div>
+<div class="entry"><input id="qty1" type="radio" name="quantity" value="1" <?= $form['quantity']==='1' && ($remainingSlots === null || $remainingSlots >= 1)?'checked':'' ?> <?= ($remainingSlots !== null && $remainingSlots > 0 && $remainingSlots < 1)?'disabled':'' ?>><label for="qty1"><div><span>ONE / ENTRY</span><strong>1×</strong></div><p>One entry. One unknown CRTSHT.</p></label></div>
+<div class="entry"><input id="qty2" type="radio" name="quantity" value="2" <?= $form['quantity']==='2' && ($remainingSlots === null || $remainingSlots >= 2)?'checked':'' ?> <?= ($remainingSlots !== null && $remainingSlots > 0 && $remainingSlots < 2)?'disabled':'' ?>><label for="qty2"><div><span>PAIR / ENTRIES</span><strong>2×</strong></div><p>Two independent draws.</p></label></div>
+<div class="entry"><input id="qty3" type="radio" name="quantity" value="3" <?= $form['quantity']==='3' && ($remainingSlots === null || $remainingSlots >= 3)?'checked':'' ?> <?= ($remainingSlots !== null && $remainingSlots > 0 && $remainingSlots < 3)?'disabled':'' ?>><label for="qty3"><div><span>TRIO / ENTRIES</span><strong>3×</strong></div><p>Three consecutive, independent draws.</p></label></div>
 </div>
 <div class="form-section"><div class="form-section-title"><span>1</span>YOUR DETAILS</div><div class="form-grid">
 <div class="field field-wide"><label for="name">Name*</label><input id="name" name="name" maxlength="120" value="<?= crt_e($form['name']) ?>" autocomplete="name" required></div>
