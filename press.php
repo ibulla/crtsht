@@ -230,16 +230,21 @@ ENDSAFTER · Hardturmstrasse 307 · Zürich<br><br>
 <article class="press-copy" data-copy-source>
 <h3>Aktuell verschwinden 128 Bilder aus einem Zürcher Kunstraum!</h3>
 <p class="standfirst">Die Serie CRTSHT wurde 2021 vom Zürcher Künstler Marco Spitzbarth (iBulla) algorithmisch generiert und mit allerlei kryptischen Informationen in der realen und virtuellen Welt verankert. Wer «down the rabbit hole» will, bekommt mit dieser Arbeit mehr als ein Unikat für die Wand, nämlich gleich einen eigenen Schlüssel in die Hand.</p>
-<p>Fünf Jahre später sind die 128 Arbeiten erstmals gemeinsam im Kunstraum ENDSAFTER in Zürich zu sehen. Allerdings nicht für lange.</p>
+<p>Fünf Jahre später wurden die 128 Arbeiten erstmals gemeinsam im Kunstraum ENDSAFTER in Zürich gezeigt. Seit der ersten Ziehung wird die Wand Stück für Stück leerer.</p>
 <p>Die Arbeiten werden in drei Ziehungen, den sogenannten «Draws», verteilt. Wer online oder vor Ort ein Los erstanden hat, kommt früher oder später zum Zug und erhält sein eigenes Original CRTSHT. Jedes Los gewinnt. Wer anwesend ist, zieht selbst, alle anderen überlassen ihr Glück einer unschuldigen Hand.</p>
 <p>Mit jeder Ziehung verschwindet ein weiteres Bild von der Wand. An seiner Stelle bleibt eine nummerierte Relief-Plakette zurück. Die Ausstellung löst sich nach und nach auf.</p>
 <p>Doch damit ist die Sache noch lange nicht erledigt.</p>
 <p>Zu jedem 20 × 20 cm grossen Originalprint gehört ein Inlay mit allerlei Artefakten und Anspielungen auf die Zeit des grossen NFT-Hypes um 2021. Auf der Rückseite finden sich ein Mooncake und vier Seedwörter, mit denen sich ein Orakel öffnen lässt. Dazu kommt ein versiegelter Private Key. Alles zusammen wandert in eine Pizzaschachtel und verlässt den Kunstraum mit seinem neuen Halter. What?</p>
 <p>Mit CRTSHT rüttelt Marco Spitzbarth an den kryptischen Siegeln des Unverständnisses, die sich vor Technologien wie Blockchain und Non-Fungible Tokens auftürmen. Wer sich darauf einlässt, entdeckt eine Welt aus virtuellen Protokollen, mathematischen Gewissheiten und digitalen Versprechen, die sich auf eigentümliche Weise mit der physischen Welt verweben.</p>
-<p><strong>Wer selbst einen CryptoShit besitzen möchte, kann sich jetzt noch für die nächste Ziehung anmelden.</strong></p>
+<?php if ($pressNow < new DateTimeImmutable('2026-11-01 00:00:00', new DateTimeZone('Europe/Zurich'))): ?>
+<p><strong>Letzte Ziehung: Samstag, 31. Oktober 2026, 19:00 Uhr. Wer selbst einen CryptoShit besitzen möchte, kann sich noch anmelden.</strong></p>
 <p>Am einfachsten online: <a href="/draw">https://cryptoshit.info/draw</a></p>
+<?php else: ?>
+<p><strong>Die Ziehungsphase ist beendet. Die 128 Werkdatensätze bleiben im öffentlichen Archiv.</strong></p>
+<p>Zum Archiv: <a href="/">https://cryptoshit.info/</a></p>
+<?php endif; ?>
 <p><strong>SHIT HAPPENS! – CRTSHT</strong><br>Marco Spitzbarth (iBulla)<br>25. September – 31. Oktober 2026<br>ENDSAFTER, Hardturmstrasse 307, Zürich</p>
-<p>Nächste Draws: 17. und 31. Oktober 2026</p>
+<p>Draws: 25. September · 17. Oktober · 31. Oktober 2026 (Finale)</p>
 <p>Pressebilder und weitere Informationen: <a href="/press">https://cryptoshit.info/press</a></p>
 <button class="copy-action" type="button">COPY PRESS TEXT / DE</button>
 </article>
@@ -250,16 +255,21 @@ ENDSAFTER · Hardturmstrasse 307 · Zürich<br><br>
 <article class="press-copy" data-copy-source>
 <h3>128 Pictures Are Currently Disappearing from an Art Space in Zurich!</h3>
 <p class="standfirst">The CRTSHT series was generated algorithmically in 2021 by Zurich-based artist Marco Spitzbarth (iBulla), then anchored in both the real and virtual worlds with all sorts of cryptic information. Anyone wanting to go “down the rabbit hole” gets more than a one-of-a-kind work for the wall – they get a key of their own.</p>
-<p>Five years later, all 128 works are on display together for the first time at ENDSAFTER, an art space in Zurich. But not for long.</p>
+<p>Five years later, all 128 works were shown together for the first time at ENDSAFTER, an art space in Zurich. Since the first draw, the wall has been gradually emptying.</p>
 <p>The works are distributed through three drawings, known as “draws”. Anyone who has bought a ticket online or on site will sooner or later get their turn and receive their own original CRTSHT. Every ticket wins. Those who are there draw for themselves; everyone else leaves their luck to an innocent hand.</p>
 <p>With each draw, another picture disappears from the wall. A numbered relief plaque remains in its place. Little by little, the exhibition dissolves.</p>
 <p>But that is far from the end of it.</p>
 <p>Each 20 × 20 cm original print comes with an inlay full of artefacts and references to the great NFT hype of 2021. On the back are a mooncake and four seed words that unlock an oracle. There is also a sealed private key. Everything goes into a pizza box and leaves the art space with its new holder. What?</p>
 <p>With CRTSHT, Marco Spitzbarth rattles the cryptic seals of incomprehension that have built up around technologies such as blockchain and non-fungible tokens. Those who venture inside discover a world of virtual protocols, mathematical certainties and digital promises intertwined with the physical world in peculiar ways.</p>
-<p><strong>Anyone who wants to own a CryptoShit can still register for the next draw.</strong></p>
+<?php if ($pressNow < new DateTimeImmutable('2026-11-01 00:00:00', new DateTimeZone('Europe/Zurich'))): ?>
+<p><strong>Final draw: Saturday, 31 October 2026, 19:00. Registration is still open for those who want their own CryptoShit.</strong></p>
 <p>The easiest way is online: <a href="/draw">https://cryptoshit.info/draw</a></p>
+<?php else: ?>
+<p><strong>The draw period has ended. The public records of all 128 works remain online.</strong></p>
+<p>Explore the archive: <a href="/">https://cryptoshit.info/</a></p>
+<?php endif; ?>
 <p><strong>SHIT HAPPENS! – CRTSHT</strong><br>Marco Spitzbarth (iBulla)<br>25 September – 31 October 2026<br>ENDSAFTER, Hardturmstrasse 307, Zurich</p>
-<p>Next draws: 17 and 31 October 2026</p>
+<p>Draws: 25 September · 17 October · 31 October 2026 (final)</p>
 <p>Press images and further information: <a href="/press">https://cryptoshit.info/press</a></p>
 <button class="copy-action" type="button">COPY PRESS TEXT / EN</button>
 </article>
