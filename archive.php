@@ -15,6 +15,9 @@ $dispersalAvailable = is_array($dispersedData);
 $dispersed = $dispersedData ?? [];
 $dispersedCount = $dispersalAvailable ? count($dispersed) : null;
 $remainingCount = $dispersalAvailable ? CRTSHT_TOTAL - $dispersedCount : null;
+$archiveHeroFile = __DIR__ . '/press/images/CRTSHT_Hero.jpg';
+$archiveHeroSrc = is_file($archiveHeroFile) ? '/press/images/CRTSHT_Hero.jpg' : '/img/dispersal-02.jpg';
+$archiveHeroAlt = is_file($archiveHeroFile) ? 'Marco Spitzbarth with the CRTSHT installation' : 'The CRTSHT exhibition wall after the second dispersal';
 $archiveNow = new DateTimeImmutable('now', new DateTimeZone('Europe/Zurich'));
 if ($archiveNow < new DateTimeImmutable('2026-10-17 19:00:00', new DateTimeZone('Europe/Zurich'))) {
     $archiveNext = 'NEXT · DRAW 02 · 17.10';
@@ -58,7 +61,7 @@ if ($archiveNow < new DateTimeImmutable('2026-10-17 19:00:00', new DateTimeZone(
 <div class="hero-actions"><a class="action action-primary" href="/draw">ENTER THE DRAW →</a><a class="action" href="/lore">READ THE LORE</a></div>
 <div class="archive-facts"><span><b>128</b> originals</span><span><b>20×20</b> cm</span><span><b>3</b> draws</span><span><b>1</b> complete archive</span></div>
 </div>
-<a class="archive-hero-image" href="/lore" aria-label="See the CRTSHT project story"><img src="press/images/CRTSHT_Hero.jpg" alt="Marco Spitzbarth with the CRTSHT installation" fetchpriority="high"><span>THE WORK IS META. THE RECORD IS PHYSICAL. →</span></a>
+<a class="archive-hero-image" href="/lore" aria-label="See the CRTSHT project story"><img src="<?=crt_e($archiveHeroSrc)?>" alt="<?=crt_e($archiveHeroAlt)?>" fetchpriority="high"><span>THE WORK IS META. THE RECORD IS PHYSICAL. →</span></a>
 </section>
 <section class="archive-bridge">
 <div><span class="eyebrow">THE MECHANISM</span><strong>YOU CHOOSE TO OWN ONE.<br>CHANCE CHOOSES WHICH.</strong></div>

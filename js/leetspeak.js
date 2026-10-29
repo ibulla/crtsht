@@ -27,7 +27,8 @@
     const form=document.querySelector('.draw-form');
     const terminal=form?.closest('.system-window');
     if(terminal){
-      terminal.id='draw-terminal';
+      // Keep id="reserve": navigation and mobile CTAs point to /draw#reserve.
+      // Support the old #draw-terminal fragment without renaming the target.
       terminal.style.scrollMarginTop='18px';
       if(location.hash==='#draw-terminal') requestAnimationFrame(()=>terminal.scrollIntoView({block:'start'}));
     }
