@@ -215,6 +215,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $reservedSlots = draw_reserved_slots();
 $remainingSlots = $reservedSlots === null ? null : max(0, CRTSHT_TOTAL - $reservedSlots);
+$standbyMode = $drawOpen && $remainingSlots === 0;
 ?><!doctype html>
 <html lang="en">
 <head>
@@ -319,10 +320,10 @@ $remainingSlots = $reservedSlots === null ? null : max(0, CRTSHT_TOTAL - $reserv
 <?php if($lateEntryOpen): ?><p class="draw-live-note"><strong>FINAL DRAW IN PROGRESS.</strong> Late entries remain open until 00:00 tonight and enter Draw 03.</p><?php endif; ?>
 <p class="terminal-copy">One voucher equals one genuine 20 × 20 cm physical original, with its Ethereum provenance, Mooncake, sealed wallet material and packaging. Pick the quantity, enter your details and choose payment after reservation. The artwork itself stays unknown until the draw.</p>
 <p class="capacity">CAPACITY / <?php if($remainingSlots === null): ?><strong>128 TOTAL</strong><?php else: ?><strong><?= $remainingSlots ?> OF 128 SLOTS AVAILABLE</strong><?php endif; ?></p>
-<?php if($remainingSlots === 0 && $drawOpen): ?><div class="draw-error" role="status"><strong>ALL 128 VOUCHERS ARE CURRENTLY RESERVED.</strong> New reservations are unavailable. Please check back if a slot is released.</div><?php elseif($remainingSlots === null && $drawOpen): ?><div class="draw-error" role="status">Live availability cannot be checked right now. Please try again shortly.</div><?php endif; ?>
+<?php if($remainingSlots === 0 && $drawOpen): ?><div class="draw-error" role="status"><strong>ALL 128 VOUCHERS ARE CURRENTLY RESERVED.</strong> Join chronological standby instead. No physical work is held and no payment is due unless a slot becomes available.</div><?php elseif($remainingSlots === null && $drawOpen): ?><div class="draw-error" role="status">Live availability cannot be checked right now. Please try again shortly.</div><?php endif; ?>
 <?php if($error !== ''): ?><div class="draw-error" role="alert"><?= crt_e($error) ?></div><?php endif; ?>
 <?php if($drawOpen): ?>
-<form class="draw-form" method="post" action="/draw" autocomplete="on">
+<form class="draw-form" method="post" action="<?= $standbyMode ? '/draw-standby.php' : '/draw' ?>" autocomplete="on">
 <input type="hidden" name="csrf" value="<?= crt_e($csrf) ?>">
 <div class="hp" aria-hidden="true"><label>Company<input type="text" name="company" tabindex="-1" autocomplete="off"></label></div>
 <div class="entry-grid" aria-label="Draw entry quantities">
@@ -341,14 +342,14 @@ $remainingSlots = $reservedSlots === null ? null : max(0, CRTSHT_TOTAL - $reserv
 <div class="field"><label for="city">City*</label><input id="city" name="city" maxlength="120" value="<?= crt_e($form['city']) ?>" autocomplete="address-level2" required></div>
 <div class="field field-wide"><label for="country">Country*</label><input id="country" name="country" maxlength="120" value="<?= crt_e($form['country']) ?>" autocomplete="country-name" required></div>
 </div></div>
-<p class="form-consent">Submitting stores this reservation and temporarily holds the selected number of CRTSHT draw slots. Card / TWINT payments are confirmed automatically after successful payment; invoice / bank-transfer payments are confirmed manually. Your data is used to manage the reservation, draw and delivery of the work.</p>
-<div class="terminal-action"><button class="terminal-button" type="submit" <?= ($remainingSlots === 0 || $remainingSlots === null) ? 'disabled' : '' ?>>RESERVE DRAW <?= $form['quantity']==='1' ? 'ENTRY' : 'ENTRIES' ?></button><span class="terminal-note">No artwork is selected here. Every valid ticket is matched by chance with one remaining physical CRTSHT at its scheduled live draw.</span></div>
+<p class="form-consent"><?php if($standbyMode): ?>Submitting stores a chronological standby request only. No CRTSHT is reserved, no payment is due, and a draw entry exists only if a released slot is subsequently confirmed. Your data is used to manage the standby request and any later reservation.<?php else: ?>Submitting stores this reservation and temporarily holds the selected number of CRTSHT draw slots. Card / TWINT payments are confirmed automatically after successful payment; invoice / bank-transfer payments are confirmed manually. Your data is used to manage the reservation, draw and delivery of the work.<?php endif; ?></p>
+<div class="terminal-action"><button class="terminal-button" type="submit" <?= $remainingSlots === null ? 'disabled' : '' ?>><?= $standbyMode ? 'JOIN STANDBY' : 'RESERVE DRAW ' . ($form['quantity']==='1' ? 'ENTRY' : 'ENTRIES') ?></button><span class="terminal-note"><?= $standbyMode ? 'Standby is not a reservation or a confirmed draw entry. No payment is due until a slot is confirmed.' : 'No artwork is selected here. Every valid ticket is matched by chance with one remaining physical CRTSHT at its scheduled live draw.' ?></span></div>
 </form>
 <?php else: ?>
 <div class="draw-error" style="margin-top:22px"><strong>DRAW PERIOD ENDED / REGISTRATION CLOSED.</strong><br>The 128-work archive remains online as the record of the dispersal.</div>
 <?php endif; ?>
 </div>
-<div class="system-status"><span><?= $drawOpen ? 'OBJECT UNKNOWN / ENTRY RESERVED / PAYMENT PENDING' : 'DRAW TERMINAL / CLOSED' ?></span><span><?= $lateEntryOpen ? 'DRAW 03 · LIVE · ENTRY UNTIL 00:00' : ($drawOpen ? 'DRAW ' . crt_e($currentBatch) . ' · ' . crt_e($nextDrawDate) : 'REGISTRATION CLOSED · 01.11.2026 00:00') ?></span></div>
+<div class="system-status"><span><?= $standbyMode ? 'STANDBY / NO SLOT HELD' : ($drawOpen ? 'OBJECT UNKNOWN / ENTRY RESERVED / PAYMENT PENDING' : 'DRAW TERMINAL / CLOSED') ?></span><span><?= $lateEntryOpen ? 'DRAW 03 · LIVE · ENTRY UNTIL 00:00' : ($drawOpen ? 'DRAW ' . crt_e($currentBatch) . ' · ' . crt_e($nextDrawDate) : 'REGISTRATION CLOSED · 01.11.2026 00:00') ?></span></div>
 </section>
 <?php endif; ?>
 
@@ -384,14 +385,14 @@ foreach($timeline as [$batch,$date,$name]):
 </section>
 <?php endif; ?>
 <footer class="footer"><span>CRTSHT / THE DRAW • <a href="/press">Press</a> • <a href="/legal">LEGAL</a> • <a href="https://ibulla.com" target="_blank" rel="noopener">iBulla</a></span><span>OPEN → RESERVED → PAID → ASSIGNED</span></footer>
-<?php if (!$success && $drawOpen): ?><a class="mobile-draw-cta" href="#reserve">RESERVE A VOUCHER <span>→</span></a><?php endif; ?>
+<?php if (!$success && $drawOpen): ?><a class="mobile-draw-cta" href="#reserve"><?= $standbyMode ? 'JOIN STANDBY' : 'RESERVE A VOUCHER' ?> <span>→</span></a><?php endif; ?>
 </main>
 <script>
 (()=>{
  const radios=[...document.querySelectorAll('input[name="quantity"]')];
  const button=document.querySelector('.terminal-button');
  if(radios.length&&button){
-   const update=()=>{const q=radios.find(r=>r.checked)?.value||'1';button.textContent='RESERVE DRAW '+(q==='1'?'ENTRY':'ENTRIES');};
+   const update=()=>{if(button.form?.getAttribute('action')==='/draw-standby.php'){button.textContent='JOIN STANDBY';return;}const q=radios.find(r=>r.checked)?.value||'1';button.textContent='RESERVE DRAW '+(q==='1'?'ENTRY':'ENTRIES');};
    radios.forEach(r=>r.addEventListener('change',update));update();
  }
  const header=document.querySelector('header');
@@ -404,4 +405,5 @@ foreach($timeline as [$batch,$date,$name]):
  new IntersectionObserver(([entry])=>{reserveVisible=entry.isIntersecting;updateFloating();},{threshold:.08}).observe(reserve);
 })();
 </script>
+<script src="/js/draw-price.js?v=2"></script>
 </body></html>
