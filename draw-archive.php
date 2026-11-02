@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
 <section><div class="eyebrow">THE FIRST SERIES</div><h2>IT ENDSAFTER THIS.</h2>
 <p>ENDSAFTER<br>Hardturmstrasse 307<br>8005 Zürich, Switzerland</p>
 <ul class="archive-dates"><li><span>25.09.2026</span><strong>DRAW 01</strong></li><li><span>17.10.2026</span><strong>DRAW 02</strong></li><li><span>31.10.2026</span><strong>DRAW 03 / FINAL</strong></li></ul></section>
-<section><div class="eyebrow">CRTSHT / PRICE HISTORY</div><div class="price">CHF 128</div><p class="subtle">ENDSAFTER / 2026</p><hr style="border:0;border-top:1px solid var(--line);margin:24px 0"><div class="eyebrow">NEXT DRAW / NOT ANNOUNCED</div></section>
+<section><div class="eyebrow">CRTSHT / PRICE HISTORY</div><p class="subtle" style="font-size:clamp(13px,1.5vw,17px);margin:16px 0 22px;color:var(--muted)">CHF 128 / ENDSAFTER / 2026</p><hr style="border:0;border-top:1px solid var(--line);margin:24px 0"><div class="eyebrow">NEXT DRAW / NOT ANNOUNCED</div></section>
 </div>
 <section class="news"><div class="eyebrow">WHAT NEXT?</div><h2>TRUST YOUR LUCK.<br>AGAIN?</h2>
 <p>There may be another draw. There may not. Leave your email and we'll let you know if something happens.</p>
