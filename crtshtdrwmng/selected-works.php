@@ -83,6 +83,44 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
    $actor='admin';$actionLog='winner_selected';$detail=json_encode(['mode'=>$mode,'winner_offer_id'=>$winner],JSON_THROW_ON_ERROR);
    $stmt=$db->prepare('INSERT INTO CRTSHT_Selected_Audit (SelectedWorkID,OfferID,Actor,Action,DetailJSON) VALUES (?,?,?,?,?)');$stmt->bind_param('iisss',$workId,$winner,$actor,$actionLog,$detail);$stmt->execute();$stmt->close();
    $message='Winner selected; reference '.$reservationCode.'. Send the invitation below.';
+  }elseif($action==='extend_payment'||$action==='release_reservation'){
+   $wid=filter_var($_POST['work_id']??null,FILTER_VALIDATE_INT,['options'=>['min_range'=>1]]);
+   if(!$wid)throw new RuntimeException('Invalid work.');
+   $stmt=$db->prepare('SELECT * FROM CRTSHT_Selected_Works WHERE ID=? FOR UPDATE');
+   if(!$stmt)throw new RuntimeException('Work lookup failed.');
+   $stmt->bind_param('i',$wid);$stmt->execute();$work=$stmt->get_result()->fetch_assoc();$stmt->close();
+   if(!$work||$work['SaleStatus']!=='reserved'||!(int)$work['WinnerOfferID'])throw new RuntimeException('No active reservation.');
+   $winner=(int)$work['WinnerOfferID'];
+   $stmt=$db->prepare('SELECT * FROM CRTSHT_Selected_Offers WHERE ID=? AND SelectedWorkID=? FOR UPDATE');
+   $stmt->bind_param('ii',$winner,$wid);$stmt->execute();$offer=$stmt->get_result()->fetch_assoc();$stmt->close();
+   if(!$offer||$offer['Status']!=='accepted'||$offer['PaidAt']!==null)throw new RuntimeException('Reservation is already settled.');
+   if($action==='extend_payment'){
+    $stmt=$db->prepare("UPDATE CRTSHT_Selected_Works SET ReservationExpiresAt=DATE_ADD(GREATEST(NOW(),ReservationExpiresAt),INTERVAL 48 HOUR) WHERE ID=? AND SaleStatus='reserved'");
+    $stmt->bind_param('i',$wid);if(!$stmt->execute()||$stmt->affected_rows!==1)throw new RuntimeException('Could not extend reservation.');$stmt->close();
+    $message='Payment window extended by 48 hours. Resend the payment invitation if needed.';
+   }else{
+    if(($_POST['confirm_release']??'')!=='NO PAYMENT RECEIVED')throw new RuntimeException('Confirm that no bank or Stripe payment was received.');
+    $sid=(string)($offer['StripeCheckoutSessionID']??'');
+    if($sid!==''){
+     if(!crt_stripe_ready()||!preg_match('/^cs_[A-Za-z0-9_]+$/',$sid))throw new RuntimeException('Stripe verification unavailable.');
+     $remote=crt_stripe_request('GET','/v1/checkout/sessions/'.rawurlencode($sid));
+     $state=(string)($remote['status']??'');
+     if($state==='open'){$remote=crt_stripe_request('POST','/v1/checkout/sessions/'.rawurlencode($sid).'/expire');$state=(string)($remote['status']??'');}
+     if($state!=='expired')throw new RuntimeException('Stripe checkout is not expired. Wait for webhook or reconcile manually.');
+    }
+    $stmt=$db->prepare("UPDATE CRTSHT_Selected_Offers SET Status='expired' WHERE ID=? AND Status='accepted' AND PaidAt IS NULL");
+    $stmt->bind_param('i',$winner);if(!$stmt->execute()||$stmt->affected_rows!==1)throw new RuntimeException('Could not release winning offer.');$stmt->close();
+    $stmt=$db->prepare("UPDATE CRTSHT_Selected_Offers SET Status='pending' WHERE SelectedWorkID=? AND Status='rejected'");
+    $stmt->bind_param('i',$wid);if(!$stmt->execute())throw new RuntimeException('Could not restore other offers.');$stmt->close();
+    $stmt=$db->prepare("UPDATE CRTSHT_Selected_Works SET WinnerOfferID=NULL,SaleStatus='closed',ReservationExpiresAt=NULL WHERE ID=? AND WinnerOfferID=? AND SaleStatus='reserved'");
+    $stmt->bind_param('ii',$wid,$winner);if(!$stmt->execute()||$stmt->affected_rows!==1)throw new RuntimeException('Could not reopen selection.');$stmt->close();
+    $message='Old reservation released. Other offers are eligible for a new selection.';
+   }
+   $actor='admin';$auditAction=$action;$detail=json_encode(['offer_id'=>$winner],JSON_THROW_ON_ERROR);
+   $stmt=$db->prepare('INSERT INTO CRTSHT_Selected_Audit (SelectedWorkID,OfferID,Actor,Action,DetailJSON) VALUES (?,?,?,?,?)');
+   if(!$stmt)throw new RuntimeException('Audit unavailable.');
+   $stmt->bind_param('iisss',$wid,$winner,$actor,$auditAction,$detail);
+   if(!$stmt->execute())throw new RuntimeException('Audit failed.');$stmt->close();
   }elseif($action==='send_invite'||$action==='confirm_bank'){
    $wid=filter_var($_POST['work_id']??null,FILTER_VALIDATE_INT,['options'=>['min_range'=>1]]);
    if(!$wid)throw new RuntimeException('Invalid work.');
@@ -158,6 +196,8 @@ $db->close();
 <p><strong>PAYMENT RESERVED</strong> until <?=h((string)$w['ReservationExpiresAt'])?> (Zurich). Send an offer-acceptance email with the payment link; bank receipts can be confirmed below.</p>
 <form method="post" style="display:inline-block"><input type="hidden" name="csrf" value="<?=h($csrf)?>"><input type="hidden" name="action" value="send_invite"><input type="hidden" name="work_id" value="<?=$wid?>"><button type="submit" onclick="return confirm('Send payment invitation to the selected buyer?')">EMAIL PAYMENT LINK</button></form>
 <form method="post" style="display:inline-block"><input type="hidden" name="csrf" value="<?=h($csrf)?>"><input type="hidden" name="action" value="confirm_bank"><input type="hidden" name="work_id" value="<?=$wid?>"><button type="submit" onclick="return confirm('Confirm bank transfer has arrived? This marks the work SOLD.')">CONFIRM BANK PAID</button></form>
+<form method="post" style="display:inline-block"><input type="hidden" name="csrf" value="<?=h($csrf)?>"><input type="hidden" name="action" value="extend_payment"><input type="hidden" name="work_id" value="<?=$wid?>"><button type="submit">EXTEND +48H</button></form>
+<form method="post" style="display:inline-block"><input type="hidden" name="csrf" value="<?=h($csrf)?>"><input type="hidden" name="action" value="release_reservation"><input type="hidden" name="work_id" value="<?=$wid?>"><input type="hidden" name="confirm_release" value="NO PAYMENT RECEIVED"><button type="submit" onclick="return confirm('Release allocation ONLY if no payment has arrived or is pending? The old buyer payment link will stop working.')">RELEASE / RESELECT</button></form>
 <?php endif;?>
 <?php if(!empty($offers[$wid])):?><table><tr><th>Offer</th><th>Buyer</th><th>Price</th><th>Status</th></tr>
 <?php foreach($offers[$wid] as $o):?><tr><td><?=h($o['OfferCode'])?> (#<?=(int)$o['ID']?>)<?php if($o['ReservationCode']):?><br><small><a target="_blank" href="/selected-payment/<?=rawurlencode((string)$o['ReservationCode'])?>"><?=h((string)$o['ReservationCode'])?></a></small><?php endif;?></td><td><?=h($o['Name'])?> · <?=h($o['Email'])?></td><td>CHF <?=h((string)$o['OfferedPriceCHF'])?></td><td><?=h($o['Status'])?></td></tr><?php endforeach;?></table><?php endif;?>
