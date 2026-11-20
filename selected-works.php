@@ -22,8 +22,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $city = trim((string)($_POST['city'] ?? ''));
     $country = trim((string)($_POST['country'] ?? ''));
     if (!hash_equals($csrf, (string)($_POST['csrf'] ?? '')) || trim((string)($_POST['company'] ?? '')) !== '') $error = 'Invalid request.';
+    elseif (($_POST['binding_offer'] ?? '') !== 'yes') $error = 'Please confirm your binding purchase offer.';
     elseif (!$workId || $name === '' || mb_strlen($name)>120 || !filter_var($email,FILTER_VALIDATE_EMAIL) || strlen($email)>190 ||
       mb_strlen($mobile)>50 || mb_strlen($address)>190 || mb_strlen($plz)>24 || mb_strlen($city)>120 || mb_strlen($country)>120) $error = 'Please check your contact details.';
+    elseif (time() - (int)($_SESSION['selected_last_offer_at'] ?? 0) < 20) $error = 'Please wait before submitting another offer.';
     else {
         try {
             $db->begin_transaction();
@@ -34,6 +36,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt=$db->prepare("SELECT COUNT(*) AS n FROM CRTSHT_Draw_Entries WHERE AssignedCRTSHT=?");
             $stmt->bind_param('i',$cid);$stmt->execute();$assigned=(int)$stmt->get_result()->fetch_assoc()['n'];$stmt->close();
             if ($assigned>0) throw new RuntimeException('This work is already allocated.');
+            $stmt=$db->prepare("SELECT ID FROM CRTSHT_Selected_Offers WHERE SelectedWorkID=? AND Email=? LIMIT 1");
+            if(!$stmt)throw new RuntimeException('Duplicate check unavailable.');
+            $stmt->bind_param('is',$workId,$email);
+            if(!$stmt->execute())throw new RuntimeException('Duplicate check failed.');
+            $prior=$stmt->get_result()->fetch_assoc();$stmt->close();
+            if($prior)throw new RuntimeException('One offer per email and artwork is allowed.');
             $code='O-'.strtoupper(bin2hex(random_bytes(8)));
             $price=(string)$work['PriceCHF'];
             $stmt=$db->prepare("INSERT INTO CRTSHT_Selected_Offers (SelectedWorkID,OfferCode,Name,Email,Mobile,Address,PLZ,City,Country,OfferedPriceCHF) VALUES (?,?,?,?,?,?,?,?,?,?)");
@@ -41,6 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!$stmt->execute()) throw new RuntimeException('Unable to store offer.');$stmt->close();
             $db->commit();
             $success=$code;
+            $_SESSION['selected_last_offer_at']=time();
             $_SESSION['selected_csrf']=bin2hex(random_bytes(24));
             $csrf=$_SESSION['selected_csrf'];
         } catch(Throwable $e) { $db->rollback(); error_log('Selected offer: '.$e->getMessage()); $error='Offer could not be submitted. Please try again.'; }
@@ -74,5 +83,5 @@ $db->close();
 <label>City <input name="city" maxlength="120" autocomplete="address-level2"></label>
 <label>Country <input name="country" maxlength="120" autocomplete="country-name"></label>
 <p class="muted">I offer CHF <?=number_format((float)$work['PriceCHF'],2,'.',"'")?> for this specific work. Submission does not guarantee allocation. Payment is requested only after acceptance.</p>
-<button type="submit">SUBMIT OFFER →</button></form></section>
+<label><input type="checkbox" name="binding_offer" value="yes" required style="width:auto;display:inline"> I understand that this is a binding purchase offer at the fixed price, subject to acceptance by the artist. <a href="/legal">Legal / Privacy</a>.</label><p></p><button type="submit">SUBMIT OFFER →</button></form></section>
 <?php endforeach;?></main></body></html>
