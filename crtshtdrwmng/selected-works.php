@@ -10,6 +10,7 @@ if(session_status()!==PHP_SESSION_ACTIVE)session_start();
 if(empty($_SESSION['draw_admin_ok'])){header('Location: /crtshtdrwmng/',true,303);exit;}
 function h(string $s):string{return htmlspecialchars($s,ENT_QUOTES,'UTF-8');}
 $db=crt_db();if(!$db){http_response_code(503);exit('Database unavailable.');}
+crt_selected_db_timezone($db);
 $csrf=$_SESSION['csrf']??'';if(!is_string($csrf)||strlen($csrf)<32)$_SESSION['csrf']=$csrf=bin2hex(random_bytes(24));
 $error='';$message='';$afterCommitMail=null;
 if($_SERVER['REQUEST_METHOD']==='POST'){
