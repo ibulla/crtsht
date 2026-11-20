@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 require dirname(__DIR__) . '/inc/bootstrap.php';
+require_once dirname(__DIR__) . '/inc/selected-common.php';
 
 header('X-Robots-Tag: noindex, nofollow, noarchive', true);
 header('Cache-Control: no-store, private');
@@ -87,6 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') !== 'login
         $error = 'Security token expired. Reload and try again.';
     } else {
         $action = (string)($_POST['action'] ?? '');
+        $artworkLock = null;
         try {
             if ($action === 'reservation_status') {
                 $rid = filter_var($_POST['reservation_id'] ?? null, FILTER_VALIDATE_INT, ['options'=>['min_range'=>1]]);
@@ -144,6 +146,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') !== 'login
                 $eid = filter_var($_POST['entry_id'] ?? null, FILTER_VALIDATE_INT, ['options'=>['min_range'=>1]]);
                 if (!$eid) throw new RuntimeException('Invalid entry.');
                 $assigned = adm_crtsht_id((string)($_POST['crtsht_id'] ?? ''));
+                if ($assigned !== null) {
+                    // Hold the same named lock used when Selected Works publishes or allocates an artwork.
+                    crt_selected_lock_artwork($db, $assigned);
+                    $artworkLock = $assigned;
+                    $check = $db->prepare("SELECT SaleStatus FROM CRTSHT_Selected_Works WHERE CRTSHT_ID=?");
+                    if (!$check) throw new RuntimeException('Selected Works assignment check failed.');
+                    $check->bind_param('i', $assigned);
+                    if (!$check->execute()) throw new RuntimeException('Selected Works assignment check failed.');
+                    $match = $check->get_result()->fetch_assoc();
+                    $check->close();
+                    if ($match && in_array((string)$match['SaleStatus'], ['open','closed','reserved','sold'], true))
+                        throw new RuntimeException('This CRTSHT is listed or allocated in Selected Works.');
+                }
                 if ($assigned === null) {
                     $stmt = $db->prepare("UPDATE CRTSHT_Draw_Entries e JOIN CRTSHT_Draw_Reservations r ON r.ID=e.ReservationID SET e.AssignedCRTSHT=NULL,e.AssignedAt=NULL,e.Status=CASE WHEN r.Status='paid' THEN 'paid' WHEN r.Status='cancelled' THEN 'cancelled' ELSE 'reserved' END WHERE e.ID=?");
                     if (!$stmt) throw new RuntimeException('Prepare failed.');
@@ -184,6 +199,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') !== 'login
             try { $db->rollback(); } catch (Throwable $ignore) {}
             $error = $e->getMessage();
         }
+        if ($artworkLock !== null) crt_selected_unlock_artwork($db, $artworkLock);
     }
 }
 
