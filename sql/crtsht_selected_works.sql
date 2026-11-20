@@ -74,5 +74,9 @@ ALTER TABLE CRTSHT_Selected_Works
     REFERENCES CRTSHT_Selected_Offers(ID) ON DELETE RESTRICT;
 
 -- The application must verify WinnerOfferID belongs to the same SelectedWorkID.
--- All allocation operations must lock the selected work and check DRAW assignments
--- within a transaction; the separate tables do NOT alone prevent cross-mode double sale.
+-- Historical CRTSHT_Draw_Entries / AssignedCRTSHT record the original DRAW allocation:
+-- those records remain intact and MUST NOT prevent a secondary-market resale.
+-- Only one active Selected Works sale is allowed per artwork; work-row locks and
+-- WinnerOfferID guard the current reservation/payment transaction.
+-- uq_selected_crtsht currently supports one resale cycle per artwork. Future repeat
+-- resales need separate transaction/cycle records; do not overwrite provenance.
