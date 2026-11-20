@@ -15,6 +15,7 @@ function crt_selected_handle_stripe_event(mysqli $db,string $eventId,string $typ
     if(!$workId||!$offerId||!preg_match('/^W-[A-F0-9]{16}$/',$code)
         ||!preg_match('/^cs_[A-Za-z0-9_]+$/',$sessionId))throw new RuntimeException('Selected payment metadata invalid.');
     $notify=null;$wasDuplicate=false;
+    crt_selected_db_timezone($db);
     $db->begin_transaction();
     try {
         $stmt=$db->prepare('INSERT IGNORE INTO CRTSHT_Stripe_Events (StripeEventID,EventType,ProcessedAt) VALUES (?,?,NOW())');
