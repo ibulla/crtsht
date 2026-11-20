@@ -37,10 +37,10 @@ $selectedDb=crt_db();
 if($selectedDb){
     try{
         crt_selected_db_timezone($selectedDb);
-        $selectedResult=$selectedDb->query("SELECT w.ID,w.CRTSHT_ID,w.PriceCHF,w.Location,w.OfferDeadline
+        $selectedResult=$selectedDb->query("SELECT w.ID,w.CRTSHT_ID,w.PriceCHF,w.Location,w.OfferDeadline,
+                 (SELECT e.DrawBatch FROM CRTSHT_Draw_Entries e WHERE e.AssignedCRTSHT=w.CRTSHT_ID AND e.Status='assigned' LIMIT 1) AS OriginalDrawBatch
           FROM CRTSHT_Selected_Works w
           WHERE w.SaleStatus='open' AND w.OfferDeadline>NOW()
-          AND NOT EXISTS(SELECT 1 FROM CRTSHT_Draw_Entries e WHERE e.AssignedCRTSHT=w.CRTSHT_ID)
           ORDER BY w.OfferDeadline,w.CRTSHT_ID");
         if($selectedResult){$selectedForDraw=$selectedResult->fetch_all(MYSQLI_ASSOC);$selectedResult->free();}
     }catch(Throwable $e){error_log('CRTSHT draw selected-work listing failed: '.$e->getMessage());}
@@ -66,13 +66,14 @@ if($selectedDb){
 <section><div class="eyebrow">CRTSHT / PRICE HISTORY</div><p class="past-price">CHF 128 / ENDSAFTER / 2026</p><hr style="border:0;border-top:1px solid var(--line);margin:24px 0"><div class="eyebrow">NEXT DRAW / NOT ANNOUNCED</div></section>
 </div>
 <section class="news" id="selected-works"><div class="eyebrow">SELECTED WORKS / NEW</div><h2>CHOOSE THE WORK.<br>CHANCE MAY FOLLOW.</h2>
-<p>These are individual CRTSHT works offered at a fixed price. Submit a binding purchase offer before the closing date. The artist awards the purchase opportunity after the deadline, manually or by draw.</p>
+<p>THE SECONDARY MARKET. Individual CRTSHT works may return for resale after their original DRAW allocation. Submit a binding purchase offer at the fixed price before the deadline. The artist awards the purchase opportunity after the deadline, manually or by draw.</p>
 <?php if($selectedForDraw):?><div class="archive-grid" style="grid-template-columns:repeat(<?=(count($selectedForDraw)>1?2:1)?>,minmax(0,1fr));gap:24px">
 <?php foreach($selectedForDraw as $sw):$cid=(int)$sw['CRTSHT_ID'];$pic=crt_artwork($cid); ?>
 <article style="min-width:0;border:1px solid var(--line);padding:clamp(12px,2vw,22px)">
 <?php if($pic):?><a href="/selected-works#work-<?=(int)$sw['ID']?>"><img loading="lazy" src="<?=crt_e($pic)?>" alt="CRTSHT #<?=$cid?>" style="width:100%;max-height:400px;object-fit:contain"></a><?php endif;?>
 <div class="eyebrow" style="margin-top:18px">CRTSHT / #<?=str_pad((string)$cid,3,'0',STR_PAD_LEFT)?></div>
 <h3 style="font-size:clamp(22px,3vw,42px);margin:12px 0"><?=crt_e(crt_title($cid,crt_metadata($cid)))?></h3>
+<?php if($sw['OriginalDrawBatch']!==null):?><p class="subtle">DRAW <?=crt_e((string)$sw['OriginalDrawBatch'])?> / ORIGINAL ALLOCATION</p><?php endif;?>
 <p>FIXED PRICE / <strong>CHF <?=crt_e(number_format((float)$sw['PriceCHF'],2,'.',"'"))?></strong></p>
 <p>OFFERS CLOSE / <?=crt_e((string)$sw['OfferDeadline'])?> (Zurich)</p>
 <?php if(!empty($sw['Location'])):?><p>ON VIEW / <?=crt_e((string)$sw['Location'])?></p><?php endif;?>
