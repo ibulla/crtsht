@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 require dirname(__DIR__) . '/inc/bootstrap.php';
+require_once dirname(__DIR__) . '/inc/selected-common.php';
 
 header('X-Robots-Tag: noindex, nofollow, noarchive', true);
 header('Cache-Control: no-store, private');
@@ -87,6 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') !== 'login
         $error = 'Security token expired. Reload and try again.';
     } else {
         $action = (string)($_POST['action'] ?? '');
+        $artworkLock = null;
         try {
             if ($action === 'reservation_status') {
                 $rid = filter_var($_POST['reservation_id'] ?? null, FILTER_VALIDATE_INT, ['options'=>['min_range'=>1]]);
@@ -144,6 +146,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') !== 'login
                 $eid = filter_var($_POST['entry_id'] ?? null, FILTER_VALIDATE_INT, ['options'=>['min_range'=>1]]);
                 if (!$eid) throw new RuntimeException('Invalid entry.');
                 $assigned = adm_crtsht_id((string)($_POST['crtsht_id'] ?? ''));
+                if ($assigned !== null) {
+                    // Hold the same named lock used when Selected Works publishes or allocates an artwork.
+                    crt_selected_lock_artwork($db, $assigned);
+                    $artworkLock = $assigned;
+                    $check = $db->prepare("SELECT SaleStatus FROM CRTSHT_Selected_Works WHERE CRTSHT_ID=?");
+                    if (!$check) throw new RuntimeException('Selected Works assignment check failed.');
+                    $check->bind_param('i', $assigned);
+                    if (!$check->execute()) throw new RuntimeException('Selected Works assignment check failed.');
+                    $match = $check->get_result()->fetch_assoc();
+                    $check->close();
+                    if ($match && in_array((string)$match['SaleStatus'], ['open','closed','reserved','sold'], true))
+                        throw new RuntimeException('This CRTSHT is listed or allocated in Selected Works.');
+                }
                 if ($assigned === null) {
                     $stmt = $db->prepare("UPDATE CRTSHT_Draw_Entries e JOIN CRTSHT_Draw_Reservations r ON r.ID=e.ReservationID SET e.AssignedCRTSHT=NULL,e.AssignedAt=NULL,e.Status=CASE WHEN r.Status='paid' THEN 'paid' WHEN r.Status='cancelled' THEN 'cancelled' ELSE 'reserved' END WHERE e.ID=?");
                     if (!$stmt) throw new RuntimeException('Prepare failed.');
@@ -184,6 +199,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') !== 'login
             try { $db->rollback(); } catch (Throwable $ignore) {}
             $error = $e->getMessage();
         }
+        if ($artworkLock !== null) crt_selected_unlock_artwork($db, $artworkLock);
     }
 }
 
@@ -210,7 +226,7 @@ if($res){while($row=$res->fetch_assoc())$list[]=$row;$res->free();}
 $db->close();
 ?><!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>CRTSHT / DRAW CONTROL</title>
 <style>:root{--bg:#f2f2ee;--fg:#111;--muted:#777;--line:#c9c9c2}*{box-sizing:border-box}html{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;background:var(--bg);color:var(--fg)}body{margin:0;padding:18px}a{color:inherit}.top{display:flex;justify-content:space-between;gap:18px;align-items:center;border-bottom:1px solid var(--fg);padding-bottom:12px;margin-bottom:18px}.brand{font-size:clamp(24px,4vw,46px);font-weight:800;letter-spacing:-.07em;text-decoration:none}.small{font-size:10px;text-transform:uppercase;letter-spacing:.08em}.stats{display:grid;grid-template-columns:repeat(7,1fr);border-left:1px solid var(--line);border-top:1px solid var(--line);margin-bottom:18px}.stat{padding:12px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}.stat b{font-size:26px;display:block}.stat span{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}.flash{padding:10px 12px;border:1px solid var(--fg);margin-bottom:16px;font-size:11px}.flash.bad{background:#111;color:#fff}.table{width:100%;border-collapse:collapse;font-size:11px}.table th,.table td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}.table th{text-transform:uppercase;letter-spacing:.06em;font-size:9px}.pill{display:inline-block;border:1px solid var(--fg);border-radius:100px;padding:3px 7px;text-transform:uppercase;font-size:9px}.pill.ok{background:var(--fg);color:var(--bg)}.pill.bad{text-decoration:line-through}.muted{color:var(--muted)}.detail{border-top:1px solid var(--fg);margin:22px 0;padding-top:18px;display:grid;grid-template-columns:minmax(180px,.5fr) minmax(0,1.5fr);gap:24px}.detail h1{margin:0;font-size:clamp(28px,4vw,54px);letter-spacing:-.06em}.box{border:1px solid var(--fg);padding:14px;margin-bottom:14px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.grid .full{grid-column:1/-1}label{font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}input,select,button{font:inherit;font-size:11px}input,select{width:100%;background:transparent;border:1px solid var(--line);padding:9px;margin-top:4px}button{background:var(--fg);color:var(--bg);border:0;padding:9px 12px;cursor:pointer}.actions{display:flex;gap:8px;align-items:end;flex-wrap:wrap}.danger-zone{border-color:#111;margin-top:24px}.danger-zone button{background:#111;color:#fff}.danger-zone input{max-width:180px}.entrybox{display:grid;grid-template-columns:90px 90px 1fr auto;gap:10px;align-items:end;border-bottom:1px solid var(--line);padding:10px 0}.entrybox:last-of-type{border-bottom:0}.entrybox form{display:contents}.hex-input{display:flex;align-items:center;margin-top:4px;border:1px solid var(--line);width:max-content}.hex-prefix{padding:9px 0 9px 9px;color:var(--muted)}.hex-input input{width:48px;border:0;margin:0;padding:9px 9px 9px 0;text-transform:lowercase}.extra-tag{display:block;font-size:8px;color:var(--muted);margin-top:3px}.add-extra{margin-top:12px;border-top:1px solid var(--line);padding-top:12px}.back{font-size:10px;text-transform:uppercase}.nowrap{white-space:nowrap}@media(max-width:850px){.stats{grid-template-columns:repeat(2,1fr)}.detail{grid-template-columns:1fr}.table th:nth-child(4),.table td:nth-child(4),.table th:nth-child(6),.table td:nth-child(6){display:none}.grid{grid-template-columns:1fr}.grid .full{grid-column:auto}.entrybox{grid-template-columns:75px 1fr}.entrybox form{display:grid;grid-template-columns:1fr auto;gap:8px;grid-column:1/-1}}</style></head><body>
-<div class="top"><a class="brand" href="/crtshtdrwmng/">CRTSHT / DRAW CONTROL</a><div class="small"><a href="/crtshtdrwmng/mail.php">MAIL CONTROL →</a> &nbsp; <a href="/draw" target="_blank">PUBLIC DRAW ↗</a> &nbsp; <a href="?logout=1">LOGOUT</a></div></div>
+<div class="top"><a class="brand" href="/crtshtdrwmng/">CRTSHT / DRAW CONTROL</a><div class="small"><a href="/crtshtdrwmng/selected-works.php">SELECTED WORKS →</a> &nbsp; <a href="/crtshtdrwmng/mail.php">MAIL CONTROL →</a> &nbsp; <a href="/draw" target="_blank">PUBLIC DRAW ↗</a> &nbsp; <a href="?logout=1">LOGOUT</a></div></div>
 <?php if(!$detail): ?><div class="stats"><div class="stat"><b><?=128-(int)$summary['reserved']-(int)$summary['paid']?></b><span>unreserved slots</span></div><div class="stat"><b><?=(int)$summary['reserved']?></b><span>reserved tickets</span></div><div class="stat"><b><?=(int)$summary['paid']?></b><span>paid tickets</span></div><div class="stat"><b>CHF <?=adm_e(number_format((float)$summary['amount_open'],0,'.',"'"))?></b><span>open amount</span></div><div class="stat"><b>CHF <?=adm_e(number_format((float)$summary['amount_paid'],0,'.',"'"))?></b><span>paid amount</span></div><div class="stat"><b><?=(int)$summary['assigned']?></b><span>assigned works</span></div><div class="stat"><b><?=128-(int)$summary['assigned']?></b><span>unassigned works</span></div></div><?php endif; ?>
 <?php if($message):?><div class="flash"><?=adm_e($message)?></div><?php endif;?><?php if($error):?><div class="flash bad"><?=adm_e($error)?></div><?php endif;?>
 <?php if($detail): ?>

@@ -1,0 +1,35 @@
+name: Selected Works PHP checks
+on:
+  push:
+    branches:
+      - feature/selected-works-offers
+  pull_request:
+    paths:
+      - '.github/workflows/selected-works-php-lint.yml'
+      - 'selected-works.php'
+      - 'draw-archive.php'
+      - 'selected-payment.php'
+      - 'inc/selected-*.php'
+      - 'crtshtdrwmng/index.php'
+      - 'crtshtdrwmng/selected-works.php'
+      - 'stripe/selected-*.php'
+      - 'stripe/webhook.php'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  php-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: PHP syntax validation
+        run: |
+          php -v
+          set -e
+          for file in \
+            selected-works.php draw-archive.php selected-payment.php \
+            inc/selected-common.php inc/selected-mail.php inc/selected-webhook.php \
+            crtshtdrwmng/index.php crtshtdrwmng/selected-works.php \
+            stripe/selected-start.php stripe/selected-success.php stripe/webhook.php; do
+            php -l "$file"
+          done
