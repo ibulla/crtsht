@@ -1,8 +1,10 @@
 # CRTSHT / Selected Works — Release checklist
 
 ## Scope
-Specific works (1–128) with fixed price, exhibition location and offer deadline,
-binding buyer offers, manual or random allocation, and payment by the existing
+Secondary-market resale listings of specific works (1–128), including CRTSHT
+works already allocated by the historical DRAW. Each resale listing has a fixed
+price, exhibition location and offer deadline, binding buyer offers, manual or
+random buyer selection, and payment by the existing
 Stripe Checkout (card/TWINT if enabled in Stripe) or bank transfer.
 
 ## Prerequisites
@@ -18,9 +20,10 @@ Stripe Checkout (card/TWINT if enabled in Stripe) or bank transfer.
 - Before enabling any live cards, verify with a non-live Stripe key or on staging.
 
 ## Guided staging test (do not use live customer payments to test)
-1. In `/crtshtdrwmng/selected-works.php`, create a **draft** work not previously
-   assigned in DRAW, then set status to **open**, price and a near-future deadline
-   in Europe/Zurich.
+1. In `/crtshtdrwmng/selected-works.php`, select a CRTSHT work **already allocated
+   in the historic DRAW**. After verifying the current seller's ownership or
+   consignment authority, create a **draft** secondary-market listing, then set
+   it to **open** with fixed price and a near-future deadline in Europe/Zurich.
 2. Visit `/draw`. Verify the specific work, image, price, location, deadline,
    offer link. Submit two offers using different test email addresses.
 3. Verify a second offer using the same email + work is rejected, and required
@@ -36,8 +39,11 @@ Stripe Checkout (card/TWINT if enabled in Stripe) or bank transfer.
    must not send a second paid mail or alter another work.
 7. On a different work, test **bank transfer**: mark bank paid manually only
    after actual receipt (or stage DB simulation). Verify `sold` and email.
-8. Verify status `reserved` blocks DRAW assignment. An already DRAW-assigned
-   work must not be published for sale.
+8. Verify that a work **already assigned in the historical DRAW** is visible on
+   `/draw` and `/selected-works`, accepts offers, can receive a winning buyer,
+   and can be paid. Check the original `CRTSHT_Draw_Entries.AssignedCRTSHT`,
+   `DrawBatch` and `AssignedAt` never change during the resale transaction.
+   Also verify one Selected Works listing cannot be sold twice.
 9. Test **EXTEND +48H** and **RELEASE / RESELECT** using a staging reservation
    without any received/in-flight payments. Verify previous payment URL is closed.
 10. Confirm the original DRAW reservation checkout, Stripe webhook and payment
@@ -63,4 +69,10 @@ Stripe Checkout (card/TWINT if enabled in Stripe) or bank transfer.
 - Time values are stored/displayed in Europe/Zurich local time (DATETIME);
   test on DST boundaries if scheduled close dates span the clock change.
 - Refunds are administered in Stripe; no self-service refund mechanism exists.
+- A valid historical DRAW allocation proves which work was allocated, but does
+  **not** by itself verify today's owner or a seller's authority to resell.
+  The administrator must check physical-work availability and right to sell.
+- This MVP allows a single Selected Works sale cycle per CRTSHT ID; subsequent
+  *secondary-to-tertiary* resales would need a separate cycle/transaction model,
+  rather than overwriting the original sale and audit trail.
 - These statements describe planned/implemented behavior, not proof of a live test.
