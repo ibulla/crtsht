@@ -2,6 +2,7 @@
 declare(strict_types=1);
 require_once __DIR__ . '/mailer.php';
 require_once __DIR__ . '/stripe.php';
+require_once __DIR__ . '/selected-common.php';
 
 /** Selected Works mail uses the exact existing SMTP transport and payment configuration. */
 function crt_selected_payment_url(string $code): string {
