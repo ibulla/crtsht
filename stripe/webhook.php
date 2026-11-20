@@ -49,6 +49,22 @@ if (!$db) {
     exit;
 }
 
+$metadata = is_array($session['metadata'] ?? null) ? $session['metadata'] : [];
+if (($metadata['crtsht_mode'] ?? '') === 'selected_work') {
+    require_once dirname(__DIR__) . '/inc/selected-webhook.php';
+    try {
+        $response = crt_selected_handle_stripe_event($db, $eventId, $type, $session);
+        $db->close();
+        echo json_encode($response);
+    } catch (Throwable $e) {
+        $db->close();
+        error_log('CRTSHT selected Stripe webhook error for ' . $eventId . ': ' . $e->getMessage());
+        http_response_code(500);
+        echo json_encode(['ok'=>false]);
+    }
+    exit;
+}
+
 try {
     $db->begin_transaction();
 
