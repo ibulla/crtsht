@@ -50,6 +50,7 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
 <ul class="archive-dates"><li><span>25.09.2026</span><strong>DRAW 01</strong></li><li><span>17.10.2026</span><strong>DRAW 02</strong></li><li><span>31.10.2026</span><strong>DRAW 03 / FINAL</strong></li></ul></section>
 <section><div class="eyebrow">CRTSHT / PRICE HISTORY</div><p class="past-price">CHF 128 / ENDSAFTER / 2026</p><hr style="border:0;border-top:1px solid var(--line);margin:24px 0"><div class="eyebrow">NEXT DRAW / NOT ANNOUNCED</div></section>
 </div>
+<section class="news"><div class="eyebrow">SELECTED WORKS / NEW</div><h2>CHOOSE THE WORK.<br>CHANCE MAY FOLLOW.</h2><p>Individual CRTSHT works may be offered at a fixed price until a published deadline. Submit your offer; the artist decides who receives the purchase opportunity, manually or by draw.</p><p><a href="/selected-works"><strong>EXPLORE SELECTED WORKS →</strong></a></p></section>
 <section class="news"><div class="eyebrow">WHAT NEXT?</div><h2>TRUST YOUR LUCK.<br>AGAIN?</h2>
 <p>There may be another draw. There may not. Leave your email and we'll let you know if something happens.</p>
 <?php if($done): ?><div class="feedback" role="status">YOU'RE ON THE LIST. NOTHING ELSE TO DO.</div><?php else: ?>
