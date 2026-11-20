@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 require dirname(__DIR__) . '/inc/stripe.php';
+require_once dirname(__DIR__) . '/inc/selected-common.php';
 header('X-Robots-Tag: noindex, nofollow, noarchive', true);
 header('Cache-Control: no-store, private');
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {http_response_code(405);exit('Method not allowed.');}
@@ -9,6 +10,7 @@ $code=strtoupper(trim((string)($_POST['reservation']??'')));
 if (!preg_match('/^W-[A-F0-9]{16}$/',$code)) {http_response_code(400);exit('Invalid payment reference.');}
 $db=crt_db();
 if(!$db){http_response_code(503);exit('Database unavailable.');}
+crt_selected_db_timezone($db);
 try {
     $db->begin_transaction();
     // Read work ID without locking, then lock the work before its offer to match admin order.
