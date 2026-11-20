@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 require __DIR__ . '/inc/bootstrap.php';
+require_once __DIR__ . '/inc/selected-common.php';
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_set_cookie_params(['httponly'=>true,'secure'=>!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off','samesite'=>'Lax']);
     session_start();
@@ -31,6 +32,20 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
         }
     }
 }
+$selectedForDraw=[];
+$selectedDb=crt_db();
+if($selectedDb){
+    try{
+        crt_selected_db_timezone($selectedDb);
+        $selectedResult=$selectedDb->query("SELECT w.ID,w.CRTSHT_ID,w.PriceCHF,w.Location,w.OfferDeadline
+          FROM CRTSHT_Selected_Works w
+          WHERE w.SaleStatus='open' AND w.OfferDeadline>NOW()
+          AND NOT EXISTS(SELECT 1 FROM CRTSHT_Draw_Entries e WHERE e.AssignedCRTSHT=w.CRTSHT_ID)
+          ORDER BY w.OfferDeadline,w.CRTSHT_ID");
+        if($selectedResult){$selectedForDraw=$selectedResult->fetch_all(MYSQLI_ASSOC);$selectedResult->free();}
+    }catch(Throwable $e){error_log('CRTSHT draw selected-work listing failed: '.$e->getMessage());}
+    $selectedDb->close();
+}
 ?><!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SHIT HAPPENED. / CRTSHT DRAW</title>
@@ -50,7 +65,21 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
 <ul class="archive-dates"><li><span>25.09.2026</span><strong>DRAW 01</strong></li><li><span>17.10.2026</span><strong>DRAW 02</strong></li><li><span>31.10.2026</span><strong>DRAW 03 / FINAL</strong></li></ul></section>
 <section><div class="eyebrow">CRTSHT / PRICE HISTORY</div><p class="past-price">CHF 128 / ENDSAFTER / 2026</p><hr style="border:0;border-top:1px solid var(--line);margin:24px 0"><div class="eyebrow">NEXT DRAW / NOT ANNOUNCED</div></section>
 </div>
-<section class="news"><div class="eyebrow">SELECTED WORKS / NEW</div><h2>CHOOSE THE WORK.<br>CHANCE MAY FOLLOW.</h2><p>Individual CRTSHT works may be offered at a fixed price until a published deadline. Submit your offer; the artist decides who receives the purchase opportunity by a inocent hand.</p><p><a href="/selected-works"><strong>EXPLORE SELECTED WORKS →</strong></a></p></section>
+<section class="news" id="selected-works"><div class="eyebrow">SELECTED WORKS / NEW</div><h2>CHOOSE THE WORK.<br>CHANCE MAY FOLLOW.</h2>
+<p>These are individual CRTSHT works offered at a fixed price. Submit a binding purchase offer before the closing date. The artist awards the purchase opportunity after the deadline, manually or by draw.</p>
+<?php if($selectedForDraw):?><div class="archive-grid" style="grid-template-columns:repeat(<?=(count($selectedForDraw)>1?2:1)?>,minmax(0,1fr));gap:24px">
+<?php foreach($selectedForDraw as $sw):$cid=(int)$sw['CRTSHT_ID'];$pic=crt_artwork($cid); ?>
+<article style="min-width:0;border:1px solid var(--line);padding:clamp(12px,2vw,22px)">
+<?php if($pic):?><a href="/selected-works#work-<?=(int)$sw['ID']?>"><img loading="lazy" src="<?=crt_e($pic)?>" alt="CRTSHT #<?=$cid?>" style="width:100%;max-height:400px;object-fit:contain"></a><?php endif;?>
+<div class="eyebrow" style="margin-top:18px">CRTSHT / #<?=str_pad((string)$cid,3,'0',STR_PAD_LEFT)?></div>
+<h3 style="font-size:clamp(22px,3vw,42px);margin:12px 0"><?=crt_e(crt_title($cid,crt_metadata($cid)))?></h3>
+<p>FIXED PRICE / <strong>CHF <?=crt_e(number_format((float)$sw['PriceCHF'],2,'.',"'"))?></strong></p>
+<p>OFFERS CLOSE / <?=crt_e((string)$sw['OfferDeadline'])?> (Zurich)</p>
+<?php if(!empty($sw['Location'])):?><p>ON VIEW / <?=crt_e((string)$sw['Location'])?></p><?php endif;?>
+<p><a href="/selected-works#work-<?=(int)$sw['ID']?>"><strong>MAKE AN OFFER →</strong></a></p>
+</article><?php endforeach;?></div>
+<?php else:?><p class="subtle">There are no individual works currently open for offers.</p><?php endif;?>
+<p><a href="/selected-works"><strong>EXPLORE SELECTED WORKS →</strong></a></p></section>
 <section class="news"><div class="eyebrow">WHAT NEXT?</div><h2>TRUST YOUR LUCK.<br>AGAIN?</h2>
 <p>There may be another draw. There may not. Leave your email and we'll let you know if something happens.</p>
 <?php if($done): ?><div class="feedback" role="status">YOU'RE ON THE LIST. NOTHING ELSE TO DO.</div><?php else: ?>
