@@ -59,7 +59,7 @@ $db->close();
 <?php if($success!==''):?><p class="message" role="status">Your offer was recorded. Reference: <?=crt_e($success)?>. This is not yet a reservation or purchase confirmation.</p><?php endif;?>
 <?php if(!$works):?><p>There are no selected works open for offers at the moment.</p><?php endif;?>
 <?php foreach($works as $work): $cid=(int)$work['CRTSHT_ID']; $imgs=glob(__DIR__.'/shitpix_jpg_1-128/'.$cid.'-*.jpg'); $img=$imgs?'/shitpix_jpg_1-128/'.rawurlencode(basename($imgs[0])):null;?>
-<section class="work"><div><?php if($img):?><a href="/crtsht/<?=$cid?>"><img src="<?=crt_e($img)?>" alt="CRTSHT <?= $cid ?>" loading="lazy"></a><?php endif;?><h2><a href="/crtsht/<?=$cid?>">CRTSHT #<?=$cid?></a></h2>
+<section class="work" id="work-<?=(int)$work['ID']?>"><div><?php if($img):?><a href="/crtsht/<?=$cid?>"><img src="<?=crt_e($img)?>" alt="CRTSHT <?= $cid ?>" loading="lazy"></a><?php endif;?><h2><a href="/crtsht/<?=$cid?>">CRTSHT #<?=$cid?></a></h2>
 <p>FIXED PRICE / CHF <?=number_format((float)$work['PriceCHF'],2,'.',"'")?></p>
 <p>OFFERS CLOSE / <?=crt_e((string)$work['OfferDeadline'])?> (Europe/Zurich)</p>
 <?php if($work['Location']):?><p>ON VIEW / <?=crt_e((string)$work['Location'])?></p><?php endif;?>
