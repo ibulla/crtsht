@@ -17,7 +17,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
  try{
   if(!hash_equals($csrf,(string)($_POST['csrf']??'')))throw new RuntimeException('Invalid CSRF token.');
   $action=(string)($_POST['action']??'');
-  // Claim the per-artwork named lock BEFORE a transaction, shared with DRAW assignment.
+  // Serialize edits and reallocation within Selected Works only; DRAW provenance remains independent.
   if($action==='save_work'){
    $lockId=filter_var($_POST['crtsht_id']??null,FILTER_VALIDATE_INT,['options'=>['min_range'=>1,'max_range'=>128]]);
    if(!$lockId)throw new RuntimeException('Invalid CRTSHT ID.');
@@ -48,8 +48,6 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
    if($exhibition!==''){$e=DateTimeImmutable::createFromFormat('!Y-m-d\TH:i',$exhibition,$tz);if(!$e||$e->format('Y-m-d\TH:i')!==$exhibition)throw new RuntimeException('Invalid exhibition date.');$until=$e->format('Y-m-d H:i:s');}
    $date=$dt->format('Y-m-d H:i:s');
    $stmt=$db->prepare('SELECT ID,SaleStatus FROM CRTSHT_Selected_Works WHERE CRTSHT_ID=? FOR UPDATE');$stmt->bind_param('i',$cid);$stmt->execute();$existing=$stmt->get_result()->fetch_assoc();$stmt->close();
-   $stmt=$db->prepare('SELECT COUNT(*) n FROM CRTSHT_Draw_Entries WHERE AssignedCRTSHT=?');$stmt->bind_param('i',$cid);$stmt->execute();$assigned=(int)$stmt->get_result()->fetch_assoc()['n'];$stmt->close();
-   if($assigned && $status==='open')throw new RuntimeException('Already allocated in DRAW.');
    if($existing && in_array($existing['SaleStatus'],['reserved','sold'],true))throw new RuntimeException('Reserved or sold works cannot be reopened.');
    if($existing){
     $id=(int)$existing['ID'];$stmt=$db->prepare('UPDATE CRTSHT_Selected_Works SET PriceCHF=?,Location=?,ExhibitionUntil=?,OfferDeadline=?,SaleStatus=? WHERE ID=?');$stmt->bind_param('sssssi',$price,$location,$until,$date,$status,$id);
@@ -66,8 +64,6 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
    $stmt=$db->prepare('SELECT OfferDeadline<=NOW() AS past FROM CRTSHT_Selected_Works WHERE ID=?');
    $stmt->bind_param('i',$workId);$stmt->execute();$past=(int)$stmt->get_result()->fetch_assoc()['past'];$stmt->close();
    if(!$past)throw new RuntimeException('Winner selection is available after the deadline.');
-   $cid=(int)$work['CRTSHT_ID'];$stmt=$db->prepare('SELECT COUNT(*) n FROM CRTSHT_Draw_Entries WHERE AssignedCRTSHT=?');$stmt->bind_param('i',$cid);$stmt->execute();$assigned=(int)$stmt->get_result()->fetch_assoc()['n'];$stmt->close();
-   if($assigned)throw new RuntimeException('Work allocated in DRAW.');
    $stmt=$db->prepare("SELECT ID FROM CRTSHT_Selected_Offers WHERE SelectedWorkID=? AND Status='pending' ORDER BY ID FOR UPDATE");$stmt->bind_param('i',$workId);$stmt->execute();$ids=array_map('intval',array_column($stmt->get_result()->fetch_all(MYSQLI_ASSOC),'ID'));$stmt->close();
    if(!$ids)throw new RuntimeException('No pending offers.');
    $winner=$mode==='random'?$ids[random_int(0,count($ids)-1)]:(int)($_POST['offer_id']??0);
@@ -180,7 +176,8 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 $works=[];$res=$db->query('SELECT w.*, (SELECT COUNT(*) FROM CRTSHT_Selected_Offers o WHERE o.SelectedWorkID=w.ID) OfferCount FROM CRTSHT_Selected_Works w ORDER BY w.ID DESC');if($res){$works=$res->fetch_all(MYSQLI_ASSOC);$res->free();}
 $offers=[];$res=$db->query('SELECT o.ID,o.SelectedWorkID,o.OfferCode,o.ReservationCode,o.Name,o.Email,o.OfferedPriceCHF,o.Status,o.CreatedAt FROM CRTSHT_Selected_Offers o ORDER BY o.CreatedAt DESC');if($res){foreach($res->fetch_all(MYSQLI_ASSOC) as $o)$offers[(int)$o['SelectedWorkID']][]=$o;$res->free();}
 $db->close();
-?><!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CRTSHT / SELECTED WORKS CONTROL</title><style>body{font:14px ui-monospace,monospace;background:#111;color:#eee;max-width:1000px;margin:auto;padding:25px}a{color:inherit}section{border-top:1px solid #888;padding:18px 0}input,select,button{padding:9px;margin:5px;background:#222;color:#fff;border:1px solid #777}button{cursor:pointer}label{display:inline-block;margin:5px}small{color:#aaa}.msg{padding:12px;border:1px solid}table{width:100%;border-collapse:collapse}td,th{text-align:left;border-bottom:1px solid #444;padding:8px}</style></head><body><p><a href="/crtshtdrwmng/">← DRAW CONTROL</a></p><h1>SELECTED WORKS / CONTROL</h1>
+?><!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CRTSHT / SELECTED WORKS CONTROL</title><style>body{font:14px ui-monospace,monospace;background:#111;color:#eee;max-width:1000px;margin:auto;padding:25px}a{color:inherit}section{border-top:1px solid #888;padding:18px 0}input,select,button{padding:9px;margin:5px;background:#222;color:#fff;border:1px solid #777}button{cursor:pointer}label{display:inline-block;margin:5px}small{color:#aaa}.msg{padding:12px;border:1px solid}table{width:100%;border-collapse:collapse}td,th{text-align:left;border-bottom:1px solid #444;padding:8px}</style></head><body><p><a href="/crtshtdrwmng/">← DRAW CONTROL</a></p><h1>SELECTED WORKS / SECONDARY MARKET CONTROL</h1>
+<p>Works already allocated in the historical DRAW can be listed and resold here. Keep their original DRAW assignment intact. Before opening a resale listing, verify ownership or consignment authority and availability of the physical work.</p>
 <?php if($error):?><p class="msg"><?=h($error)?></p><?php endif;?><?php if($message):?><p class="msg"><?=h($message)?></p><?php endif;?>
 <section><h2>ADD / UPDATE WORK</h2><form method="post"><input type="hidden" name="csrf" value="<?=h($csrf)?>"><input type="hidden" name="action" value="save_work">
 <label>CRTSHT ID <input name="crtsht_id" type="number" min="1" max="128" required></label>
@@ -189,7 +186,7 @@ $db->close();
 <label>Exhibition until <input name="exhibition" type="datetime-local"></label>
 <label>Location <input name="location" maxlength="255"></label>
 <label>Status <select name="status"><option>draft</option><option>open</option><option>closed</option><option>withdrawn</option></select></label>
-<button>Save work</button></form><small>Existing works can be updated by entering their CRTSHT ID. Existing offers retain their originally submitted price.</small></section>
+<button>Save work</button></form><small>Historical DRAW allocations remain eligible for resale. Existing works can be updated by entering their CRTSHT ID. Existing offers retain their originally submitted price. For a new resale after a completed sale, a separate sale-cycle workflow will be needed.</small></section>
 <?php foreach($works as $w):$wid=(int)$w['ID'];?><section><h2>CRTSHT #<?=(int)$w['CRTSHT_ID']?> · <?=h($w['SaleStatus'])?> · CHF <?=h((string)$w['PriceCHF'])?></h2>
 <p>Deadline: <?=h((string)$w['OfferDeadline'])?> · <?= (int)$w['OfferCount']?> offer(s) · Winner offer: <?=h((string)($w['WinnerOfferID']??'—'))?></p>
 <?php if($w['SaleStatus']==='reserved'&&$w['WinnerOfferID']):?>

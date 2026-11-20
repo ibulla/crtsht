@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - feature/selected-works-offers
+      - fix/selected-works-secondary-market
   pull_request:
     paths:
       - '.github/workflows/selected-works-php-lint.yml'
@@ -14,6 +15,7 @@ on:
       - 'crtshtdrwmng/selected-works.php'
       - 'stripe/selected-*.php'
       - 'stripe/webhook.php'
+      - 'tests/selected-secondary-market.php'
   workflow_dispatch:
 permissions:
   contents: read
@@ -33,3 +35,6 @@ jobs:
             stripe/selected-start.php stripe/selected-success.php stripe/webhook.php; do
             php -l "$file"
           done
+      - name: Secondary-market provenance regression
+        run: |
+          php tests/selected-secondary-market.php
