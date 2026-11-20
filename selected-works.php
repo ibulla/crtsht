@@ -32,10 +32,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt=$db->prepare("SELECT ID,CRTSHT_ID,PriceCHF FROM CRTSHT_Selected_Works WHERE ID=? AND SaleStatus='open' AND OfferDeadline>NOW() FOR UPDATE");
             $stmt->bind_param('i',$workId); $stmt->execute(); $work=$stmt->get_result()->fetch_assoc(); $stmt->close();
             if (!$work) throw new RuntimeException('Offers for this work are closed.');
-            $cid=(int)$work['CRTSHT_ID'];
-            $stmt=$db->prepare("SELECT COUNT(*) AS n FROM CRTSHT_Draw_Entries WHERE AssignedCRTSHT=?");
-            $stmt->bind_param('i',$cid);$stmt->execute();$assigned=(int)$stmt->get_result()->fetch_assoc()['n'];$stmt->close();
-            if ($assigned>0) throw new RuntimeException('This work is already allocated.');
             $stmt=$db->prepare("SELECT ID FROM CRTSHT_Selected_Offers WHERE SelectedWorkID=? AND Email=? LIMIT 1");
             if(!$stmt)throw new RuntimeException('Duplicate check unavailable.');
             $stmt->bind_param('is',$workId,$email);
@@ -56,19 +52,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 $works=[];
-$res=$db->query("SELECT w.ID,w.CRTSHT_ID,w.PriceCHF,w.Location,w.ExhibitionUntil,w.OfferDeadline FROM CRTSHT_Selected_Works w WHERE w.SaleStatus='open' AND w.OfferDeadline>NOW() AND NOT EXISTS (SELECT 1 FROM CRTSHT_Draw_Entries e WHERE e.AssignedCRTSHT=w.CRTSHT_ID) ORDER BY w.OfferDeadline,w.CRTSHT_ID");
+$res=$db->query("SELECT w.ID,w.CRTSHT_ID,w.PriceCHF,w.Location,w.ExhibitionUntil,w.OfferDeadline, (SELECT e.DrawBatch FROM CRTSHT_Draw_Entries e WHERE e.AssignedCRTSHT=w.CRTSHT_ID AND e.Status='assigned' LIMIT 1) AS OriginalDrawBatch FROM CRTSHT_Selected_Works w WHERE w.SaleStatus='open' AND w.OfferDeadline>NOW() ORDER BY w.OfferDeadline,w.CRTSHT_ID");
 if ($res) {while($row=$res->fetch_assoc())$works[]=$row;$res->free();}
 $db->close();
 ?><!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Selected Works / CRTSHT</title><link rel="stylesheet" href="/site.css?v=13">
 <style>.selected{max-width:1080px;margin:auto;padding:clamp(18px,3vw,44px)}.work{border-top:1px solid #111;padding:24px 0;display:grid;grid-template-columns:minmax(180px,1fr) minmax(280px,1fr);gap:30px}.work img{width:100%;max-width:400px}.work input{display:block;width:100%;padding:10px;margin:6px 0 12px;border:1px solid #888;background:transparent;color:inherit}.work button{padding:12px 20px;background:#111;color:#fff;border:0;cursor:pointer}.muted{opacity:.7}.message{padding:16px;border:1px solid}@media(max-width:700px){.work{grid-template-columns:1fr}}</style></head><body>
 <main class="selected"><p><a href="/draw">← THE DRAW</a></p><h1>SELECTED WORKS</h1>
-<p>Choose a specific work. Submit an offer at the displayed fixed price before the deadline. The artist decides who receives the purchase opportunity after the deadline; selection may be manual or random. No payment is taken now. Only the selected buyer receives a payment invitation.</p>
+<p>THE DRAW IS HISTORY. SELECTED WORKS IS THE SECONDARY MARKET. Individual CRTSHT works can be offered for resale, including works already allocated in a previous draw. Submit an offer at the fixed price before the deadline. The artist selects the buyer after the deadline, manually or by draw. No payment is taken now; only the selected buyer receives a payment invitation.</p>
 <?php if($error!==''):?><p class="message" role="alert"><?=crt_e($error)?></p><?php endif;?>
 <?php if($success!==''):?><p class="message" role="status">Your offer was recorded. Reference: <?=crt_e($success)?>. This is not yet a reservation or purchase confirmation.</p><?php endif;?>
 <?php if(!$works):?><p>There are no selected works open for offers at the moment.</p><?php endif;?>
 <?php foreach($works as $work): $cid=(int)$work['CRTSHT_ID']; $imgs=glob(__DIR__.'/shitpix_jpg_1-128/'.$cid.'-*.jpg'); $img=$imgs?'/shitpix_jpg_1-128/'.rawurlencode(basename($imgs[0])):null;?>
 <section class="work" id="work-<?=(int)$work['ID']?>"><div><?php if($img):?><a href="/crtsht/<?=$cid?>"><img src="<?=crt_e($img)?>" alt="CRTSHT <?= $cid ?>" loading="lazy"></a><?php endif;?><h2><a href="/crtsht/<?=$cid?>">CRTSHT #<?=$cid?></a></h2>
+<?php if($work['OriginalDrawBatch']!==null):?><p class="muted">ORIGINAL PROVENANCE / DRAW <?=crt_e((string)$work['OriginalDrawBatch'])?> · HISTORICAL ALLOCATION</p><?php endif;?>
 <p>FIXED PRICE / CHF <?=number_format((float)$work['PriceCHF'],2,'.',"'")?></p>
 <p>OFFERS CLOSE / <?=crt_e((string)$work['OfferDeadline'])?> (Europe/Zurich)</p>
 <?php if($work['Location']):?><p>ON VIEW / <?=crt_e((string)$work['Location'])?></p><?php endif;?>
