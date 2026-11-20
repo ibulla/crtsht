@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 require dirname(__DIR__) . '/inc/bootstrap.php';
+require_once dirname(__DIR__) . '/inc/selected-common.php';
 header('X-Robots-Tag: noindex, nofollow, noarchive',true);
 header('Cache-Control: no-store, private');
 $sid=(string)($_GET['session_id']??'');
@@ -8,6 +9,7 @@ $offer=null;
 if(preg_match('/^cs_[A-Za-z0-9_]+$/',$sid)){
     $db=crt_db();
     if($db){
+        crt_selected_db_timezone($db);
         $stmt=$db->prepare('SELECT o.Status,o.PaidAt,w.CRTSHT_ID,w.SaleStatus FROM CRTSHT_Selected_Offers o JOIN CRTSHT_Selected_Works w ON w.ID=o.SelectedWorkID WHERE o.StripeCheckoutSessionID=?');
         if($stmt){$stmt->bind_param('s',$sid);$stmt->execute();$offer=$stmt->get_result()->fetch_assoc();$stmt->close();}
         $db->close();
