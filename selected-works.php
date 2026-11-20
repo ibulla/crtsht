@@ -1,12 +1,14 @@
 <?php
 declare(strict_types=1);
 require __DIR__ . '/inc/bootstrap.php';
+require_once __DIR__ . '/inc/selected-common.php';
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_set_cookie_params(['httponly'=>true,'secure'=>!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS']!=='off','samesite'=>'Lax']);
     session_start();
 }
 $db = crt_db();
 if (!$db) { http_response_code(503); exit('Selected works are temporarily unavailable.'); }
+crt_selected_db_timezone($db);
 $csrf = $_SESSION['selected_csrf'] ?? '';
 if (!is_string($csrf) || strlen($csrf) < 32) $_SESSION['selected_csrf'] = $csrf = bin2hex(random_bytes(24));
 $error = ''; $success = '';
