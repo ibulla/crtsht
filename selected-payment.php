@@ -8,6 +8,7 @@ $offer = null;
 if (preg_match('/^W-[A-F0-9]{16}$/', $code)) {
     $db = crt_db();
     if (!$db) { http_response_code(503); exit('Database unavailable.'); }
+    crt_selected_db_timezone($db);
     $stmt = $db->prepare("SELECT o.ID,o.OfferedPriceCHF,o.Status,o.PaidAt,w.CRTSHT_ID,w.SaleStatus,w.ReservationExpiresAt,w.WinnerOfferID,
        (w.ReservationExpiresAt > NOW()) AS IsCurrent
        FROM CRTSHT_Selected_Offers o INNER JOIN CRTSHT_Selected_Works w ON w.ID=o.SelectedWorkID
