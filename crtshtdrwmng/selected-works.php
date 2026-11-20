@@ -12,11 +12,26 @@ function h(string $s):string{return htmlspecialchars($s,ENT_QUOTES,'UTF-8');}
 $db=crt_db();if(!$db){http_response_code(503);exit('Database unavailable.');}
 crt_selected_db_timezone($db);
 $csrf=$_SESSION['csrf']??'';if(!is_string($csrf)||strlen($csrf)<32)$_SESSION['csrf']=$csrf=bin2hex(random_bytes(24));
-$error='';$message='';$afterCommitMail=null;
+$error='';$message='';$afterCommitMail=null;$artworkLock=null;
 if($_SERVER['REQUEST_METHOD']==='POST'){
  try{
   if(!hash_equals($csrf,(string)($_POST['csrf']??'')))throw new RuntimeException('Invalid CSRF token.');
   $action=(string)($_POST['action']??'');
+  // Claim the per-artwork named lock BEFORE a transaction, shared with DRAW assignment.
+  if($action==='save_work'){
+   $lockId=filter_var($_POST['crtsht_id']??null,FILTER_VALIDATE_INT,['options'=>['min_range'=>1,'max_range'=>128]]);
+   if(!$lockId)throw new RuntimeException('Invalid CRTSHT ID.');
+   crt_selected_lock_artwork($db,$lockId);$artworkLock=$lockId;
+  }elseif($action==='decide'){
+   $lockWorkId=filter_var($_POST['work_id']??null,FILTER_VALIDATE_INT,['options'=>['min_range'=>1]]);
+   if(!$lockWorkId)throw new RuntimeException('Invalid work.');
+   $stmt=$db->prepare('SELECT CRTSHT_ID FROM CRTSHT_Selected_Works WHERE ID=?');
+   if(!$stmt)throw new RuntimeException('Artwork lookup failed.');
+   $stmt->bind_param('i',$lockWorkId);$stmt->execute();$lockRow=$stmt->get_result()->fetch_assoc();$stmt->close();
+   if(!$lockRow)throw new RuntimeException('Artwork not found.');
+   $lockId=(int)$lockRow['CRTSHT_ID'];
+   crt_selected_lock_artwork($db,$lockId);$artworkLock=$lockId;
+  }
   $db->begin_transaction();
   if($action==='save_work'){
    $cid=filter_var($_POST['crtsht_id']??null,FILTER_VALIDATE_INT,['options'=>['min_range'=>1,'max_range'=>128]]);
@@ -47,7 +62,10 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
    $mode=(string)($_POST['mode']??'');
    if(!$workId||!in_array($mode,['manual','random'],true))throw new RuntimeException('Invalid decision.');
    $stmt=$db->prepare('SELECT ID,CRTSHT_ID,SaleStatus,OfferDeadline FROM CRTSHT_Selected_Works WHERE ID=? FOR UPDATE');$stmt->bind_param('i',$workId);$stmt->execute();$work=$stmt->get_result()->fetch_assoc();$stmt->close();
-   if(!$work||!in_array($work['SaleStatus'],['open','closed'],true)||strtotime($work['OfferDeadline'])>time())throw new RuntimeException('Work must be past its deadline and unallocated.');
+   if(!$work||!in_array($work['SaleStatus'],['open','closed'],true))throw new RuntimeException('Work is not open for allocation.');
+   $stmt=$db->prepare('SELECT OfferDeadline<=NOW() AS past FROM CRTSHT_Selected_Works WHERE ID=?');
+   $stmt->bind_param('i',$workId);$stmt->execute();$past=(int)$stmt->get_result()->fetch_assoc()['past'];$stmt->close();
+   if(!$past)throw new RuntimeException('Winner selection is available after the deadline.');
    $cid=(int)$work['CRTSHT_ID'];$stmt=$db->prepare('SELECT COUNT(*) n FROM CRTSHT_Draw_Entries WHERE AssignedCRTSHT=?');$stmt->bind_param('i',$cid);$stmt->execute();$assigned=(int)$stmt->get_result()->fetch_assoc()['n'];$stmt->close();
    if($assigned)throw new RuntimeException('Work allocated in DRAW.');
    $stmt=$db->prepare("SELECT ID FROM CRTSHT_Selected_Offers WHERE SelectedWorkID=? AND Status='pending' ORDER BY ID FOR UPDATE");$stmt->bind_param('i',$workId);$stmt->execute();$ids=array_map('intval',array_column($stmt->get_result()->fetch_all(MYSQLI_ASSOC),'ID'));$stmt->close();
@@ -119,6 +137,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
    if($stmt){$stmt->bind_param('iisss',$afterCommitMail['wid'],$afterCommitMail['winner'],$actor,$logAction,$json);$stmt->execute();$stmt->close();}
   }
  }catch(Throwable $e){$db->rollback();$error=$e->getMessage();}
+ if($artworkLock!==null)crt_selected_unlock_artwork($db,(int)$artworkLock);
 }
 $works=[];$res=$db->query('SELECT w.*, (SELECT COUNT(*) FROM CRTSHT_Selected_Offers o WHERE o.SelectedWorkID=w.ID) OfferCount FROM CRTSHT_Selected_Works w ORDER BY w.ID DESC');if($res){$works=$res->fetch_all(MYSQLI_ASSOC);$res->free();}
 $offers=[];$res=$db->query('SELECT o.ID,o.SelectedWorkID,o.OfferCode,o.ReservationCode,o.Name,o.Email,o.OfferedPriceCHF,o.Status,o.CreatedAt FROM CRTSHT_Selected_Offers o ORDER BY o.CreatedAt DESC');if($res){foreach($res->fetch_all(MYSQLI_ASSOC) as $o)$offers[(int)$o['SelectedWorkID']][]=$o;$res->free();}
